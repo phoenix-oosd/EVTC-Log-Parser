@@ -32,13 +32,22 @@ public class Main {
 //    	    				+ "7. Text Dump Tables\n"
 //    	    				+ "8. Quit\n");
 //    	    		System.out.println("Choose an option (Enter to confirm): ");
-    	    		int choice = 4;
+    	    		int choice = 5;
 //    	    		int choice = scanner.nextInt();
+	                // Parse log
+            		Parse parser = new Parse(log);
+            		bossData b_data = parser.get_boss_data();
+            		List<playerData> p_data = parser.get_player_data();
+            		List<skillData> s_data = parser.get_skill_data();
+            		List<combatData> c_data = parser.get_combat_data();
+            		parser.fill_missing_data(b_data, p_data, s_data, c_data);
+            		Statistics stats = new Statistics(b_data, p_data, s_data, c_data);
     		        switch (choice) {
 		            	case 8:
 		            		// Quit.
 		            		System.exit(0);
 		            		break;
+		            	
     		            case 7:
     		                // Text Dump All Statistics
     		                break;
@@ -46,19 +55,10 @@ public class Main {
     		            case 2:
     		            case 3:
     		            case 4:
-    		                // Parse log
-		            		Parse parser = new Parse(log);
-		            		bossData b_data = parser.get_boss_data();
-		            		List<playerData> p_data = parser.get_player_data();
-		            		List<skillData> s_data = parser.get_skill_data();
-		            		List<combatData> c_data = parser.get_combat_data();
-		            		parser.fill_missing_data(b_data, p_data, s_data, c_data);
-		            		
+            		
 		            		// Get damage logs
-		            		Statistics stats = new Statistics(b_data, p_data, s_data, c_data);
 		            		stats.get_damage_logs();
 		         
-		           
 		            		// Final DPS *done*
     		            	if(choice == 1){
     		            		stats.get_final_dps();
@@ -79,6 +79,7 @@ public class Main {
     		            case 5:
     		            case 6:
     		            	// Boon Statistics
+    		            	stats.get_boon_logs();
     		            	if(choice == 5){
     		            		
     		            	}

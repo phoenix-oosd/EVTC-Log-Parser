@@ -48,6 +48,51 @@ public class Statistics {
 	    	}
 	    }
 	}
+	
+	public void get_boon_logs() {
+
+		// Start time of the fight
+	    int t_start = c_data.get(0).get_time();
+	    
+	    // Boon list
+		List<String> boon_list = new ArrayList<String>();
+		boon_list.add("Might");
+		boon_list.add("Fury");
+		boon_list.add("Quickness");
+		boon_list.add("Protection");
+		boon_list.add("Alacrity");
+		
+		boon_list.add("Grace of the Land");
+		boon_list.add("Spotter");
+		boon_list.add("Spirit of Frost");
+		boon_list.add("Glyph of Empowerment");
+		
+		boon_list.add("Empower Allies");
+		boon_list.add("Banner of Strength");
+		boon_list.add("Banner of Discipline");
+	    
+		// Add boon logs for each player
+	    for (playerData p : p_data) {
+	    	// Initialize boon list
+	    	p.setBoons(boon_list);
+	    	// Check all combat logs
+	    	for (combatData c : c_data) {
+    			// The player is the target
+	    		if (p.getCID() == c.get_dst_cid()) {
+		    		// If the skill is a buff and in the boon list
+	    			String skill_name = get_skill_name(c.get_skill_id());
+	    			if ((c.is_buff() && (c.get_value() > 0)) && (boon_list.contains(skill_name))) {
+	    				p.get_boon_logs().get(skill_name).add(new boonLog(c.get_time() - t_start, c.get_value()));
+		    		}
+	    		}  			
+	    	}
+	    }
+	    
+//	    for (playerData p : p_data) {
+//	    	System.out.println(p.getName());
+//	    	System.out.println(p.get_boon_logs().get("Quickness").size());
+//	    }
+	}
 
 	public void get_final_dps() {
 		
@@ -250,6 +295,15 @@ public class Statistics {
 		
 		return real_fight_intervals;
 		
+	}
+	
+	private String get_skill_name(int ID) {
+		for (skillData s : s_data) {
+			if (s.getID() == ID) {
+				return s.getName();
+			}	
+		}
+		return null;
 	}
 	
 }
