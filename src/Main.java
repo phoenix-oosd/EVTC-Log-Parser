@@ -43,16 +43,25 @@ public class Main {
     		            case 2:
     		            case 3:
     		            case 4:
-    		                // Damage Statistics
+    		                // Parse log
 		            		Parse parser = new Parse(log);
 		            		bossData b_data = parser.get_boss_data();
 		            		List<playerData> p_data = parser.get_player_data();
 		            		List<skillData> s_data = parser.get_skill_data();
 		            		List<combatData> c_data = parser.get_combat_data();
+		            		parser.fill_missing_data(b_data, p_data, s_data, c_data);
 		            		
+		            		// Get damage logs
+		            		Statistics stats = new Statistics(b_data, p_data, s_data, c_data);
+		            		stats.get_damage_logs();
 		            		
+		            		// expected 2211, 5365, 883, 2300, 2357
+//		            		for (playerData p: p_data) {
+//		            			System.out.println(p.get_damage_logs().size());
+//		            		}
+		           
+		            		// Final DPS
     		            	if(choice == 1){
-
     		            		
     		            	}
     		            	else if(choice == 2){
