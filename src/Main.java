@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -44,9 +46,25 @@ public class Main {
     		                // Damage Statistics
 		            		Parse parser = new Parse(log);
 		            		bossData b_data = parser.get_boss_data();
-		            		System.out.println(b_data.getAgent());
-		            		System.out.println(b_data.getCID());
-		            		System.out.println(b_data.getDate());
+		            		List<playerData> p_data = parser.get_player_data();
+//		            		System.out.println(b_data.getAgent());
+//		            		System.out.println(b_data.getCID());
+//		            		System.out.println(b_data.getDate());
+//		            		System.out.println(b_data.getFightDuration());
+//		            		System.out.println(b_data.getHP());
+//		            		System.out.println(b_data.getName());
+		            		
+//		            		for (playerData p : p_data){
+//		            			System.out.println(p.getAgent());
+//		            			System.out.println(p.getCID());
+//		            			System.out.println(p.getName());
+//		            			System.out.println(Arrays.toString(p.getName().getBytes()));
+//		            			System.out.println(p.getProf());
+//		            			System.out.println(p.getToughness());
+//		            			System.out.println(p.getHealing());
+//		            			System.out.println(p.getCondition());
+//		            		}
+		            		
     		            	if(choice == 1){
 
     		            		
