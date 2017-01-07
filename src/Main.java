@@ -32,13 +32,16 @@ public class Main {
 //    	    				+ "7. Text Dump Tables\n"
 //    	    				+ "8. Quit\n");
 //    	    		System.out.println("Choose an option (Enter to confirm): ");
-    	    		int choice = 2;
+    	    		int choice = 4;
 //    	    		int choice = scanner.nextInt();
     		        switch (choice) {
 		            	case 8:
 		            		// Quit.
 		            		System.exit(0);
 		            		break;
+    		            case 7:
+    		                // Text Dump All Statistics
+    		                break;
     		            case 1:
     		            case 2:
     		            case 3:
@@ -54,24 +57,23 @@ public class Main {
 		            		// Get damage logs
 		            		Statistics stats = new Statistics(b_data, p_data, s_data, c_data);
 		            		stats.get_damage_logs();
-		            		
-		            		// expected 2211, 5365, 883, 2300, 2357
-//		            		for (playerData p: p_data) {
-//		            			System.out.println(p.get_damage_logs().size());
-//		            		}
+		         
 		           
-		            		// Final DPS
+		            		// Final DPS *done*
     		            	if(choice == 1){
     		            		stats.get_final_dps();
     		            	}
+    		            	// Phase DPS *done*
     		            	else if(choice == 2){
     		            		stats.get_phase_dps();
     		            	}
+    		            	// Graph Total Damage **
     		            	else if(choice == 3){
     		            		
     		            	}
+    		            	// Combat Statistics *WIP*
     		            	else if(choice == 4){
-    		            		
+    		            		stats.get_combat_stats();
     		            	}
     		                break;         
     		            case 5:
@@ -84,9 +86,6 @@ public class Main {
     		            		
     		            	}
     		            	break;
-    		            case 7:
-    		                // Text Dump All Statistics
-    		                break;
     		            default:
     		                System.out.println("Nope. Try again.\n");
     		        }	

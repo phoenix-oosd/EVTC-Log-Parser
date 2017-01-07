@@ -104,6 +104,60 @@ public class Statistics {
 		
 	}
 	
+// Loop Skeleton
+//	for (playerData p : p_data) {	
+//		
+//		List<damageLog> damage_logs = p.get_damage_logs();
+//
+//		for (damageLog log : damage_logs) {
+//
+//		}
+//		
+//	}		
+	
+	public void get_combat_stats() {
+		
+		List<List<String>> all_combat_stats = new ArrayList<List<String>>();
+		
+		
+		
+		for (playerData p : p_data) {
+				
+			List<damageLog> damage_logs = p.get_damage_logs();
+			
+			List<String> combat_stats = new ArrayList<String>();
+			
+			double i = 0, crit = 0, schl = 0, move = 0;
+
+			for (damageLog log : damage_logs) {
+				
+				if (!log.is_condi()) {
+					if (log.is_crit()) {
+						crit = crit + 1;
+					}
+					if (log.is_ninety()) {
+						schl = schl + 1;
+					}
+					if (log.is_moving()) {	
+						move = move + 1;
+					}
+					i = i + 1;
+				}
+			}
+
+			combat_stats.add(String.format("%.2f", crit / i));
+			combat_stats.add(String.format("%.2f", schl / i));
+			combat_stats.add(String.format("%.2f", move / i));
+			combat_stats.add(String.valueOf(p.getToughness()));
+			combat_stats.add(String.valueOf(p.getHealing()));
+			combat_stats.add(String.valueOf(p.getCondition()));
+			
+			all_combat_stats.add(combat_stats);
+			
+		}	
+		
+	}
+	
 	// Private Methods
 	private List<Point> get_fight_intervals() {
 		
