@@ -48,28 +48,8 @@ public class Main {
 		            		bossData b_data = parser.get_boss_data();
 		            		List<playerData> p_data = parser.get_player_data();
 		            		List<skillData> s_data = parser.get_skill_data();
-//		            		System.out.println(b_data.getAgent());
-//		            		System.out.println(b_data.getCID());
-//		            		System.out.println(b_data.getDate());
-//		            		System.out.println(b_data.getFightDuration());
-//		            		System.out.println(b_data.getHP());
-//		            		System.out.println(b_data.getName());
-//		            		
-//		            		for (playerData p : p_data){
-//		            			System.out.println(p.getAgent());
-//		            			System.out.println(p.getCID());
-//		            			System.out.println(p.getName());
-//		            			System.out.println(Arrays.toString(p.getName().getBytes()));
-//		            			System.out.println(p.getProf());
-//		            			System.out.println(p.getToughness());
-//		            			System.out.println(p.getHealing());
-//		            			System.out.println(p.getCondition());
-//		            		}
-//		            		
-//		            		for (skillData s : s_data){
-//	            				System.out.println(s.getID());
-//	            				System.out.println(s.getName());
-//		            		}
+		            		List<combatData> c_data = parser.get_combat_data();
+		            		
 		            		
     		            	if(choice == 1){
 

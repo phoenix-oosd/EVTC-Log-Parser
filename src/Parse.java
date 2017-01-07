@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Parse {
@@ -88,7 +89,7 @@ public class Parse {
 			f.read(name_buffer);
 			
 			// add player
-			p_data.add(new playerData(get_int32(agent_buffer), 0, get_String(name_buffer), get_prof(get_int32(prof_buffer), get_bool(get_int32(is_elite_buffer))), get_int32(toughness_buffer), get_int32(healing_buffer), get_int32(condition_buffer)));	
+			p_data.add(new playerData(get_int32(agent_buffer), 0, get_String(name_buffer), get_prof(get_int32(prof_buffer), get_bool(is_elite_buffer)), get_int32(toughness_buffer), get_int32(healing_buffer), get_int32(condition_buffer)));	
 			
 		}
 		return p_data;
@@ -124,11 +125,117 @@ public class Parse {
 		return s_data;
 		
 	}
-//	
-//	public List<combatData> get_combat_data() throws IOException {
-//		
-//		
-//	}
+	
+	public List<combatData> get_combat_data() throws IOException {
+		
+		// combatData array
+		List<combatData> c_data = new ArrayList<combatData>();
+		
+		// 64 bytes: each combat
+		while (f.available() >= 64) {
+			
+			// 8 bytes: time
+			byte[] time_buffer = new byte[8];
+			f.read(time_buffer);
+			
+			// 8 bytes: src_agent
+			byte[] src_agent_buffer = new byte[8];
+			f.read(src_agent_buffer);
+			
+			// 8 bytes: dst_agent
+			byte[] dst_agent_buffer = new byte[8];
+			f.read(dst_agent_buffer);
+			
+			// 4 bytes: value
+			byte[] value_buffer = new byte[4];
+			f.read(value_buffer);
+			
+			// 4 bytes: buff_dmg
+			byte[] buff_dmg_buffer = new byte[4];
+			f.read(buff_dmg_buffer);
+			
+			// 2 bytes: overstack_value
+			byte[] overstack_value_buffer = new byte[2];
+			f.read(overstack_value_buffer);
+			
+			// 2 bytes: skill_id
+			byte[] skill_id_buffer = new byte[2];
+			f.read(skill_id_buffer);
+			
+			// 2 bytes: src_cid
+			byte[] src_cid_buffer = new byte[2];
+			f.read(src_cid_buffer);
+			
+			// 2 bytes: dst_cid
+			byte[] dst_cid_buffer = new byte[2];
+			f.read(dst_cid_buffer);
+			
+			// 2 bytes: src_master_cid
+			byte[] src_master_cid_buffer = new byte[2];
+			f.read(src_master_cid_buffer);
+			
+			// 9 bytes: garbage
+			f.skip(9);
+			
+			// 1 byte: iff
+			byte[] iff_buffer = new byte[1];
+			f.read(iff_buffer);
+			
+			// 1 byte: is_buff
+			byte[] is_buff_buffer = new byte[1];
+			f.read(is_buff_buffer);
+			
+			// 1 byte: is_crit
+			byte[] is_crit_buffer = new byte[1];
+			f.read(is_crit_buffer);
+			
+			// 1 byte: is_activation
+			byte[] is_activation_buffer = new byte[1];
+			f.read(is_activation_buffer);
+			
+			// 1 byte: is_buffremove
+			byte[] is_buffremove_buffer = new byte[1];
+			f.read(is_buffremove_buffer);
+			
+			// 1 byte: is_ninety
+			byte[] is_ninety_buffer = new byte[1];
+			f.read(is_ninety_buffer);
+			
+			// 1 byte: is_fifty
+			byte[] is_fifty_buffer = new byte[1];
+			f.read(is_fifty_buffer);
+			
+			// 1 byte: is_moving
+			byte[] is_moving_buffer = new byte[1];
+			f.read(is_moving_buffer);
+			
+			// 1 byte: is_statechange
+			byte[] is_statechange_buffer = new byte[1];
+			f.read(is_statechange_buffer);	
+			
+			// 4 bytes: garbage
+			f.skip(4);
+
+//			System.out.println(get_int32(time_buffer));
+//			System.out.println(Arrays.toString(iff_buffer));
+//			int i = iff_buffer[0];
+//			System.out.println(1);
+//			System.exit(0);
+
+			// add combat
+			c_data.add(new combatData(get_int32(time_buffer), get_int32(src_agent_buffer), get_int32(dst_agent_buffer),
+					get_int32(value_buffer), get_int32(buff_dmg_buffer),
+					get_int16(overstack_value_buffer), get_int16(skill_id_buffer),
+					get_int16(src_cid_buffer), get_int16(dst_cid_buffer), get_int16(src_master_cid_buffer),
+					get_bool(iff_buffer[0]), get_bool(is_buff_buffer[0]), get_bool(is_crit_buffer[0]),
+					get_bool(is_activation_buffer[0]), get_bool(is_buffremove_buffer[0]), get_bool(is_ninety_buffer[0]),
+					get_bool(is_fifty_buffer[0]), get_bool(is_moving_buffer[0]), get_bool(is_statechange_buffer[0])));
+		}
+		
+		return c_data;
+		
+		
+	}
 	
 	// Private Methods
 	
@@ -168,6 +275,7 @@ public class Parse {
 	    	return "UNKNOWN";
 	    }
 	}
+	
 	
 	private int get_boss_HP(int cid) {
 	
@@ -287,18 +395,29 @@ public class Parse {
 
 	}
 	
+	
 	private String get_String(byte[] bytes) {
 		String str = new String(bytes);
 	    int i = str.indexOf(0);
 	    return i == -1 ? str : str.substring(0, i);
 	}
 	
+	
 	private short get_int16(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
 	}
 	
+	
+	
 	private int get_int32(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
+	}
+	
+	
+	
+	private boolean get_bool(byte[] bytes) {
+		boolean bool = (ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt() != 0);
+		return bool;
 	}
 	
 	private boolean get_bool(int i) {
