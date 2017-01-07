@@ -32,7 +32,7 @@ public class Main {
 //    	    				+ "7. Text Dump Tables\n"
 //    	    				+ "8. Quit\n");
 //    	    		System.out.println("Choose an option (Enter to confirm): ");
-    	    		int choice = 1;
+    	    		int choice = 2;
 //    	    		int choice = scanner.nextInt();
     		        switch (choice) {
 		            	case 8:
@@ -65,7 +65,7 @@ public class Main {
     		            		stats.get_final_dps();
     		            	}
     		            	else if(choice == 2){
-    		            		
+    		            		stats.get_phase_dps();
     		            	}
     		            	else if(choice == 3){
     		            		

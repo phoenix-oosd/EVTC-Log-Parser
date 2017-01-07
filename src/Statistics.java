@@ -51,26 +51,56 @@ public class Statistics {
 
 	public void get_final_dps() {
 		
-//		TableList tl = new TableList(3, "Character Name", "Profession", "Final DPS").sortBy(0).withUnicode(false);
-		
+		List<String> dps = new ArrayList<String>();
 		double fight_duration = (double) b_data.getFightDuration() / 1000;
-
-		for (playerData p : p_data) {
+		
+		for (playerData p : p_data) {	
 			
 			List<damageLog> damage_logs = p.get_damage_logs();
+			
 			double total_damage = 0;
+			
 			for (damageLog log : damage_logs) {
 				total_damage = total_damage + log.getDamage();
 			}
-
-
-//			tl.addRow(p.getName(), p.getProf(), (String.format("%.2f", total_damage / fight_duration)));
 			
+			dps.add(String.format("%.2f", (total_damage / fight_duration)));
+		}	
+	}
+	
+	public void get_phase_dps() {
+		
+		List<Point> fight_intervals = get_fight_intervals();
+		List<List<String>> all_phase_dps = new ArrayList<List<String>>();
+		
+		for (int i = 0; i < fight_intervals.size(); i++) {
+			
+			Point interval = fight_intervals.get(i);
+			List<String> phase_dps = new ArrayList<String>();
+			
+			for (playerData p : p_data) {	
+				
+				List<damageLog> damage_logs = p.get_damage_logs();
+				double total_damage = 0;
+				
+				for (damageLog log : damage_logs) {
+					if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y)) {
+						total_damage = total_damage + log.getDamage();
+					}
+				}
+
+				String dps = String.format("%.2f", (total_damage / (interval.getY() - interval.getX()) * 1000));
+				phase_dps.add(dps);
+			}
+			all_phase_dps.add(phase_dps);
 		}
 		
-		get_fight_intervals();
-		
-//		tl.print();
+		// Testing
+//		for (List<String> pd : all_phase_dps) {
+//			for (String dps : pd) {
+//				System.out.println(dps);
+//			}
+//		}
 		
 	}
 	
