@@ -20,6 +20,116 @@ public class Parse {
 		}
 	}
 	
+	// Public Methods
+	
+	public bossData get_boss_data() throws IOException {
+		
+		// 4 bytes: EVTC
+		f.skip(4);
+		
+		// 8 bytes: date
+		byte[] date_buffer = new byte[8];
+		f.read(date_buffer);
+		
+		// 1 byte: skip
+		f.skip(1);
+		
+		// 2 bytes: Boss CID
+		byte[] cid_buffer = new byte[2];
+		f.read(cid_buffer);
+		short cid = get_int16(cid_buffer);
+		
+		// 1 byte: skip
+		f.skip(1);
+
+		return new bossData(0, cid, get_boss_name(cid), get_boss_HP(cid), 0, get_String(date_buffer));
+	}
+	
+	
+	public List<playerData> get_player_data() throws IOException {
+		
+		// playerData array
+		List<playerData> p_data = new ArrayList<playerData>();
+
+		// 4 bytes: player count
+		byte[] pc_buffer = new byte[4];
+		f.read(pc_buffer);
+		int player_count = get_int32(pc_buffer);
+		
+		// 96 bytes: each player
+		for (int i = 0; i  < player_count; i++) {
+			
+			// 8 bytes: agent
+			byte[] agent_buffer = new byte[8];
+			f.read(agent_buffer);
+			
+			// 4 bytes: profession
+			byte[] prof_buffer = new byte[4];
+			f.read(prof_buffer);
+			
+			// 4 bytes: is_elite
+			byte[] is_elite_buffer = new byte[4];
+			f.read(is_elite_buffer);
+			
+			// 4 bytes: toughness
+			byte[] toughness_buffer = new byte[4];
+			f.read(toughness_buffer);
+			
+			// 4 bytes: healing
+			byte[] healing_buffer = new byte[4];
+			f.read(healing_buffer);
+			
+			// 4 bytes: condition
+			byte[] condition_buffer = new byte[4];
+			f.read(condition_buffer);
+			
+			// 68 bytes: name
+			byte[] name_buffer = new byte[68];
+			f.read(name_buffer);
+			
+			// add player
+			p_data.add(new playerData(get_int32(agent_buffer), 0, get_String(name_buffer), get_prof(get_int32(prof_buffer), get_bool(get_int32(is_elite_buffer))), get_int32(toughness_buffer), get_int32(healing_buffer), get_int32(condition_buffer)));	
+			
+		}
+		return p_data;
+	}
+
+	
+	public List<skillData> get_skill_data() throws IOException {
+		
+		// skillData array
+		List<skillData> s_data = new ArrayList<skillData>();
+		
+		// 4 bytes: player count
+		byte[] sc_buffer = new byte[4];
+		f.read(sc_buffer);
+		int skill_count = get_int32(sc_buffer);
+		
+		// 68 bytes: each skill
+		for (int i = 0; i  < skill_count; i++) {
+			
+			// 4 bytes: id
+			byte[] id_buffer = new byte[4];
+			f.read(id_buffer);
+			
+			// 64 bytes: name
+			byte[] name_buffer = new byte[64];
+			f.read(name_buffer);
+			
+			// add skill
+			s_data.add(new skillData(get_int32(id_buffer), get_String(name_buffer)));
+
+		}
+		
+		return s_data;
+		
+	}
+//	
+//	public List<combatData> get_combat_data() throws IOException {
+//		
+//		
+//	}
+	
 	// Private Methods
 	
 	private String get_boss_name(int cid) {
@@ -195,91 +305,5 @@ public class Parse {
 		boolean bool = (i != 0);
 		return bool;
 	}
-	
-	
-	// Public Methods
-	
-	public bossData get_boss_data() throws IOException {
-		
-		// 4 bytes: EVTC
-		f.skip(4);
-		
-		// 8 bytes: date
-		byte[] date_buffer = new byte[8];
-		f.read(date_buffer);
-		
-		// 1 byte: skip
-		f.skip(1);
-		
-		// 2 bytes: Boss CID
-		byte[] cid_buffer = new byte[2];
-		f.read(cid_buffer);
-		short cid = get_int16(cid_buffer);
-		
-		// 1 byte: skip
-		f.skip(1);
-
-		return new bossData(0, cid, get_boss_name(cid), get_boss_HP(cid), 0, get_String(date_buffer));
-	}
-	
-	
-	public List<playerData> get_player_data() throws IOException {
-		
-		// playerData array
-		List<playerData> p_data = new ArrayList<playerData>();
-
-		// 4 bytes: player count
-		byte[] pc_buffer = new byte[4];
-		f.read(pc_buffer);
-		int player_count = get_int32(pc_buffer);
-		
-		// 96 bytes: each player
-		for (int i = 0; i  < player_count; i++) {
-			
-			// 8 bytes: agent
-			byte[] agent_buffer = new byte[8];
-			f.read(agent_buffer);
-			
-			// 4 bytes: profession
-			byte[] prof_buffer = new byte[4];
-			f.read(prof_buffer);
-			
-			// 4 bytes: is_elite
-			byte[] is_elite_buffer = new byte[4];
-			f.read(is_elite_buffer);
-			
-			// 4 bytes: toughness
-			byte[] toughness_buffer = new byte[4];
-			f.read(toughness_buffer);
-			
-			// 4 bytes: healing
-			byte[] healing_buffer = new byte[4];
-			f.read(healing_buffer);
-			
-			// 4 bytes: condition
-			byte[] condition_buffer = new byte[4];
-			f.read(condition_buffer);
-			
-			// 4 bytes: name
-			byte[] name_buffer = new byte[68];
-			f.read(name_buffer);
-			
-			// add player
-			p_data.add(new playerData(get_int32(agent_buffer), 0, get_String(name_buffer), get_prof(get_int32(prof_buffer), get_bool(get_int32(is_elite_buffer))), get_int32(toughness_buffer), get_int32(healing_buffer), get_int32(condition_buffer)));	
-			
-		}
-		return p_data;
-	}
-
-	
-//	public List<skillData> get_skill_data() throws IOException {
-//		
-//		
-//	}
-//	
-//	public List<combatData> get_combat_data() throws IOException {
-//		
-//		
-//	}
 
 }
