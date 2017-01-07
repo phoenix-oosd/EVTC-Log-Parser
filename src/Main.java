@@ -21,7 +21,7 @@ public class Main {
     		for (File log : logs) {	
         		// Menu loop
     	    	try(Scanner scanner = new Scanner(System.in)) {
-//    	    		System.out.println("EVTC Log Visualizer\n"
+//    	    		System.out.println("EVTC Log Parser\n"
 //    	    				+ "-------------------\n"
 //    	    				+ "1. Final DPS\n"
 //    	    				+ "2. Phase DPS\n"

@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class Parse {
@@ -22,7 +23,6 @@ public class Parse {
 	}
 	
 	// Public Methods
-	
 	public bossData get_boss_data() throws IOException {
 		
 		// 4 bytes: EVTC
@@ -216,12 +216,6 @@ public class Parse {
 			// 4 bytes: garbage
 			f.skip(4);
 
-//			System.out.println(get_int32(time_buffer));
-//			System.out.println(Arrays.toString(iff_buffer));
-//			int i = iff_buffer[0];
-//			System.out.println(1);
-//			System.exit(0);
-
 			// add combat
 			c_data.add(new combatData(get_int32(time_buffer), get_int32(src_agent_buffer), get_int32(dst_agent_buffer),
 					get_int32(value_buffer), get_int32(buff_dmg_buffer),
@@ -231,14 +225,64 @@ public class Parse {
 					get_bool(is_activation_buffer[0]), get_bool(is_buffremove_buffer[0]), get_bool(is_ninety_buffer[0]),
 					get_bool(is_fifty_buffer[0]), get_bool(is_moving_buffer[0]), get_bool(is_statechange_buffer[0])));
 		}
-		
 		return c_data;
+	}
+
+	public void fill_missing_data(bossData b_data, List<playerData> p_data, List<skillData> s_data, List<combatData> c_data) {
 		
+		// Update boss agent
+		for (combatData c : c_data) {
+			if (c.get_src_cid() == b_data.getCID()){
+				b_data.setAgent(c.get_src_agent());
+				break;
+			}
+		}
 		
+		// Update boss fight duration
+		b_data.setFightDuration(c_data.get(c_data.size() - 1).get_time() - c_data.get(0).get_time());
+		
+		// Update player CIDs
+		for (playerData p: p_data) {
+			for (combatData c: c_data) {
+				if (p.getAgent() == c.get_src_agent()) {
+					if (c.get_src_master_cid() == 0){
+						p.setCID(c.get_src_cid());
+					}
+					else{
+						p.setCID(c.get_src_master_cid());
+					}
+					break;
+				}	
+			}
+		}
+		
+		// Delete players with no CID
+		Iterator<playerData> iter = p_data.iterator();
+		while (iter.hasNext()) {
+			playerData p = iter.next();
+			if (p.getCID() == 0) {
+				iter.remove();
+			}
+		}
+		
+		// Update combat for Xera logs
+		if (b_data.getName() == "Xera") {
+			int xera_50 = 16286;
+			for (combatData c : c_data) {
+				if (c.get_src_cid() == xera_50) {
+					c.set_src_agent(b_data.getAgent());
+					c.set_src_cid(b_data.getCID());
+				}
+				else if (c.get_dst_cid() == xera_50) {
+					c.set_dst_agent(b_data.getAgent());
+					c.set_dst_cid(b_data.getCID());
+				}
+			}
+		}
+	
 	}
 	
 	// Private Methods
-	
 	private String get_boss_name(int cid) {
 		
 	    if (cid == 15438) {

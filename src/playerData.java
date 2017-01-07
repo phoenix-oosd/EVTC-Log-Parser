@@ -9,7 +9,7 @@ public class playerData {
 	private int healing = 0;
 	private int condition = 0;
 	
-	
+	// Constructor
 	public playerData(int agent, int CID, String name, String prof, int toughness, int healing, int condition) {
 		this.agent = agent;
 		this.CID = CID;
@@ -20,7 +20,7 @@ public class playerData {
 		this.condition = condition;
 	}
 
-
+	// Getters
 	public int getAgent() {
 		return agent;
 	}
@@ -53,6 +53,11 @@ public class playerData {
 
 	public int getCondition() {
 		return condition;
+	}
+	
+	// Setters
+	public void setCID(int CID) {
+		this.CID = CID;
 	}
 
 }
