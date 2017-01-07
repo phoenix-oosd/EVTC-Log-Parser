@@ -62,7 +62,7 @@ public class Main {
 		           
 		            		// Final DPS
     		            	if(choice == 1){
-    		            		
+    		            		stats.get_final_dps();
     		            	}
     		            	else if(choice == 2){
     		            		

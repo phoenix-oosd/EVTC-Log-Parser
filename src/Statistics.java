@@ -47,4 +47,21 @@ public class Statistics {
 	    }
 	}
 
+	public void get_final_dps() {
+		
+		double fight_duration = (double) b_data.getFightDuration() / 1000;
+		System.out.println(fight_duration);
+		for (playerData p : p_data) {
+			
+			List<damageLog> damage_logs = p.get_damage_logs();
+			double total_damage = 0;
+			for (damageLog log : damage_logs) {
+				total_damage = total_damage + log.getDamage();
+			}
+
+//			System.out.println(total_damage / fight_duration);
+		}
+		
+	}
+	
 }
