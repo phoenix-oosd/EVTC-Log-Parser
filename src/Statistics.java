@@ -1,5 +1,7 @@
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -302,13 +304,71 @@ public class Statistics {
 			t_prev = t_curr;
 		}
 		
+		for (Point p : boon_intervals) {
+		System.out.println(p.x + " " + p.y);
+		}
+		
+		// Merge or uniformly sample intervals
+		if (boon.get_type() == "Duration") {
+			// Check if last element is longer than the fight duration
+            if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
+            	boon_intervals.get(boon_intervals.size() - 1).setLocation(boon_intervals.get(boon_intervals.size() - 1).x, b_data.getFightDuration());
+            }
+            // Merge
+			merge_intervals(boon_intervals);
+		}
+		else {
+			merge_intervals(boon_intervals);
+		}
+		
 		
 //		for(Point p : boon_intervals) {
 //			System.out.println(p.x + " " + p.y);
 //		}
+//		System.out.println("\n");
+		merge_intervals(boon_intervals);
+		System.exit(0);
 		
 		return boon_intervals;
 	}
+	
+    private List<Point> merge_intervals(List<Point> intervals) {
+
+    	// Size 1 or 0
+        if(intervals.size() <= 1)
+            return intervals;
+
+        // Sort (isn't needed since guaranteed to be in order)
+//        Collections.sort(intervals, new IntervalComparator());
+        
+        Point first = intervals.get(0);
+        int start = first.x;
+        int end = first.y;
+        
+        List<Point> result = new ArrayList<Point>();
+        
+        for(int i = 1; i < intervals.size(); i++) {
+        	Point current = intervals.get(i);
+            if(current.x <= end) {
+                end = Math.max(current.y, end);
+            }
+            else {
+                result.add(new Point(start, end));
+                start = current.x;
+                end = current.y;
+            }
+        }
+        
+        result.add(new Point(start, end));
+        
+		for(Point p : result) {
+			System.out.println(p.x + " " + p.y);
+		}
+        
+        return result;
+        
+}
+	
 	
 	private String get_skill_name(int ID) {
 		for (skillData s : s_data) {
@@ -319,8 +379,10 @@ public class Statistics {
 		return null;
 	}
 	
+//	class IntervalComparator implements Comparator<Point>{
+//        public int compare(Point p1, Point p2){
+//            return p1.x - p2.x;
+//        }
+//	}
 
-	private List<Point> simulate_boons(List<boonLog> logs) {
-		return null;
-	} 
 }

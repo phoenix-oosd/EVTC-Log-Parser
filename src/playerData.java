@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ public class playerData {
 	private int condition = 0;
 	private List<damageLog> damage_logs = new ArrayList<damageLog>();
 	private Map<String, List<boonLog>> boon_logs = new HashMap<>();
+	private Map<String, List<Point>> boon_intervals = new HashMap<>();
 	
 	// Constructor
 	public playerData(int agent, int CID, String name, String prof, int toughness, int healing, int condition) {
@@ -69,6 +71,10 @@ public class playerData {
 		return boon_logs;
 	}
 	
+	public Map<String, List<Point>> get_boon_intervals() {
+		return boon_intervals;
+	}
+	
 	// Setters
 	public void setCID(int CID) {
 		this.CID = CID;
@@ -77,6 +83,12 @@ public class playerData {
 	public void setBoons(List<String> boon_list) {
 		for (String boon : boon_list) {
 			boon_logs.put(boon, new ArrayList<boonLog>());			
+		}
+	}
+	
+	public void setBoonIntervals(List<String> boon_list) {
+		for (String boon : boon_list) {
+			boon_intervals.put(boon, new ArrayList<Point>());			
 		}
 	}
 	

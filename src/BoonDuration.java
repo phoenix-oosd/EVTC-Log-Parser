@@ -14,10 +14,9 @@ public class BoonDuration extends Boon {
 			super.clear();
 			return;
 		}
-		
-		
 		else {
 			// Recursively remove from the highest stack
+			super.sort();
 			stacks.set(0, Integer.valueOf(stacks.get(0) - time_passed));	
 			if (stacks.get(0) < 0) {
 				

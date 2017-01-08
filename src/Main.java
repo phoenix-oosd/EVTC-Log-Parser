@@ -85,9 +85,9 @@ public class Main {
 
     		        	    // Boon list
     		        		List<String> boon_list = new ArrayList<String>();
-    		        		boon_list.add("Might");
+//    		        		boon_list.add("Might");
 //    		        		boon_list.add("Fury");
-//    		        		boon_list.add("Quickness");
+    		        		boon_list.add("Quickness");
 //    		        		boon_list.add("Protection");
 //    		        		boon_list.add("Alacrity");
 //    		        		

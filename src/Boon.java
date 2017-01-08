@@ -63,13 +63,10 @@ public abstract class Boon {
 	public int get_stack_count() {
 		int stack_count = 0;
 		for (Integer i : stacks) {
-//			System.out.println(i);
 			if (i != 0) {
 				stack_count++;
 			}
 		}
-//		System.out.println(stack_count);
-//		System.exit(0);
 		return stack_count;
 	}
 	
