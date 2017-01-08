@@ -1,6 +1,7 @@
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Statistics {
 	
@@ -149,17 +150,6 @@ public class Statistics {
 		
 	}
 	
-// Loop Skeleton
-//	for (playerData p : p_data) {	
-//		
-//		List<damageLog> damage_logs = p.get_damage_logs();
-//
-//		for (damageLog log : damage_logs) {
-//
-//		}
-//		
-//	}		
-	
 	public void get_combat_stats() {
 		
 		List<List<String>> all_combat_stats = new ArrayList<List<String>>();
@@ -178,15 +168,15 @@ public class Statistics {
 				
 				if (!log.is_condi()) {
 					if (log.is_crit()) {
-						crit = crit + 1;
+						crit++;
 					}
 					if (log.is_ninety()) {
-						schl = schl + 1;
+						schl++;
 					}
 					if (log.is_moving()) {	
-						move = move + 1;
+						move++;
 					}
-					i = i + 1;
+					i++;
 				}
 			}
 
@@ -201,6 +191,22 @@ public class Statistics {
 			
 		}	
 		
+	}
+	
+	public void get_final_boons() {
+		for (playerData p : p_data) {	
+		
+		Map<String, List<boonLog>> boon_logs = p.get_boon_logs();
+		
+		
+		
+		
+
+//			for (boonLog log : boon_logs) {
+//	
+//			}
+		
+		}	
 	}
 	
 	// Private Methods
@@ -306,4 +312,8 @@ public class Statistics {
 		return null;
 	}
 	
+
+	private List<Point> simulate_boons(List<boonLog> logs) {
+		return null;
+	} 
 }

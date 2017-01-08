@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,19 +20,21 @@ public class Main {
     		for (File log : logs) {	
         		// Menu loop
     	    	try(Scanner scanner = new Scanner(System.in)) {
-//    	    		System.out.println("EVTC Log Parser\n"
-//    	    				+ "-------------------\n"
-//    	    				+ "1. Final DPS\n"
-//    	    				+ "2. Phase DPS\n"
-//    	    				+ "3. Graph Total Damage (not implemented)\n"
-//    	    				+ "4. Misc. Combat Stats\n"
-//    	    				+ "5. Final Boons/Buffs\n"
-//    	    				+ "6. Phase Boons/Buffs (not implemented)\n"
-//    	    				+ "7. Text Dump Tables\n"
-//    	    				+ "8. Quit\n");
-//    	    		System.out.println("Choose an option (Enter to confirm): ");
-    	    		int choice = 5;
-//    	    		int choice = scanner.nextInt();
+    	    		System.out.println("EVTC Log Parser\n"
+    	    				+ "-------------------\n"
+    	    				+ "1. Final DPS\n"
+    	    				+ "2. Phase DPS\n"
+    	    				+ "3. Graph Total Damage (not implemented)\n"
+    	    				+ "4. Misc. Combat Stats\n"
+    	    				+ "5. Final Boons/Buffs\n"
+    	    				+ "6. Phase Boons/Buffs (not implemented)\n"
+    	    				+ "7. Text Dump Tables\n"
+    	    				+ "8. Quit\n");
+    	    		System.out.println("Choose an option (Enter to confirm): ");
+    	    		// Choose an option
+//    	    		int choice = 5;
+    	    		int choice = scanner.nextInt();
+    	    		
 	                // Parse log
             		Parse parser = new Parse(log);
             		bossData b_data = parser.get_boss_data();
