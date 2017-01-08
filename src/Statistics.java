@@ -1,6 +1,7 @@
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 public class Statistics {
@@ -50,27 +51,10 @@ public class Statistics {
 	    }
 	}
 	
-	public void get_boon_logs() {
+	public void get_boon_logs(List<String> boon_list) {
 
 		// Start time of the fight
 	    int t_start = c_data.get(0).get_time();
-	    
-	    // Boon list
-		List<String> boon_list = new ArrayList<String>();
-		boon_list.add("Might");
-		boon_list.add("Fury");
-		boon_list.add("Quickness");
-		boon_list.add("Protection");
-		boon_list.add("Alacrity");
-		
-		boon_list.add("Grace of the Land");
-		boon_list.add("Spotter");
-		boon_list.add("Spirit of Frost");
-		boon_list.add("Glyph of Empowerment");
-		
-		boon_list.add("Empower Allies");
-		boon_list.add("Banner of Strength");
-		boon_list.add("Banner of Discipline");
 	    
 		// Add boon logs for each player
 	    for (playerData p : p_data) {
@@ -88,11 +72,6 @@ public class Statistics {
 	    		}  			
 	    	}
 	    }
-	    
-//	    for (playerData p : p_data) {
-//	    	System.out.println(p.getName());
-//	    	System.out.println(p.get_boon_logs().get("Quickness").size());
-//	    }
 	}
 
 	public void get_final_dps() {
@@ -141,13 +120,6 @@ public class Statistics {
 			all_phase_dps.add(phase_dps);
 		}
 		
-		// Testing
-//		for (List<String> pd : all_phase_dps) {
-//			for (String dps : pd) {
-//				System.out.println(dps);
-//			}
-//		}
-		
 	}
 	
 	public void get_combat_stats() {
@@ -193,19 +165,18 @@ public class Statistics {
 		
 	}
 	
-	public void get_final_boons() {
+	public void get_final_boons(List<String> boon_list) {
+		
+		BoonFactory boonFactory = new BoonFactory();
+		
 		for (playerData p : p_data) {	
-		
-		Map<String, List<boonLog>> boon_logs = p.get_boon_logs();
-		
-		
-		
-		
+			Map<String, List<boonLog>> boon_logs = p.get_boon_logs();
+			
+			for (String boon : boon_list) {
+				System.out.println(p.getName());
+				get_boon_intervals(boonFactory.makeBoon(boon), boon_logs.get(boon));
+			}
 
-//			for (boonLog log : boon_logs) {
-//	
-//			}
-		
 		}	
 	}
 	
@@ -301,6 +272,42 @@ public class Statistics {
 		
 		return real_fight_intervals;
 		
+	}
+	
+
+	private List<Point> get_boon_intervals(Boon boon, List<boonLog> boon_logs) {
+		
+		List<Point> boon_intervals = new ArrayList<Point>();
+		
+		// Simulate in game mechanics
+		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
+		boon.add(boon_logs.get(0).getValue());
+		if (boon.get_type() == "Duration") {
+			boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
+		}
+		else {
+			boon_intervals.add(new Point (t_curr, boon.get_stack_count()));
+		}
+		for(ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
+			boonLog log = (boonLog) iter.next();
+			t_curr = log.getTime();
+			boon.update(t_curr - t_prev);
+			boon.add(log.getValue());
+			if (boon.get_type() == "Duration") {
+				boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
+			}
+			else {
+				boon_intervals.add(new Point (t_curr, boon.get_stack_count()));
+			}
+			t_prev = t_curr;
+		}
+		
+		
+//		for(Point p : boon_intervals) {
+//			System.out.println(p.x + " " + p.y);
+//		}
+		
+		return boon_intervals;
 	}
 	
 	private String get_skill_name(int ID) {

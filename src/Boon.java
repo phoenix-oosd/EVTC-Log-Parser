@@ -6,9 +6,11 @@ public abstract class Boon {
 	
 	protected List<Integer> stacks = new ArrayList<Integer>();
 	protected int max_stacks;
+	private String type;
 	
-	public Boon(int max_stacks) {	
+	public Boon(int max_stacks, String type) {	
 		this.max_stacks = max_stacks;
+		this.type = type;
 		clear();
 	}
 	
@@ -50,6 +52,10 @@ public abstract class Boon {
 	}
 	
 	// Getters
+	public String get_type() {
+		return this.type;
+	}
+	
 	public int get_stack_duration() {
 		return stacks.stream().mapToInt(Integer::intValue).sum();
 	}
@@ -57,10 +63,13 @@ public abstract class Boon {
 	public int get_stack_count() {
 		int stack_count = 0;
 		for (Integer i : stacks) {
+//			System.out.println(i);
 			if (i != 0) {
 				stack_count++;
 			}
 		}
+//		System.out.println(stack_count);
+//		System.exit(0);
 		return stack_count;
 	}
 	

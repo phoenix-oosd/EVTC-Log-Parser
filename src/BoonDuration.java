@@ -2,8 +2,8 @@ import java.util.Collections;
 
 public class BoonDuration extends Boon {
 
-	public BoonDuration(int max_stacks) {
-		super(max_stacks);
+	public BoonDuration(int max_stacks, String type) {
+		super(max_stacks, type);
 	}
 
 	@Override

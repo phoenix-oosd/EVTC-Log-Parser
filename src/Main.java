@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,20 +21,20 @@ public class Main {
     		for (File log : logs) {	
         		// Menu loop
     	    	try(Scanner scanner = new Scanner(System.in)) {
-    	    		System.out.println("EVTC Log Parser\n"
-    	    				+ "-------------------\n"
-    	    				+ "1. Final DPS\n"
-    	    				+ "2. Phase DPS\n"
-    	    				+ "3. Graph Total Damage (not implemented)\n"
-    	    				+ "4. Misc. Combat Stats\n"
-    	    				+ "5. Final Boons/Buffs\n"
-    	    				+ "6. Phase Boons/Buffs (not implemented)\n"
-    	    				+ "7. Text Dump Tables\n"
-    	    				+ "8. Quit\n");
-    	    		System.out.println("Choose an option (Enter to confirm): ");
+//    	    		System.out.println("EVTC Log Parser\n"
+//    	    				+ "-------------------\n"
+//    	    				+ "1. Final DPS\n"
+//    	    				+ "2. Phase DPS\n"
+//    	    				+ "3. Graph Total Damage (not implemented)\n"
+//    	    				+ "4. Misc. Combat Stats\n"
+//    	    				+ "5. Final Boons/Buffs\n"
+//    	    				+ "6. Phase Boons/Buffs (not implemented)\n"
+//    	    				+ "7. Text Dump Tables\n"
+//    	    				+ "8. Quit\n");
+//    	    		System.out.println("Choose an option (Enter to confirm): ");
     	    		// Choose an option
-//    	    		int choice = 5;
-    	    		int choice = scanner.nextInt();
+    	    		int choice = 5;
+//    	    		int choice = scanner.nextInt();
     	    		
 	                // Parse log
             		Parse parser = new Parse(log);
@@ -43,6 +44,8 @@ public class Main {
             		List<combatData> c_data = parser.get_combat_data();
             		parser.fill_missing_data(b_data, p_data, s_data, c_data);
             		Statistics stats = new Statistics(b_data, p_data, s_data, c_data);
+            		
+            		// Interpret data based on choice
     		        switch (choice) {
 		            	case 8:
 		            		// Quit.
@@ -79,10 +82,28 @@ public class Main {
     		                break;         
     		            case 5:
     		            case 6:
-    		            	// Boon Statistics
-    		            	stats.get_boon_logs();
+
+    		        	    // Boon list
+    		        		List<String> boon_list = new ArrayList<String>();
+    		        		boon_list.add("Might");
+//    		        		boon_list.add("Fury");
+//    		        		boon_list.add("Quickness");
+//    		        		boon_list.add("Protection");
+//    		        		boon_list.add("Alacrity");
+//    		        		
+//    		        		boon_list.add("Grace of the Land");
+//    		        		boon_list.add("Spotter");
+//    		        		boon_list.add("Spirit of Frost");
+//    		        		boon_list.add("Glyph of Empowerment");
+//    		        		
+//    		        		boon_list.add("Empower Allies");
+//    		        		boon_list.add("Banner of Strength");
+//    		        		boon_list.add("Banner of Discipline");
+    		        		
+    		        		// Get boon_logs
+    		            	stats.get_boon_logs(boon_list);
     		            	if(choice == 5){
-    		            		
+    		            		stats.get_final_boons(boon_list);
     		            	}
     		            	else if(choice == 6){
     		            		
