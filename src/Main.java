@@ -1,124 +1,151 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class Main {
+	
+	private static boolean quitting;
+	private static int[] damage_choices = new int [] {1, 2, 3, 4};
+	private static int[] boon_choices = new int [] {5, 6};
+	private static int[] all_choices = new int [] {1, 2, 3, 4, 5, 6, 7};
+//	private static String[] boon_array = new String [] {"Might", "Quickness", "Fury", "Protection", "Alacrity",
+//			"Spotter", "Spirit of Frost", "Glyph of Empowerment", "Grace of the Land",
+//            "Empower Allies", "Banner of Strength", "Banner of Discipline"};
+	private static String[] boon_array = new String [] {"Fury"};
 
-    public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
+		
+		// Scanner
+		Scanner scan = null;
+		try {
+			// Initialize scanner
+			scan = new Scanner(System.in);
+			
+		    // Files
+			String cwd = System.getProperty("user.dir"); 
+	    	new File(cwd + "/logs").mkdirs();
+	    	new File(cwd + "/graphs").mkdirs();
+	    	new File(cwd + "/tables").mkdirs();	
+	    	File dir = new File(cwd + "/logs");
+	    	File[] logs = dir.listFiles();
 
-    	// Make directories if they don't exist
-        String cwd = System.getProperty("user.dir");    	
-    	new File(cwd + "/logs").mkdirs();
-    	new File(cwd + "/graphs").mkdirs();
-    	new File(cwd + "/tables").mkdirs();	
-    	
-	    // File loop
-    	File dir = new File(cwd + "/logs");
-    	File[] logs = dir.listFiles();
-    	if (logs != null) {
-    		for (File log : logs) {	
-        		// Menu loop
-    	    	try(Scanner scanner = new Scanner(System.in)) {
-//    	    		System.out.println("EVTC Log Parser\n"
-//    	    				+ "-------------------\n"
-//    	    				+ "1. Final DPS\n"
-//    	    				+ "2. Phase DPS\n"
-//    	    				+ "3. Graph Total Damage (not implemented)\n"
-//    	    				+ "4. Misc. Combat Stats\n"
-//    	    				+ "5. Final Boons/Buffs\n"
-//    	    				+ "6. Phase Boons/Buffs (not implemented)\n"
-//    	    				+ "7. Text Dump Tables\n"
-//    	    				+ "8. Quit\n");
-//    	    		System.out.println("Choose an option (Enter to confirm): ");
-    	    		// Choose an option
-    	    		int choice = 5;
-//    	    		int choice = scanner.nextInt();
-    	    		
-	                // Parse log
-            		Parse parser = new Parse(log);
-            		bossData b_data = parser.get_boss_data();
-            		List<playerData> p_data = parser.get_player_data();
-            		List<skillData> s_data = parser.get_skill_data();
-            		List<combatData> c_data = parser.get_combat_data();
-            		parser.fill_missing_data(b_data, p_data, s_data, c_data);
-            		Statistics stats = new Statistics(b_data, p_data, s_data, c_data);
-            		
-            		// Interpret data based on choice
-    		        switch (choice) {
-		            	case 8:
-		            		// Quit.
-		            		System.exit(0);
-		            		break;
-		            	
-    		            case 7:
-    		                // Text Dump All Statistics
-    		                break;
-    		            case 1:
-    		            case 2:
-    		            case 3:
-    		            case 4:
-            		
-		            		// Get damage logs
-		            		stats.get_damage_logs();
-		         
-		            		// Final DPS *done*
-    		            	if(choice == 1){
-    		            		stats.get_final_dps();
-    		            	}
-    		            	// Phase DPS *done*
-    		            	else if(choice == 2){
-    		            		stats.get_phase_dps();
-    		            	}
-    		            	// Graph Total Damage **
-    		            	else if(choice == 3){
-    		            		
-    		            	}
-    		            	// Combat Statistics *WIP*
-    		            	else if(choice == 4){
-    		            		stats.get_combat_stats();
-    		            	}
-    		                break;         
-    		            case 5:
-    		            case 6:
-
-    		        	    // Boon list
-    		        		List<String> boon_list = new ArrayList<String>();
-//    		        		boon_list.add("Might");
-//    		        		boon_list.add("Fury");
-    		        		boon_list.add("Quickness");
-//    		        		boon_list.add("Protection");
-//    		        		boon_list.add("Alacrity");
-//    		        		
-//    		        		boon_list.add("Grace of the Land");
-//    		        		boon_list.add("Spotter");
-//    		        		boon_list.add("Spirit of Frost");
-//    		        		boon_list.add("Glyph of Empowerment");
-//    		        		
-//    		        		boon_list.add("Empower Allies");
-//    		        		boon_list.add("Banner of Strength");
-//    		        		boon_list.add("Banner of Discipline");
-    		        		
-    		        		// Get boon_logs
-    		            	stats.get_boon_logs(boon_list);
-    		            	if(choice == 5){
-    		            		stats.get_final_boons(boon_list);
-    		            	}
-    		            	else if(choice == 6){
-    		            		
-    		            	}
-    		            	break;
-    		            default:
-    		                System.out.println("Nope. Try again.\n");
-    		        }	
-    	      	}			
-    		}
-    	} else {
-    		System.exit(0);
+	    	// Loop
+	    	quitting = false;
+	    	while (!quitting) {
+	    		// Menu display
+	    		System.out.println("EVTC Log Parser\n"
+	    				+ "---------------\n"
+	    				+ "1. Final DPS\n"
+	    				+ "2. Phase DPS\n"
+	    				+ "3. Graph Total Damage (not implemented)\n"
+	    				+ "4. Misc. Combat Stats\n"
+	    				+ "5. Final Boons\n"
+	    				+ "6. Phase Boons (not implemented)\n"
+	    				+ "7. Text Dump Tables\n"
+	    				+ "8. Quit\n");
+	    		System.out.println("Choose an option below: ");
+	    		// Choose an option
+	    		int choice = scan.nextInt();
+	    		scan.nextLine();
+	    		// Parse ".evtc" files
+	        	if (logs.length > 0 && choice != 8) {
+	        		for (File log : logs) {
+	        			parsing(choice, log);
+	        		}
+	        	}
+	        	else {
+	        		System.exit(0);
+	    		}
+	    	}
 		}
-
+		
+		finally {
+			if (scan != null) {
+				scan.close();
+			}
+		}
 	}
+	
+	private static void parsing(int choice, File log) {
+		
+		String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
+		String extn = log.getName().split("\\.(?=[^\\.]+$)")[1];
+		if (extn.equals("evtc")) {
+			if (is_in(choice, all_choices)) {
+				
+				// Parse the logs
+				System.out.println("Parsing " + base + "...");
+        		Parse parser = new Parse(log);
+        		bossData b_data;
+        		List<playerData> p_data;
+        		List<skillData> s_data;
+        		List<combatData> c_data;
+        		Statistics stats = null;
+        		List<String> boon_list;
+				try {
+					b_data = parser.get_boss_data();
+	        		p_data = parser.get_player_data();
+	        		s_data = parser.get_skill_data();
+	        		c_data = parser.get_combat_data();
+	        		parser.fill_missing_data(b_data, p_data, s_data, c_data);
+	        		stats = new Statistics(b_data, p_data, s_data, c_data);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
+				
+				if (choice != 7) {
+		
+					if (is_in(choice, damage_choices)) {
+						if (choice == 1) {
+		            		stats.get_damage_logs();
+						}
+						else if (choice == 2) {
+							stats.get_phase_dps();
+						}
+						else if (choice == 3) {
+							return;
+						}
+						else if (choice == 4) {
+							stats.get_combat_stats();
+						}
+					}
+					
+					else if (is_in(choice, boon_choices)) {
+						
+						
+						boon_list = Arrays.asList(boon_array);
+						stats.get_boon_logs(boon_list);
+						
+						if (choice == 5) {
+							stats.get_final_boons(boon_list);
+						}
+						else if (choice == 6) {
+							return;
+						}
+					}
+				}
+				else {
+//					stats.get_damage_logs();
+//					stats.get_phase_dps();
+//					stats.get_combat_stats();
+					boon_list = Arrays.asList(boon_array);
+					stats.get_boon_logs(boon_list);
+					stats.get_final_boons(boon_list);
+				}
+			}
+			else {
+				System.out.println("Not a valid option. Try again.");
+			}
+		}
+	}
+	
+	public static boolean is_in(int i, int[] array) {
+		return IntStream.of(array).anyMatch(x -> x == i);
+	}
+	
 }
     

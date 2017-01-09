@@ -20,7 +20,6 @@ public class BoonDuration extends Boon {
 			stacks.set(0, Integer.valueOf(stacks.get(0) - time_passed));	
 			if (stacks.get(0) < 0) {
 				
-				
 				// Get leftover time
 				time_passed = Math.abs(stacks.get(0));
 

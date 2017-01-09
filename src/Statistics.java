@@ -1,7 +1,5 @@
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -127,9 +125,7 @@ public class Statistics {
 	public void get_combat_stats() {
 		
 		List<List<String>> all_combat_stats = new ArrayList<List<String>>();
-		
-		
-		
+
 		for (playerData p : p_data) {
 				
 			List<damageLog> damage_logs = p.get_damage_logs();
@@ -175,8 +171,19 @@ public class Statistics {
 			Map<String, List<boonLog>> boon_logs = p.get_boon_logs();
 			
 			for (String boon : boon_list) {
-				System.out.println(p.getName());
-				get_boon_intervals(boonFactory.makeBoon(boon), boon_logs.get(boon));
+				System.out.println(boon);
+				Boon boon_object = boonFactory.makeBoon(boon);
+					if (boon_logs.get(boon).size() > 0) {
+						if (boon_object.get_type().equals("Duration")) {
+							System.out.println(get_average_duration(boon_object, boon_logs.get(boon)));
+						}
+						else if (boon_object.get_type().equals("Intensity")) {
+							System.out.println((get_average_stacks(boon_object, boon_logs.get(boon))));
+						}
+						else {
+						System.out.println(0);
+						}
+					}
 			}
 
 		}	
@@ -190,19 +197,19 @@ public class Statistics {
 		int i_count;
 		int t_invuln;
 
-		if (b_data.getName() == "Vale Guardian") {
+		if (b_data.getName().equals("Vale Guardian")) {
 			i_count = 2;
 			t_invuln = 20000;
 		}
-		else if (b_data.getName() == "Gorseval") {
+		else if (b_data.getName().equals("Gorseval")) {
 			i_count = 2;
 			t_invuln = 30000;
 		}
-		else if (b_data.getName() == "Sabetha") {
+		else if (b_data.getName().equals("Sabetha")) {
 			i_count = 3;
 			t_invuln = 25000;
 		}
-		else if (b_data.getName() == "Sabetha") {
+		else if (b_data.getName().equals("Xera")) {
 			i_count = 1;
 			t_invuln = 60000;
 		}
@@ -277,69 +284,46 @@ public class Statistics {
 	}
 	
 
-	private List<Point> get_boon_intervals(Boon boon, List<boonLog> boon_logs) {
-		
-		List<Point> boon_intervals = new ArrayList<Point>();
+	private double get_average_duration(Boon boon, List<boonLog> boon_logs) {
 		
 		// Simulate in game mechanics
+		List<Point> boon_intervals = new ArrayList<Point>();
 		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
 		boon.add(boon_logs.get(0).getValue());
-		if (boon.get_type() == "Duration") {
-			boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
-		}
-		else {
-			boon_intervals.add(new Point (t_curr, boon.get_stack_count()));
-		}
-		for(ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
+		boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
+		
+		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
 			boonLog log = (boonLog) iter.next();
 			t_curr = log.getTime();
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
-			if (boon.get_type() == "Duration") {
-				boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
-			}
-			else {
-				boon_intervals.add(new Point (t_curr, boon.get_stack_count()));
-			}
+			boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
 			t_prev = t_curr;
 		}
-		
-		for (Point p : boon_intervals) {
-		System.out.println(p.x + " " + p.y);
-		}
-		
-		// Merge or uniformly sample intervals
-		if (boon.get_type() == "Duration") {
-			// Check if last element is longer than the fight duration
-            if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
-            	boon_intervals.get(boon_intervals.size() - 1).setLocation(boon_intervals.get(boon_intervals.size() - 1).x, b_data.getFightDuration());
-            }
-            // Merge
-			merge_intervals(boon_intervals);
-		}
-		else {
-			merge_intervals(boon_intervals);
-		}
-		
-		
-//		for(Point p : boon_intervals) {
-//			System.out.println(p.x + " " + p.y);
-//		}
-//		System.out.println("\n");
-		merge_intervals(boon_intervals);
-		System.exit(0);
-		
-		return boon_intervals;
+
+        // Merge intervals
+        boon_intervals = merge_intervals(boon_intervals);
+        
+		// Check if last element is longer than the fight duration then merge
+        if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
+        	boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
+        }
+        
+        // Calculate average duration
+        int average_duration = 0;
+        
+        for (Point p : boon_intervals) {
+//        	System.out.println(p);
+        	average_duration = (average_duration + (p.y - p.x));
+        }
+        
+		return ((double) average_duration / (double) b_data.getFightDuration());
 	}
 	
     private List<Point> merge_intervals(List<Point> intervals) {
 
-    	// Size 1 or 0
-        if(intervals.size() <= 1)
+        if (intervals.size() <= 1)
             return intervals;
-
-        // Sort (isn't needed since guaranteed to be in order)
-//        Collections.sort(intervals, new IntervalComparator());
         
         Point first = intervals.get(0);
         int start = first.x;
@@ -347,9 +331,9 @@ public class Statistics {
         
         List<Point> result = new ArrayList<Point>();
         
-        for(int i = 1; i < intervals.size(); i++) {
+        for (int i = 1; i < intervals.size(); i++) {
         	Point current = intervals.get(i);
-            if(current.x <= end) {
+            if (current.x <= end) {
                 end = Math.max(current.y, end);
             }
             else {
@@ -361,15 +345,40 @@ public class Statistics {
         
         result.add(new Point(start, end));
         
-		for(Point p : result) {
-			System.out.println(p.x + " " + p.y);
-		}
-        
         return result;
         
-}
+    }	
 	
-	
+    private double get_average_stacks(Boon boon, List<boonLog> boon_logs) {
+    	
+		List<Point> boon_intervals = new ArrayList<Point>();
+		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
+		boon.add(boon_logs.get(0).getValue());
+		boon_intervals.add(new Point (t_curr, boon.get_stack_count()));
+		
+		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
+			boonLog log = (boonLog) iter.next();
+			t_curr = log.getTime();
+			boon.update(t_curr - t_prev);
+			boon.add(log.getValue());
+			boon_intervals.add(new Point (t_curr, boon.get_stack_count()));
+			t_prev = t_curr;
+		}
+		
+		// Calculate average stacks
+		int average_boon = 0;
+		int prev_time = 0;
+		int prev_stack = 0;
+		
+		for (Point p : boon_intervals) {
+			average_boon = (average_boon + (prev_stack * (p.x - prev_time)));
+			prev_time = p.x;
+			prev_stack = p.y;
+		}	
+
+		return   ((double) average_boon / (double) b_data.getFightDuration());
+    }
+    
 	private String get_skill_name(int ID) {
 		for (skillData s : s_data) {
 			if (s.getID() == ID) {
@@ -378,11 +387,6 @@ public class Statistics {
 		}
 		return null;
 	}
-	
-//	class IntervalComparator implements Comparator<Point>{
-//        public int compare(Point p1, Point p2){
-//            return p1.x - p2.x;
-//        }
-//	}
+
 
 }
