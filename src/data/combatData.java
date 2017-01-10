@@ -1,5 +1,8 @@
+package data;
+
 public class combatData {
 
+	// Fields
 	private int time;
 	private int src_agent;
 	private int dst_agent;

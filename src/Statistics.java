@@ -13,6 +13,13 @@ import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 
+import data.boonLog;
+import data.bossData;
+import data.combatData;
+import data.damageLog;
+import data.playerData;
+import data.skillData;
+
 public class Statistics {
 	
 	private bossData b_data = null;
@@ -35,7 +42,7 @@ public class Statistics {
 	    int t_start = c_data.get(0).get_time();
 	    
 		// Add damage logs for each player
-	    for (playerData p : p_data) {	    	
+	    for (playerData p : p_data) {
 	    	// Check all combat logs
 	    	for (combatData c : c_data) {
 	    		// The target is the boss and the player is an enemy
@@ -202,8 +209,6 @@ public class Statistics {
 		
 		// Generate a graph
 		final XYChart chart = new XYChartBuilder().width(1600).height(900).title("Total Damage | " + b_data.getName() + " | " + b_data.getDate()).xAxisTitle("Time (s)").yAxisTitle("Damage (k)").build();
-
-	    // Customize Chart
 		chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
 	    chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
 	    chart.getStyler().setMarkerSize(1);

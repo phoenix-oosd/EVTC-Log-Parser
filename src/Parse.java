@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import data.bossData;
+import data.combatData;
+import data.playerData;
+import data.skillData;
+
 public class Parse {
 	
 	private FileInputStream f = null;

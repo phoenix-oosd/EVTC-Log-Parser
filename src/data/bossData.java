@@ -1,7 +1,8 @@
-
+package data;
 
 public class bossData {
 	
+	// Fields
 	private int agent = 0;
 	private int CID = 0;
 	private String name = null;
@@ -9,6 +10,7 @@ public class bossData {
 	private int fight_duration = 0;
 	private String date = null;
 	
+	// Constructor
 	public bossData(int agent, int CID, String name, int HP, int fight_duration, String date){
 		this.agent = agent;
 		this.CID = CID;
@@ -20,7 +22,6 @@ public class bossData {
 	}
 	
 	// Getters
-	
 	public int getAgent() {
 		return agent;
 	}
@@ -46,7 +47,6 @@ public class bossData {
 	}
 	
 	// Setters
-	
 	public void setAgent(int agent) {
 		this.agent = agent;
 	}

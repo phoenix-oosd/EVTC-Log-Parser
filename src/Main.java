@@ -8,7 +8,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
+import data.bossData;
+import data.combatData;
+import data.playerData;
+import data.skillData;
+
 public class Main {
+	
 	// Fields
 	private static boolean quitting;
 	private static final int[] damage_choices = new int [] {1, 2, 3, 4};
@@ -157,5 +163,6 @@ public class Main {
 	        writer.close();
 	    }
 	}
+	
 }
     
