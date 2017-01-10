@@ -227,7 +227,7 @@ public class Parse {
 			// add combat
 			c_data.add(new combatData(get_int32(time_buffer), get_int32(src_agent_buffer), get_int32(dst_agent_buffer),
 					get_int32(value_buffer), get_int32(buff_dmg_buffer), get_int16(overstack_value_buffer),
-					(get_int16(skill_id_buffer)), get_int16(src_cid_buffer), get_int16(dst_cid_buffer),
+					get_int16(skill_id_buffer), get_int16(src_cid_buffer), get_int16(dst_cid_buffer),
 					get_int16(src_master_cid_buffer), get_bool(iff_buffer[0]), get_bool(is_buff_buffer[0]),
 					get_bool(is_crit_buffer[0]), get_bool(is_activation_buffer[0]), get_bool(is_buffremove_buffer[0]),
 					get_bool(is_ninety_buffer[0]), get_bool(is_fifty_buffer[0]), get_bool(is_moving_buffer[0]),
