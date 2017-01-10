@@ -1,4 +1,4 @@
-# EVTC LogParser
+# EVTC Log Parser
 
 ## About
 
