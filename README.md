@@ -2,7 +2,7 @@
 
 ## About
 
-This program is a parser for ` .evtc ` raid logs in GW@. Upon its first time runningc (and if the folders do not exist), the following folders will be created ` /logs/ `, ` /graphs/ `, and ` /tables/ `. The ` /logs/ ` folder is where you put the ` .evtc ` files you are interested in parsing. Both ` /graphs/ ` and ` /tables/ ` are output folders.
+This program is a parser for ` .evtc ` raid logs in GW2. Upon its first time runningc (and if the folders do not exist), the following folders will be created ` /logs/ `, ` /graphs/ `, and ` /tables/ `. The ` /logs/ ` folder is where you put the ` .evtc ` files you are interested in parsing. Both ` /graphs/ ` and ` /tables/ ` are output folders.
 
 ## Running
 
@@ -10,7 +10,7 @@ The Java program is a console application and needs to be ran with ` java.exe ` 
 
 ## Options
 
-The program will display all data in a tabular format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Rates are a number between 0 and 1 (100% uptime). The parser has the following options: \n
+The program will display all data in a tabular format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Rates are a number between 0 and 1 (100% uptime). The parser has the following options:
 
 1. Final DPS - Displays DPS and total damage for each player. Also displays the team DPS and team total damage, along with the boss of the HP to gauge accuracy.
 2. Phase DPS - Displays DPS for each player during each damage phase. Only supports W1 + Xera.
