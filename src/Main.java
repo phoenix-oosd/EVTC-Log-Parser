@@ -67,7 +67,8 @@ public class Main {
 	    		// Parse ".evtc" files
 	        	if (logs.length > 0 && choice != 8) {
 	        		for (File log : logs) {
-        				if (parsing(choice, log) != 0) {
+	        			int status = parsing(choice, log);
+        				if (status == -1) {
         					break;
         				}
 	        		}
@@ -132,6 +133,7 @@ public class Main {
 							System.out.println(stats.get_final_boons(boon_list));
 						}
 						else if (choice == 6) {
+							System.out.println("Sorry, unimplemented.\n");
 							return -1;
 						}
 					}
@@ -154,9 +156,11 @@ public class Main {
 				System.out.println("Not a valid option. Try again.\n");
 				return -1;
 			}
+			System.out.println("Done!");
+			return 0;
 		}
-		System.out.println("Done!");
-		return 0;
+		System.out.println("Skipping " + base + "...");
+		return -2;
 	}
 	
 	// Public Methods

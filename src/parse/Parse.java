@@ -62,6 +62,11 @@ public class Parse {
 		byte[] pc_buffer = new byte[4];
 		f.read(pc_buffer);
 		int player_count = get_int32(pc_buffer);
+		if (!((player_count >= 0) && (player_count <= 10))) {
+			System.out.println("Not a valid .evtc file.");
+			System.exit(0);
+//			return null;
+		}
 		
 		// 96 bytes: each player
 		for (int i = 0; i  < player_count; i++) {
