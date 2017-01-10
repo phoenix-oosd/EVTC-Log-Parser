@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -56,14 +57,17 @@ public class Main {
 	    		System.out.println("Choose an option below: ");
 	    		
 	    		// Choose an option
-	    		int choice = scan.nextInt();
+	    		int choice = -1;
+	    		try {
+	    			choice = scan.nextInt();
+	    		} catch (InputMismatchException e) {
+	    		}
 	    		scan.nextLine();
 	    		
 	    		// Parse ".evtc" files
 	        	if (logs.length > 0 && choice != 8) {
 	        		for (File log : logs) {
 	        			parsing(choice, log);
-	        			System.out.println("Done!");
 	        		}
 	        	}
 	        	else {
@@ -145,9 +149,11 @@ public class Main {
 				}
 			}
 			else {
-				System.out.println("Not a valid option. Try again.");
+				System.out.println("Not a valid option. Try again.\n");
+				return;
 			}
 		}
+		System.out.println("Done!");
 	}
 	
 	// Public Methods
@@ -159,7 +165,7 @@ public class Main {
 	private static void writeToFile(String string, File file) throws IOException {
 	    try (
 	        BufferedReader reader = new BufferedReader(new StringReader(string));
-	    		PrintWriter writer = new PrintWriter(file, "UTF-8");
+    		PrintWriter writer = new PrintWriter(file, "UTF-8");
 	    ) {
 	        reader.lines().forEach(line -> writer.println(line));
 	        writer.close();
