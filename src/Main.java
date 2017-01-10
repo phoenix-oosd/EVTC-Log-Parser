@@ -67,7 +67,9 @@ public class Main {
 	    		// Parse ".evtc" files
 	        	if (logs.length > 0 && choice != 8) {
 	        		for (File log : logs) {
-	        			parsing(choice, log);
+        				if (parsing(choice, log) != 0) {
+        					break;
+        				}
 	        		}
 	        	}
 	        	else {
@@ -85,7 +87,7 @@ public class Main {
 	}
 	
 	// Handle user choice
-	private static void parsing(int choice, File log) {
+	private static int parsing(int choice, File log) {
 		// Only parse ".evtc" files
 		String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
 		String extn = log.getName().split("\\.(?=[^\\.]+$)")[1];
@@ -130,7 +132,7 @@ public class Main {
 							System.out.println(stats.get_final_boons(boon_list));
 						}
 						else if (choice == 6) {
-							return;
+							return -1;
 						}
 					}
 				}
@@ -150,10 +152,11 @@ public class Main {
 			}
 			else {
 				System.out.println("Not a valid option. Try again.\n");
-				return;
+				return -1;
 			}
 		}
 		System.out.println("Done!");
+		return 0;
 	}
 	
 	// Public Methods
