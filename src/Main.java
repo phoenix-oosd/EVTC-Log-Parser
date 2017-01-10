@@ -8,13 +8,15 @@ import java.util.stream.IntStream;
 public class Main {
 	
 	private static boolean quitting;
-	private static int[] damage_choices = new int [] {1, 2, 3, 4};
-	private static int[] boon_choices = new int [] {5, 6};
-	private static int[] all_choices = new int [] {1, 2, 3, 4, 5, 6, 7};
-//	private static String[] boon_array = new String [] {"Might", "Quickness", "Fury", "Protection", "Alacrity",
-//			"Spotter", "Spirit of Frost", "Glyph of Empowerment", "Grace of the Land",
-//            "Empower Allies", "Banner of Strength", "Banner of Discipline"};
-	private static String[] boon_array = new String [] {"Fury"};
+	private static final int[] damage_choices = new int [] {1, 2, 3, 4};
+	private static final int[] boon_choices = new int [] {5, 6};
+	private static final int[] all_choices = new int [] {1, 2, 3, 4, 5, 6, 7};
+	private static final String[] boon_array = new String [] {"Might", "Quickness", "Fury", "Protection", "Alacrity",
+			"Spotter", "Spirit of Frost", "Glyph of Empowerment", "Grace of the Land",
+            "Empower Allies", "Banner of Strength", "Banner of Discipline"};
+//	private static final String[] boon_array = new String [] {"Fury"};
+	
+
 
 	public static void main(String[] args) {
 		
@@ -90,18 +92,24 @@ public class Main {
 	        		p_data = parser.get_player_data();
 	        		s_data = parser.get_skill_data();
 	        		c_data = parser.get_combat_data();
+//					for (combatData c: c_data) {
+//						System.out.println("ID:" + c.get_skill_id());
+//					}
+//					System.exit(0);
 	        		parser.fill_missing_data(b_data, p_data, s_data, c_data);
 	        		stats = new Statistics(b_data, p_data, s_data, c_data);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
-				
 				if (choice != 7) {
-		
+					
 					if (is_in(choice, damage_choices)) {
+						
+						stats.get_damage_logs();
+						
 						if (choice == 1) {
-		            		stats.get_damage_logs();
+		            		stats.get_final_dps();
 						}
 						else if (choice == 2) {
 							stats.get_phase_dps();

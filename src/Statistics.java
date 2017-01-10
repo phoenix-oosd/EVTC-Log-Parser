@@ -75,67 +75,131 @@ public class Statistics {
 	}
 
 	public void get_final_dps() {
-		
+			
+		// Final DPS
 		List<String> dps = new ArrayList<String>();
-		double fight_duration = (double) b_data.getFightDuration() / 1000;
+		List<String> dmg = new ArrayList<String>();
 		
-		for (playerData p : p_data) {	
+		double total_dps = 0.0;
+		int total_damage = 0;
+		
+		double fight_duration = (double) b_data.getFightDuration() / 1000.0;
+		
+		for (playerData p : p_data) {
+			double player_damage = 0.0;
 			
 			List<damageLog> damage_logs = p.get_damage_logs();
-			
-			double total_damage = 0;
-			
 			for (damageLog log : damage_logs) {
-				total_damage = total_damage + log.getDamage();
+				player_damage = player_damage + log.getDamage();
 			}
 			
-			dps.add(String.format("%.2f", (total_damage / fight_duration)));
-		}	
+			dps.add(String.format("%.2f", (player_damage / fight_duration)));
+			dmg.add(String.valueOf((int) player_damage));
+			
+			total_dps = total_dps + (player_damage / fight_duration);
+			total_damage = (int) (total_damage + player_damage);
+		}
+		
+		// Table
+		TableBuilder table = new TableBuilder();
+		table.addTitle("Final DPS | " + b_data.getName() + " | " + b_data.getDate());
+		
+		// Header
+		table.addRow("Character Name", "Profession", "Final DPS", "Damage");
+		
+		// Body
+		for (int i = 0; i < p_data.size(); i++) {
+			playerData p = p_data.get(i);
+			table.addRow(p.getName(), p.getProf(), dps.get(i), dmg.get(i));
+		}
+		
+		// Footer
+		table.addRow("-", "-", String.format("%.2f", total_dps), String.valueOf(total_damage));
+		table.addRow("-", "-", "-", String.valueOf(b_data.getHP()));
+		System.out.println(table.toString());
+		
 	}
 	
 	public void get_phase_dps() {
 		
+		// Phase DPS
 		List<Point> fight_intervals = get_fight_intervals();
-		List<List<String>> all_phase_dps = new ArrayList<List<String>>();
+		List<String[]> all_phase_dps = new ArrayList<String[]>();
 		
-		for (int i = 0; i < fight_intervals.size(); i++) {
+		for (int i = 0; i < p_data.size(); i++) {
 			
-			Point interval = fight_intervals.get(i);
-			List<String> phase_dps = new ArrayList<String>();
+			playerData p = p_data.get(i);
+			String[] phase_dps = new String[fight_intervals.size()];
 			
-			for (playerData p : p_data) {	
+			for (int j = 0; j < fight_intervals.size(); j++) {
 				
-				List<damageLog> damage_logs = p.get_damage_logs();
-				double total_damage = 0;
+				Point interval = fight_intervals.get(j);
+				List<damageLog> damage_logs = p.get_damage_logs();	
+				
+				double phase_damage = 0;
 				
 				for (damageLog log : damage_logs) {
 					if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y)) {
-						total_damage = total_damage + log.getDamage();
+						phase_damage = phase_damage + log.getDamage();
 					}
 				}
-
-				String dps = String.format("%.2f", (total_damage / (interval.getY() - interval.getX()) * 1000));
-				phase_dps.add(dps);
+				phase_dps[j] = String.format("%.2f", (phase_damage / (interval.getY() - interval.getX()) * 1000));
 			}
 			all_phase_dps.add(phase_dps);
 		}
 		
+		// Table
+		TableBuilder table = new TableBuilder();
+		table.addTitle("Phase DPS | " + b_data.getName() + " | " + b_data.getDate());
+		
+		// Header
+		String[] header = new String[2 + fight_intervals.size()];
+		header[0] = "Character Name";
+		header[1] = "Profession";
+		for (int i = 2; i < fight_intervals.size() + 2; i++) {
+			header[i] = "Phase " + String.valueOf(i - 1);
+		}
+		table.addRow(header);
+			
+		// Body
+		for (int i = 0; i < p_data.size(); i++) {		
+			playerData p = p_data.get(i);
+			table.addRow(concat(new String[] {p.getName(), p.getProf()}, all_phase_dps.get(i)));
+		}
+		
+		// Footer
+		String[] durations = new String[fight_intervals.size() + 2];
+		durations[0] = "-";
+		durations[1] = "-";
+		for (int i = 2; i < fight_intervals.size() + 2; i++) {
+			Point p = fight_intervals.get(i - 2);
+			durations[i] =  String.valueOf((p.y - p.x) / 1000);
+		}
+		table.addRow(durations);
+		
+		String[] intervals = new String[fight_intervals.size() + 2];
+		intervals[0] = "-";
+		intervals[1] = "-";
+		for (int i = 2; i < fight_intervals.size() + 2; i++) {
+			Point p = fight_intervals.get(i - 2);
+			intervals[i] = "(" + String.valueOf(p.x / 1000) + ", " + String.valueOf(p.y / 1000) + ")";
+		}
+		table.addRow(intervals);
+		System.out.println(table.toString());
+		
 	}
-	
+
 	public void get_combat_stats() {
 		
-		List<List<String>> all_combat_stats = new ArrayList<List<String>>();
+		// Combat Statistics
+		List<String[]> all_combat_stats = new ArrayList<String[]>();
 
 		for (playerData p : p_data) {
 				
 			List<damageLog> damage_logs = p.get_damage_logs();
-			
-			List<String> combat_stats = new ArrayList<String>();
-			
-			double i = 0, crit = 0, schl = 0, move = 0;
+			double i = 0.0, crit = 0.0, schl = 0.0, move = 0.0;
 
 			for (damageLog log : damage_logs) {
-				
 				if (!log.is_condi()) {
 					if (log.is_crit()) {
 						crit++;
@@ -149,44 +213,75 @@ public class Statistics {
 					i++;
 				}
 			}
-
-			combat_stats.add(String.format("%.2f", crit / i));
-			combat_stats.add(String.format("%.2f", schl / i));
-			combat_stats.add(String.format("%.2f", move / i));
-			combat_stats.add(String.valueOf(p.getToughness()));
-			combat_stats.add(String.valueOf(p.getHealing()));
-			combat_stats.add(String.valueOf(p.getCondition()));
+			String[] combat_stats = new String[] {String.format("%.2f", crit / i), String.format("%.2f", schl / i), String.format("%.2f", move / i),
+				String.valueOf(p.getToughness()), String.valueOf(p.getHealing()), String.valueOf(p.getCondition())};
 			
 			all_combat_stats.add(combat_stats);
-			
-		}	
+		}
+		
+		// Table
+		TableBuilder table = new TableBuilder();
+		table.addTitle("Combat Statistics | " + b_data.getName() + " | " + b_data.getDate());
+		
+		// Header
+		table.addRow("Character Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND");
+		
+		// Body
+		for (int i = 0; i < p_data.size(); i++) {
+			playerData p = p_data.get(i);
+			table.addRow(concat(new String[] {p.getName(), p.getProf()} , all_combat_stats.get(i)));
+		}
+		System.out.println(table.toString());
 		
 	}
 	
 	public void get_final_boons(List<String> boon_list) {
 		
+		// Final boons
 		BoonFactory boonFactory = new BoonFactory();
+		List<String[]> all_rates = new ArrayList<String[]>();
 		
-		for (playerData p : p_data) {	
+		for (int i = 0; i < p_data.size(); i++) {
+			
+			playerData p = p_data.get(i);
 			Map<String, List<boonLog>> boon_logs = p.get_boon_logs();
 			
-			for (String boon : boon_list) {
-				System.out.println(boon);
+			String[] rates = new String[boon_list.size()];
+			
+			for (int j = 0; j < boon_list.size(); j++) {
+				
+				String boon = boon_list.get(j);
 				Boon boon_object = boonFactory.makeBoon(boon);
-					if (boon_logs.get(boon).size() > 0) {
-						if (boon_object.get_type().equals("Duration")) {
-							System.out.println(get_average_duration(boon_object, boon_logs.get(boon)));
-						}
-						else if (boon_object.get_type().equals("Intensity")) {
-							System.out.println((get_average_stacks(boon_object, boon_logs.get(boon))));
-						}
-						else {
-						System.out.println(0);
-						}
+				String rate = "0.00";
+				
+				if (boon_logs.get(boon).size() > 0) {
+					if (boon_object.get_type().equals("Duration")) {
+						rate = get_average_duration(boon_object, boon_logs.get(boon));
 					}
+					else if (boon_object.get_type().equals("Intensity")) {
+						rate = get_average_stacks(boon_object, boon_logs.get(boon));
+					}		
+				}
+				rates[j] = rate;
 			}
+			all_rates.add(rates);
+		}
 
-		}	
+		// Table
+		TableBuilder table = new TableBuilder();
+		table.addTitle("Final Boon Rates | " + b_data.getName() + " | " + b_data.getDate());
+		
+		// Header
+		String[] boon_array = new String[] { "MGHT", "QCKN", "FURY", "PROT", "ALAC",
+				"SPOT", "FRST", "GoE", "GotL", "EA", "BoS", "BoD"};
+		table.addRow(concat(new String[] {"Character Name", "Profession"}, boon_array));
+		
+		// Body
+		for (int i = 0; i < p_data.size(); i++) {
+			playerData p = p_data.get(i);
+			table.addRow(concat(new String[] {p.getName(), p.getProf()} , all_rates.get(i)));
+		}
+		System.out.println(table.toString());
 	}
 	
 	// Private Methods
@@ -284,7 +379,7 @@ public class Statistics {
 	}
 	
 
-	private double get_average_duration(Boon boon, List<boonLog> boon_logs) {
+	private String get_average_duration(Boon boon, List<boonLog> boon_logs) {
 		
 		// Simulate in game mechanics
 		List<Point> boon_intervals = new ArrayList<Point>();
@@ -317,7 +412,7 @@ public class Statistics {
         	average_duration = (average_duration + (p.y - p.x));
         }
         
-		return ((double) average_duration / (double) b_data.getFightDuration());
+		return String.format("%.2f",((double) average_duration / (double) b_data.getFightDuration()));
 	}
 	
     private List<Point> merge_intervals(List<Point> intervals) {
@@ -349,7 +444,7 @@ public class Statistics {
         
     }	
 	
-    private double get_average_stacks(Boon boon, List<boonLog> boon_logs) {
+    private String get_average_stacks(Boon boon, List<boonLog> boon_logs) {
     	
 		List<Point> boon_intervals = new ArrayList<Point>();
 		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
@@ -376,8 +471,17 @@ public class Statistics {
 			prev_stack = p.y;
 		}	
 
-		return   ((double) average_boon / (double) b_data.getFightDuration());
+		return  String.format("%.2f" ,((double) average_boon / (double) b_data.getFightDuration()));
     }
+    
+    private String[] concat(String[] a, String[] b) {
+  	   int aLen = a.length;
+  	   int bLen = b.length;
+  	   String[] c= new String[aLen+bLen];
+  	   System.arraycopy(a, 0, c, 0, aLen);
+  	   System.arraycopy(b, 0, c, aLen, bLen);
+  	   return c;
+     }
     
 	private String get_skill_name(int ID) {
 		for (skillData s : s_data) {
