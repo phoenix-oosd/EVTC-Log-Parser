@@ -1,13 +1,16 @@
+package boon;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public abstract class Boon {
 	
+	// Fields
 	protected List<Integer> stacks = new ArrayList<Integer>();
 	protected int max_stacks;
 	private String type;
 	
+	// Constructor
 	public Boon(int max_stacks, String type) {	
 		this.max_stacks = max_stacks;
 		this.type = type;
@@ -15,11 +18,10 @@ public abstract class Boon {
 	}
 	
 	// Abstract Methods
-	abstract void update(int time_passed);
+	public abstract void update(int time_passed);
 	
 	// Public Methods
 	public void add(int duration) {
-		
 		// Find an empty slot
 		for (int i = 0; i < stacks.size(); i++) {
 			if (stacks.get(i) == 0) {
@@ -28,7 +30,6 @@ public abstract class Boon {
 				return;
 			}
 		}
-		
 		// No empty slots so replace the lowest
 		Collections.sort(stacks);
 		if (stacks.get(0) < duration) {
@@ -36,7 +37,6 @@ public abstract class Boon {
 		}
 		sort();
 		return;
-		
 	}
 	
 	// Protected Methods
@@ -69,9 +69,5 @@ public abstract class Boon {
 		}
 		return stack_count;
 	}
-	
-	
-	
-	
 
 }

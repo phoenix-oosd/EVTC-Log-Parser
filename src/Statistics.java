@@ -13,6 +13,8 @@ import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 
+import boon.Boon;
+import boon.BoonFactory;
 import data.boonLog;
 import data.bossData;
 import data.combatData;
