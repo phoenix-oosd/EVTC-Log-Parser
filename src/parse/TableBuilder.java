@@ -1,3 +1,4 @@
+package parse;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -5,9 +6,9 @@ import java.util.ListIterator;
  
 public class TableBuilder {
  
-	String title = "";
-	List<String[]> rows = new LinkedList<String[]>();
-	
+	// Fields
+	private String title = "";
+	private List<String[]> rows = new LinkedList<String[]>();
 	
 	// Public Methods
     public void addTitle(String title) {
@@ -20,12 +21,10 @@ public class TableBuilder {
 
     // Private Methods
     private int[] getWidths() {
-    	
     	// Get number of columns
         int cols = -1;
         for(String[] row : rows)
             cols = Math.max(cols, row.length);
- 
         // Get the widths of each column
         int[] widths = new int[cols];
         for (String[] row : rows) {
@@ -53,47 +52,39 @@ public class TableBuilder {
     	  return "";
     }
     
+    // Public Methods
     @Override
-    public String toString()
-    {
-        StringBuilder buf = new StringBuilder();
- 
+    public String toString() {
+        StringBuilder str = new StringBuilder();
         int[] colWidths = getWidths();
-        
         // Discord
-        buf.append("```\n");
-        
+        str.append("```\n");
         // Title
         if (!title.equals("")) {
-        	buf.append(fill(title.length(), '*') + "\n");
-        	buf.append(title + "\n");
-        	buf.append(fill(title.length(), '*') + "\n");
+        	str.append(fill(title.length(), '*') + "\n");
+        	str.append(title + "\n");
+        	str.append(fill(title.length(), '*') + "\n");
         }
- 
         // Header
         for(int colNum = 0; colNum < rows.get(0).length; colNum++) {
-            buf.append(center(rows.get(0)[colNum], colWidths[colNum]));
+            str.append(center(rows.get(0)[colNum], colWidths[colNum]));
         }
-        buf.append("\n");
+        str.append("\n");
         for(int colNum = 0; colNum < rows.get(0).length; colNum++) {
-            buf.append(center(fill(colWidths[colNum] - 2, '-'), colWidths[colNum]));
+            str.append(center(fill(colWidths[colNum] - 2, '-'), colWidths[colNum]));
         }
-        buf.append("\n");
-        
         // Body
         for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
         	String[] row = iter.next();
             for(int colNum = 0; colNum < row.length; colNum++) {
-                buf.append(center(row[colNum], colWidths[colNum]));
+                str.append(center(row[colNum], colWidths[colNum]));
             }
  
-            buf.append('\n');
+            str.append('\n');
         }
-        
         // Discord
-        buf.append("```\n");
- 
-        return buf.toString();
+        str.append("```\n");
+        return str.toString();
     }
  
 }
