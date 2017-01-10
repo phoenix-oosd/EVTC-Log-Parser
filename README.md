@@ -2,15 +2,15 @@
 
 ## About
 
-This program is a parser for ` .evtc ` raid logs in GW2. Upon its first time runningc (and if the folders do not exist), the following folders will be created ` /logs/ `, ` /graphs/ `, and ` /tables/ `. The ` /logs/ ` folder is where you put the ` .evtc ` files you are interested in parsing. Both ` /graphs/ ` and ` /tables/ ` are output folders.
+This program is a parser for ` .evtc ` raid logs in GW2. It is written in Java, so requires an installation of ` JRE 1.8 `. Upon its first time running (and if the following folders do not exist), these folders will be created in the same directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. The ` /logs/ ` folder is where you put the ` .evtc ` files you are interested in parsing. Both ` /graphs/ ` and ` /tables/ ` are output folders.
 
 ## Running
 
-The Java program is a console application and needs to be ran with ` java.exe ` and ` JRE 1.8 `. By default. double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in the program not running. To circumvent this run the program either in the command line or using the supplied ` .bat `.
+The Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in the program not running. To circumvent this run the program either in the command line or using the supplied ` .bat `.
 
 ## Options
 
-The program will display all data in a tabular format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Rates are a number between 0 and 1 (100% uptime). The parser has the following options:
+The program displays all data in a tabular format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Rates are a number between 0 and 1 (100% uptime). The parser has the following options:
 
 1. Final DPS - Displays DPS and total damage for each player. Also displays the team DPS and team total damage, along with the boss of the HP to gauge accuracy.
 2. Phase DPS - Displays DPS for each player during each damage phase. Only supports W1 + Xera.
