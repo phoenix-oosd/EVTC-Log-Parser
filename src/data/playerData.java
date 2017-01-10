@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class playerData {
-	
+
 	// Fields
 	private int agent = 0;
 	private int CID = 0;
@@ -17,7 +17,7 @@ public class playerData {
 	private int condition = 0;
 	private List<damageLog> damage_logs = new ArrayList<damageLog>();
 	private Map<String, List<boonLog>> boon_logs = new HashMap<>();
-	
+
 	// Constructor
 	public playerData(int agent, int CID, String name, String prof, int toughness, int healing, int condition) {
 		this.agent = agent;
@@ -57,24 +57,24 @@ public class playerData {
 	public int getCondition() {
 		return condition;
 	}
-	
+
 	public List<damageLog> get_damage_logs() {
 		return damage_logs;
 	}
-	
+
 	public Map<String, List<boonLog>> get_boon_logs() {
 		return boon_logs;
 	}
-	
+
 	// Setters
 	public void setCID(int CID) {
 		this.CID = CID;
 	}
-	
+
 	public void setBoons(List<String> boon_list) {
 		for (String boon : boon_list) {
-			boon_logs.put(boon, new ArrayList<boonLog>());			
+			boon_logs.put(boon, new ArrayList<boonLog>());
 		}
 	}
-	
+
 }

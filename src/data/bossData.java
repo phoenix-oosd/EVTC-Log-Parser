@@ -1,7 +1,7 @@
 package data;
 
 public class bossData {
-	
+
 	// Fields
 	private int agent = 0;
 	private int CID = 0;
@@ -9,18 +9,18 @@ public class bossData {
 	private int HP = 0;
 	private int fight_duration = 0;
 	private String date = null;
-	
+
 	// Constructor
-	public bossData(int agent, int CID, String name, int HP, int fight_duration, String date){
+	public bossData(int agent, int CID, String name, int HP, int fight_duration, String date) {
 		this.agent = agent;
 		this.CID = CID;
 		this.name = name;
 		this.HP = HP;
 		this.fight_duration = fight_duration;
 		this.date = date;
-		
+
 	}
-	
+
 	// Getters
 	public int getAgent() {
 		return agent;
@@ -37,7 +37,7 @@ public class bossData {
 	public int getHP() {
 		return HP;
 	}
-	
+
 	public int getFightDuration() {
 		return fight_duration;
 	}
@@ -45,7 +45,7 @@ public class bossData {
 	public String getDate() {
 		return date;
 	}
-	
+
 	// Setters
 	public void setAgent(int agent) {
 		this.agent = agent;
@@ -54,5 +54,5 @@ public class bossData {
 	public void setFightDuration(int fight_duration) {
 		this.fight_duration = fight_duration;
 	}
-	
+
 }

@@ -22,7 +22,7 @@ public class combatData {
 	private boolean is_fifty;
 	private boolean is_moving;
 	private boolean is_statechange;
-	
+
 	// Constructor
 	public combatData(int time, int src_agent, int dst_agent, int value, int buff_dmg, int overstack_value,
 			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, boolean is_crit,
@@ -48,7 +48,7 @@ public class combatData {
 		this.is_moving = is_moving;
 		this.is_statechange = is_statechange;
 	}
-	
+
 	// Getters
 	public int get_src_agent() {
 		return src_agent;
@@ -125,16 +125,16 @@ public class combatData {
 	public boolean is_statechange() {
 		return is_statechange;
 	}
-	
+
 	// Setters
 	public void set_src_agent(int src_agent) {
 		this.src_agent = src_agent;
 	}
-	
+
 	public void set_dst_agent(int dst_agent) {
 		this.dst_agent = dst_agent;
 	}
-	
+
 	public void set_src_cid(int src_cid) {
 		this.src_cid = src_cid;
 	}
@@ -142,5 +142,5 @@ public class combatData {
 	public void set_dst_cid(int dst_cid) {
 		this.dst_cid = dst_cid;
 	}
-	
+
 }
