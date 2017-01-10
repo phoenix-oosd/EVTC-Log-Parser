@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -109,16 +113,16 @@ public class Main {
 						stats.get_damage_logs();
 						
 						if (choice == 1) {
-		            		stats.get_final_dps();
+		            		System.out.println(stats.get_final_dps());
 						}
 						else if (choice == 2) {
-							stats.get_phase_dps();
+							System.out.println(stats.get_phase_dps());
 						}
 						else if (choice == 3) {
 							return;
 						}
 						else if (choice == 4) {
-							stats.get_combat_stats();
+							System.out.println(stats.get_combat_stats());
 						}
 					}
 					
@@ -129,7 +133,7 @@ public class Main {
 						stats.get_boon_logs(boon_list);
 						
 						if (choice == 5) {
-							stats.get_final_boons(boon_list);
+							System.out.println(stats.get_final_boons(boon_list));
 						}
 						else if (choice == 6) {
 							return;
@@ -137,23 +141,39 @@ public class Main {
 					}
 				}
 				else {
+					// Write to file
 					stats.get_damage_logs();
-					stats.get_final_dps();
-					stats.get_phase_dps();
-					stats.get_combat_stats();
 					boon_list = Arrays.asList(boon_array);
 					stats.get_boon_logs(boon_list);
-					stats.get_final_boons(boon_list);
+					try {
+						File text_dump = new File(System.getProperty("user.dir") + "/tables/" + base + ".txt");
+//					    PrintWriter writer = new PrintWriter();
+					    writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_combat_stats() + stats.get_final_boons(boon_list), text_dump); 
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			else {
 				System.out.println("Not a valid option. Try again.");
 			}
 		}
+		System.out.println("Done!");
 	}
 	
 	public static boolean is_in(int i, int[] array) {
 		return IntStream.of(array).anyMatch(x -> x == i);
+	}
+	
+	private static void writeToFile(String string, File file) throws IOException {
+	    try (
+	        BufferedReader reader = new BufferedReader(new StringReader(string));
+	    		PrintWriter writer = new PrintWriter(file, "UTF-8");
+	    ) {
+	        reader.lines().forEach(line -> writer.println(line));
+	        writer.close();
+	    }
+	    
 	}
 	
 }

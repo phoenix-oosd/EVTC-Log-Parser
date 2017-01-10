@@ -74,7 +74,7 @@ public class Statistics {
 	    }
 	}
 
-	public void get_final_dps() {
+	public String get_final_dps() {
 			
 		// Final DPS
 		List<String> dps = new ArrayList<String>();
@@ -116,11 +116,11 @@ public class Statistics {
 		// Footer
 		table.addRow("-", "-", String.format("%.2f", total_dps), String.valueOf(total_damage));
 		table.addRow("-", "-", "-", String.valueOf(b_data.getHP()));
-		System.out.println(table.toString());
 		
+		return table.toString();
 	}
 	
-	public void get_phase_dps() {
+	public String get_phase_dps() {
 		
 		// Phase DPS
 		List<Point> fight_intervals = get_fight_intervals();
@@ -185,11 +185,11 @@ public class Statistics {
 			intervals[i] = "(" + String.valueOf(p.x / 1000) + ", " + String.valueOf(p.y / 1000) + ")";
 		}
 		table.addRow(intervals);
-		System.out.println(table.toString());
 		
+		return table.toString();
 	}
 
-	public void get_combat_stats() {
+	public String get_combat_stats() {
 		
 		// Combat Statistics
 		List<String[]> all_combat_stats = new ArrayList<String[]>();
@@ -231,11 +231,12 @@ public class Statistics {
 			playerData p = p_data.get(i);
 			table.addRow(concat(new String[] {p.getName(), p.getProf()} , all_combat_stats.get(i)));
 		}
-		System.out.println(table.toString());
+		
+		return table.toString();
 		
 	}
 	
-	public void get_final_boons(List<String> boon_list) {
+	public String get_final_boons(List<String> boon_list) {
 		
 		// Final boons
 		BoonFactory boonFactory = new BoonFactory();
@@ -281,7 +282,8 @@ public class Statistics {
 			playerData p = p_data.get(i);
 			table.addRow(concat(new String[] {p.getName(), p.getProf()} , all_rates.get(i)));
 		}
-		System.out.println(table.toString());
+		
+		return table.toString();
 	}
 	
 	// Private Methods
