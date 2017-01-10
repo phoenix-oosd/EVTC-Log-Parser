@@ -173,7 +173,7 @@ public class Statistics {
 		durations[1] = "-";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
 			Point p = fight_intervals.get(i - 2);
-			durations[i] =  String.valueOf((p.y - p.x) / 1000);
+			durations[i] =  String.format("%.2f", (p.getY() - p.getX()) / 1000.0);
 		}
 		table.addRow(durations);
 		
@@ -182,7 +182,7 @@ public class Statistics {
 		intervals[1] = "-";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
 			Point p = fight_intervals.get(i - 2);
-			intervals[i] = "(" + String.valueOf(p.x / 1000) + ", " + String.valueOf(p.y / 1000) + ")";
+			intervals[i] = "(" + String.format("%.2f", p.getX() / 1000.0) + ", " + String.format("%.2f", p.getY() / 1000) + ")";
 		}
 		table.addRow(intervals);
 		
