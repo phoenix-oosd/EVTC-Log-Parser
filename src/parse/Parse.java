@@ -17,6 +17,7 @@ import data.skillData;
 
 public class Parse {
 	
+	// Fields
 	private FileInputStream f = null;
 	
 	// Constructor
@@ -30,11 +31,10 @@ public class Parse {
 	
 	// Public Methods
 	public bossData get_boss_data() throws IOException {
-		
 		// 4 bytes: EVTC
 		f.skip(4);
 		
-		// 8 bytes: date
+		// 8 bytes: date of build
 		byte[] date_buffer = new byte[8];
 		f.read(date_buffer);
 		
@@ -44,7 +44,7 @@ public class Parse {
 		// 2 bytes: Boss CID
 		byte[] cid_buffer = new byte[2];
 		f.read(cid_buffer);
-		short cid = get_int16(cid_buffer);
+		int cid = get_int16(cid_buffer);
 		
 		// 1 byte: skip
 		f.skip(1);
@@ -103,7 +103,6 @@ public class Parse {
 
 	
 	public List<skillData> get_skill_data() throws IOException {
-		
 		// skillData array
 		List<skillData> s_data = new ArrayList<skillData>();
 		
@@ -127,13 +126,10 @@ public class Parse {
 			s_data.add(new skillData(get_int32(id_buffer), get_String(name_buffer)));
 
 		}
-		
 		return s_data;
-		
 	}
 	
 	public List<combatData> get_combat_data() throws IOException {
-		
 		// combatData array
 		List<combatData> c_data = new ArrayList<combatData>();
 		
@@ -225,7 +221,7 @@ public class Parse {
 			// add combat
 			c_data.add(new combatData(get_int32(time_buffer), get_int32(src_agent_buffer), get_int32(dst_agent_buffer),
 					get_int32(value_buffer), get_int32(buff_dmg_buffer),
-					get_int16(overstack_value_buffer), (get_int16(skill_id_buffer) & 0xffff),
+					get_int16(overstack_value_buffer), (get_int16(skill_id_buffer)),
 					get_int16(src_cid_buffer), get_int16(dst_cid_buffer), get_int16(src_master_cid_buffer),
 					get_bool(iff_buffer[0]), get_bool(is_buff_buffer[0]), get_bool(is_crit_buffer[0]),
 					get_bool(is_activation_buffer[0]), get_bool(is_buffremove_buffer[0]), get_bool(is_ninety_buffer[0]),
@@ -235,7 +231,6 @@ public class Parse {
 	}
 
 	public void fill_missing_data(bossData b_data, List<playerData> p_data, List<skillData> s_data, List<combatData> c_data) {
-		
 		// Update boss agent
 		for (combatData c : c_data) {
 			if (c.get_src_cid() == b_data.getCID()){
@@ -285,7 +280,6 @@ public class Parse {
 				}
 			}
 		}
-	
 	}
 	
 	// Private Methods
@@ -325,10 +319,8 @@ public class Parse {
 	    	return "UNKNOWN";
 	    }
 	}
-	
-	
+
 	private int get_boss_HP(int cid) {
-	
 	    if (cid == 15438) {
 	    	return 22400000;
 	    }
@@ -362,11 +354,9 @@ public class Parse {
 	    else {
 	    	return 0;
 	    }
-		
 	}	
 	
 	private String get_prof(int prof_id, boolean is_elite) {
-		
 	    if (prof_id == 1) {
 	    	if (is_elite) {
 	    		return "Dragonhunter";
@@ -442,9 +432,7 @@ public class Parse {
 	    else {
 	    	return "UNKNOWN";
 	    }
-
 	}
-	
 	
 	private String get_String(byte[] bytes) {
 		String str;
@@ -457,19 +445,15 @@ public class Parse {
 		}
 		return "";
 	}
-	
-	
-	private short get_int16(byte[] bytes) {
-		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+
+	private int get_int16(byte[] bytes) {
+		int signed = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+		return signed & 0xffff;
 	}
-	
-	
 	
 	private int get_int32(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
 	}
-	
-	
 	
 	private boolean get_bool(byte[] bytes) {
 		boolean bool = (ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt() != 0);
