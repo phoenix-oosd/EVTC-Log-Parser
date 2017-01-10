@@ -156,10 +156,10 @@ public class Main {
 				System.out.println("Not a valid option. Try again.\n");
 				return -1;
 			}
-			System.out.println("Done!");
+			System.out.println("Done!\n");
 			return 0;
 		}
-		System.out.println("Skipping " + base + "...");
+		System.out.println("Skipping " + base + "...\n");
 		return -2;
 	}
 	
