@@ -75,9 +75,9 @@ public class Main {
 		finally {
 			if (scan != null) {
 				scan.close();
-				System.exit(0);
 			}
 		}
+		return;
 	}
 	
 	// Handle user choice
