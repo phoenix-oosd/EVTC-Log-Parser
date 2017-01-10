@@ -137,9 +137,10 @@ public class Main {
 					}
 				}
 				else {
-//					stats.get_damage_logs();
-//					stats.get_phase_dps();
-//					stats.get_combat_stats();
+					stats.get_damage_logs();
+					stats.get_final_dps();
+					stats.get_phase_dps();
+					stats.get_combat_stats();
 					boon_list = Arrays.asList(boon_array);
 					stats.get_boon_logs(boon_list);
 					stats.get_final_boons(boon_list);
