@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -41,6 +40,7 @@ public class Main {
 	    	// Loop
 	    	quitting = false;
 	    	while (!quitting) {
+	    		
 	    		// Menu display
 	    		System.out.println("EVTC Log Parser\n"
 	    				+ "---------------\n"
@@ -53,13 +53,16 @@ public class Main {
 	    				+ "7. Text Dump Tables\n"
 	    				+ "8. Quit\n");
 	    		System.out.println("Choose an option below: ");
+	    		
 	    		// Choose an option
 	    		int choice = scan.nextInt();
 	    		scan.nextLine();
+	    		
 	    		// Parse ".evtc" files
 	        	if (logs.length > 0 && choice != 8) {
 	        		for (File log : logs) {
 	        			parsing(choice, log);
+	        			System.out.println("Done!");
 	        		}
 	        	}
 	        	else {
@@ -94,6 +97,10 @@ public class Main {
 				try {
 					b_data = parser.get_boss_data();
 	        		p_data = parser.get_player_data();
+//					for (playerData c: p_data) {
+//						System.out.println("Name:" + c.getName());
+//					}
+//					System.exit(0);
 	        		s_data = parser.get_skill_data();
 	        		c_data = parser.get_combat_data();
 //					for (combatData c: c_data) {
@@ -158,7 +165,6 @@ public class Main {
 				System.out.println("Not a valid option. Try again.");
 			}
 		}
-		System.out.println("Done!");
 	}
 	
 	public static boolean is_in(int i, int[] array) {

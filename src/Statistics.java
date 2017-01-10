@@ -384,37 +384,42 @@ public class Statistics {
 	private String get_average_duration(Boon boon, List<boonLog> boon_logs) {
 		
 		// Simulate in game mechanics
-		List<Point> boon_intervals = new ArrayList<Point>();
-		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
-		boon.add(boon_logs.get(0).getValue());
-		boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
-		
-		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
-			boonLog log = (boonLog) iter.next();
-			t_curr = log.getTime();
-			boon.update(t_curr - t_prev);
-			boon.add(log.getValue());
+		if (boon_logs.size() > 2) {
+			List<Point> boon_intervals = new ArrayList<Point>();
+			int t_prev = 0, t_curr = boon_logs.get(0).getTime();
+			boon.add(boon_logs.get(0).getValue());
 			boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
-			t_prev = t_curr;
+			
+			for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
+				boonLog log = (boonLog) iter.next();
+				t_curr = log.getTime();
+				boon.update(t_curr - t_prev);
+				boon.add(log.getValue());
+				boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
+				t_prev = t_curr;
+			}
+	
+	        // Merge intervals
+	        boon_intervals = merge_intervals(boon_intervals);
+	        
+			// Check if last element is longer than the fight duration then merge
+	        if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
+	        	boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
+	        }
+	        
+	        // Calculate average duration
+	        int average_duration = 0;
+	        
+	        for (Point p : boon_intervals) {
+	//        	System.out.println(p);
+	        	average_duration = (average_duration + (p.y - p.x));
+	        }
+	        
+			return String.format("%.2f",((double) average_duration / (double) b_data.getFightDuration()));
 		}
-
-        // Merge intervals
-        boon_intervals = merge_intervals(boon_intervals);
-        
-		// Check if last element is longer than the fight duration then merge
-        if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
-        	boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
-        }
-        
-        // Calculate average duration
-        int average_duration = 0;
-        
-        for (Point p : boon_intervals) {
-//        	System.out.println(p);
-        	average_duration = (average_duration + (p.y - p.x));
-        }
-        
-		return String.format("%.2f",((double) average_duration / (double) b_data.getFightDuration()));
+		else {
+			return "0.00";
+		}
 	}
 	
     private List<Point> merge_intervals(List<Point> intervals) {

@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -265,7 +266,7 @@ public class Parse {
 		}
 		
 		// Update combat for Xera logs
-		if (b_data.getName() == "Xera") {
+		if (b_data.getName().equals("Xera")) {
 			int xera_50 = 16286;
 			for (combatData c : c_data) {
 				if (c.get_src_cid() == xera_50) {
@@ -440,9 +441,15 @@ public class Parse {
 	
 	
 	private String get_String(byte[] bytes) {
-		String str = new String(bytes);
-	    int i = str.indexOf(0);
-	    return i == -1 ? str : str.substring(0, i);
+		String str;
+		try {
+			str = new String(bytes, "UTF-8");
+		    int i = str.indexOf(0);
+		    return i == -1 ? str : str.substring(0, i);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 	
 	
