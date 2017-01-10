@@ -1,8 +1,17 @@
+import java.awt.Font;
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.BitmapEncoder.BitmapFormat;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.Styler.LegendPosition;
 
 public class Statistics {
 	
@@ -182,11 +191,48 @@ public class Statistics {
 		intervals[1] = "-";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
 			Point p = fight_intervals.get(i - 2);
-			intervals[i] = "(" + String.format("%.2f", p.getX() / 1000.0) + ", " + String.format("%.2f", p.getY() / 1000) + ")";
+			intervals[i] = "(" + String.format("%.2f", p.getX() / 1000.0) + ", " + String.format("%.2f", p.getY() / 1000.0) + ")";
 		}
 		table.addRow(intervals);
 		
 		return table.toString();
+	}
+	
+	public void get_total_damage_graph(String base) {
+		
+		// Generate a graph
+		final XYChart chart = new XYChartBuilder().width(1600).height(900).title("Total Damage | " + b_data.getName() + " | " + b_data.getDate()).xAxisTitle("Time (s)").yAxisTitle("Damage (k)").build();
+
+	    // Customize Chart
+		chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+	    chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
+	    chart.getStyler().setMarkerSize(1);
+	    chart.getStyler().setXAxisMin(0.0);
+	    chart.getStyler().setYAxisMin(0.0);
+	    chart.getStyler().setLegendFont(new Font("Dialog", Font.PLAIN, 16));
+	    
+		for (playerData p : p_data) {
+			List<damageLog> logs = p.get_damage_logs();
+			if (logs.size() > 0) {
+				double[] x = new double[logs.size()];
+				double[] y = new double[logs.size()];
+				double total_damage = 0;
+				
+				for (int i = 0; i < logs.size(); i++) {
+					total_damage = total_damage + logs.get(i).getDamage();		
+					x[i] = logs.get(i).getTime() / 1000;	
+					y[i] = total_damage / 1000;
+				}
+				chart.addSeries(p.getName() + " | " + p.getProf(), x, y);
+			}
+		}
+		
+	    try {
+			BitmapEncoder.saveBitmap(chart, "graphs/" + base + ".png", BitmapFormat.PNG);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public String get_combat_stats() {
@@ -255,7 +301,7 @@ public class Statistics {
 				Boon boon_object = boonFactory.makeBoon(boon);
 				String rate = "0.00";
 				
-				if (boon_logs.get(boon).size() > 0) {
+				if (boon_logs.get(boon).size() > 1) {
 					if (boon_object.get_type().equals("Duration")) {
 						rate = get_average_duration(boon_object, boon_logs.get(boon));
 					}
@@ -384,48 +430,43 @@ public class Statistics {
 	private String get_average_duration(Boon boon, List<boonLog> boon_logs) {
 		
 		// Simulate in game mechanics
-		if (boon_logs.size() > 2) {
-			List<Point> boon_intervals = new ArrayList<Point>();
-			int t_prev = 0, t_curr = boon_logs.get(0).getTime();
-			boon.add(boon_logs.get(0).getValue());
+		List<Point> boon_intervals = new ArrayList<Point>();
+		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
+		boon.add(boon_logs.get(0).getValue());
+		boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
+		
+		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
+			boonLog log = (boonLog) iter.next();
+			t_curr = log.getTime();
+			boon.update(t_curr - t_prev);
+			boon.add(log.getValue());
 			boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
-			
-			for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
-				boonLog log = (boonLog) iter.next();
-				t_curr = log.getTime();
-				boon.update(t_curr - t_prev);
-				boon.add(log.getValue());
-				boon_intervals.add(new Point (t_curr, t_curr + boon.get_stack_duration()));
-				t_prev = t_curr;
-			}
-	
-	        // Merge intervals
-	        boon_intervals = merge_intervals(boon_intervals);
-	        
-			// Check if last element is longer than the fight duration then merge
-	        if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
-	        	boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
-	        }
-	        
-	        // Calculate average duration
-	        int average_duration = 0;
-	        
-	        for (Point p : boon_intervals) {
-	//        	System.out.println(p);
-	        	average_duration = (average_duration + (p.y - p.x));
-	        }
-	        
-			return String.format("%.2f",((double) average_duration / (double) b_data.getFightDuration()));
+			t_prev = t_curr;
 		}
-		else {
-			return "0.00";
-		}
+
+        // Merge intervals
+        boon_intervals = merge_intervals(boon_intervals);
+        
+		// Check if last element is longer than the fight duration then merge
+        if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
+        	boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
+        }
+        
+        // Calculate average duration
+        int average_duration = 0;
+        
+        for (Point p : boon_intervals) {
+        	average_duration = (average_duration + (p.y - p.x));
+        }
+     
+		return String.format("%.2f",((double) average_duration / (double) b_data.getFightDuration()));
 	}
 	
     private List<Point> merge_intervals(List<Point> intervals) {
 
-        if (intervals.size() <= 1)
+        if (intervals.size() <= 1) {
             return intervals;
+        }
         
         Point first = intervals.get(0);
         int start = first.x;
@@ -498,6 +539,5 @@ public class Statistics {
 		}
 		return null;
 	}
-
 
 }

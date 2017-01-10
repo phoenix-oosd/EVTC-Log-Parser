@@ -46,7 +46,7 @@ public class Main {
 	    				+ "---------------\n"
 	    				+ "1. Final DPS\n"
 	    				+ "2. Phase DPS\n"
-	    				+ "3. Graph Total Damage (not implemented)\n"
+	    				+ "3. Graph Total Damage\n"
 	    				+ "4. Misc. Combat Stats\n"
 	    				+ "5. Final Boons\n"
 	    				+ "6. Phase Boons (not implemented)\n"
@@ -126,7 +126,7 @@ public class Main {
 							System.out.println(stats.get_phase_dps());
 						}
 						else if (choice == 3) {
-							return;
+							stats.get_total_damage_graph(base);
 						}
 						else if (choice == 4) {
 							System.out.println(stats.get_combat_stats());
@@ -155,7 +155,8 @@ public class Main {
 					try {
 						File text_dump = new File(System.getProperty("user.dir") + "/tables/" + base + ".txt");
 //					    PrintWriter writer = new PrintWriter();
-					    writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_combat_stats() + stats.get_final_boons(boon_list), text_dump); 
+					    writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_combat_stats() + stats.get_final_boons(boon_list), text_dump);
+					    stats.get_total_damage_graph(base);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
