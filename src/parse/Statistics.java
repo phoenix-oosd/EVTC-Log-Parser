@@ -31,6 +31,10 @@ public class Statistics {
 	private List<skillData> s_data = null;
 	private List<combatData> c_data = null;
 
+	// TODO: phase boons is easy just pass in the fight intervals for duration,
+	// and convert the merged intervals, return x numbers, and loop x tables to
+	// print : overloading the current boon stuff
+
 	// Constructor
 	public Statistics(bossData b_data, List<playerData> p_data, List<skillData> s_data, List<combatData> c_data) {
 		this.b_data = b_data;
@@ -240,7 +244,7 @@ public class Statistics {
 		}
 
 		try {
-			BitmapEncoder.saveBitmap(chart, "graphs/" + base + ".png", BitmapFormat.PNG);
+			BitmapEncoder.saveBitmap(chart, "./graphs/" + base + ".png", BitmapFormat.PNG);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -364,6 +368,9 @@ public class Statistics {
 		} else if (b_data.getName().equals("Xera")) {
 			i_count = 1;
 			t_invuln = 60000;
+		} else if (b_data.getName().equals("Slothasor")) {
+			i_count = 5;
+			t_invuln = 7000;
 		} else {
 			fight_intervals.add(new Point(0, b_data.getFightDuration()));
 			return fight_intervals;
