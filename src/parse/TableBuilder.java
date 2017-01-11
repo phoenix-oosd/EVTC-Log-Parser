@@ -28,7 +28,7 @@ public class TableBuilder {
 		int[] widths = new int[cols];
 		for (String[] row : rows) {
 			for (int i = 0; i < row.length; i++) {
-				widths[i] = Math.max(widths[i], row[i].length()) + 1;
+				widths[i] = Math.max(widths[i], row[i].length());
 			}
 		}
 		return widths;
@@ -64,10 +64,12 @@ public class TableBuilder {
 		// Header
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
 			str.append(center(rows.get(0)[colNum], colWidths[colNum]));
+			str.append("   ");
 		}
 		str.append("\n");
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			str.append(center(fill(colWidths[colNum] - 4, '-'), colWidths[colNum]));
+			str.append(center(fill(colWidths[colNum], '-'), colWidths[colNum]));
+			str.append("   ");
 		}
 		str.append("\n");
 		// Body
@@ -75,6 +77,7 @@ public class TableBuilder {
 			String[] row = iter.next();
 			for (int colNum = 0; colNum < row.length; colNum++) {
 				str.append(center(row[colNum], colWidths[colNum]));
+				str.append("   ");
 			}
 			str.append('\n');
 		}
