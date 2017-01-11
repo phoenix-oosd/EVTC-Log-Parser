@@ -41,34 +41,40 @@ public class Main {
 			new File("./tables").mkdirs();
 			List<File> logs = new ArrayList<File>();
 			recursiveFileSearch("./logs", logs);
-
-			// Menu loop
-			quitting = false;
-			while (!quitting) {
-				// Menu display
-				System.out.println("EVTC Log Parser\n" + "---------------\n" + "1. Final DPS\n" + "2. Phase DPS\n"
-						+ "3. Graph Total Damage\n" + "4. Misc. Combat Stats\n" + "5. Final Boons\n"
-						+ "6. Phase Boons (not implemented)\n" + "7. Text Dump Tables\n" + "8. Quit\n");
-				System.out.println("Choose an option below: ");
-
-				// Choose an option
-				int choice = -1;
-				try {
-					choice = scan.nextInt();
-				} catch (InputMismatchException e) {
-				}
+			if (logs.size() == 0) {
+				System.out.println("/logs/ has no .evtc files.\nNothing to parse.\nPress Enter to exit.\n");
 				scan.nextLine();
+				return;
+			}
+			else {
+				// Menu loop
+				quitting = false;
+				while (!quitting) {
+					// Menu display
+					System.out.println("EVTC Log Parser\n" + "---------------\n" + "1. Final DPS\n" + "2. Phase DPS\n"
+							+ "3. Graph Total Damage\n" + "4. Misc. Combat Stats\n" + "5. Final Boons\n"
+							+ "6. Phase Boons (not implemented)\n" + "7. Text Dump Tables\n" + "8. Quit\n");
+					System.out.println("Choose an option below: ");
 
-				// Parse ".evtc" files
-				if (logs.size() > 0 && choice != 8) {
-					for (File log : logs) {
-						int status = parsing(choice, log);
-						if (status == -1) {
-							break;
-						}
+					// Choose an option
+					int choice = -1;
+					try {
+						choice = scan.nextInt();
+					} catch (InputMismatchException e) {
 					}
-				} else {
-					quitting = true;
+					scan.nextLine();
+
+					// Parse ".evtc" files
+					if (choice != 8) {
+						for (File log : logs) {
+							int status = parsing(choice, log);
+							if (status == -1) {
+								break;
+							}
+						}
+					} else {
+						quitting = true;
+					}
 				}
 			}
 		}
