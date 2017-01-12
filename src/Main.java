@@ -45,15 +45,14 @@ public class Main {
 				System.out.println("/logs/ has no .evtc files.\nNothing to parse.\nPress Enter to exit.\n");
 				scan.nextLine();
 				return;
-			}
-			else {
+			} else {
 				// Menu loop
 				quitting = false;
 				while (!quitting) {
 					// Menu display
 					System.out.println("EVTC Log Parser\n" + "---------------\n" + "1. Final DPS\n" + "2. Phase DPS\n"
 							+ "3. Graph Total Damage\n" + "4. Misc. Combat Stats\n" + "5. Final Boons\n"
-							+ "6. Phase Boons (not implemented)\n" + "7. Text Dump Tables\n" + "8. Quit\n");
+							+ "6. Phase Boons\n" + "7. Text Dump Tables\n" + "8. Quit\n");
 					System.out.println("Choose an option below: ");
 
 					// Choose an option
@@ -126,8 +125,8 @@ public class Main {
 					if (choice == 5) {
 						System.out.println(stats.get_final_boons(boon_list));
 					} else if (choice == 6) {
-						System.out.println("Sorry, unimplemented.\n");
-						return -1;
+						stats.get_damage_logs();
+						System.out.println(stats.get_phase_boons(boon_list));
 					}
 				}
 			}
@@ -139,7 +138,7 @@ public class Main {
 				try {
 					File text_dump = new File(System.getProperty("user.dir") + "/tables/" + base + ".txt");
 					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_combat_stats()
-							+ stats.get_final_boons(boon_list), text_dump);
+							+ stats.get_final_boons(boon_list) + stats.get_phase_boons(boon_list), text_dump);
 					stats.get_total_damage_graph(base);
 				} catch (IOException e) {
 					e.printStackTrace();
