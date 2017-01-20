@@ -35,8 +35,13 @@ public class Main {
 		try {
 			scan = new Scanner(System.in);
 			// Files
-			if (args.length == 1) {
+			if (args.length > 0) {
 				parsing(1, new File(args[0]));
+				parsing(2, new File(args[0]));
+				parsing(4, new File(args[0]));
+				parsing(5, new File(args[0]));
+				parsing(6, new File(args[0]));
+				System.out.println("<EOF>");
 				scan.nextLine();
 				return;
 			}
@@ -71,6 +76,7 @@ public class Main {
 					// Parse ".evtc" files
 					if (choice != 8) {
 						for (File log : logs) {
+							System.out.println("Parsing " + log.toString() + "...");
 							int status = parsing(choice, log);
 							if (status == -1) {
 								break;
@@ -96,7 +102,7 @@ public class Main {
 		if (is_in(choice, all_choices)) {
 			// Parse the log
 			String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
-			System.out.println("Parsing " + base + "...");
+			// System.out.println("Parsing " + base + "...");
 			Parse parser = new Parse(log);
 			Statistics stats = null;
 			try {
@@ -117,7 +123,10 @@ public class Main {
 					if (choice == 1) {
 						System.out.println(stats.get_final_dps());
 					} else if (choice == 2) {
-						System.out.println(stats.get_phase_dps());
+						String phase_dps = stats.get_phase_dps();
+						if (!phase_dps.isEmpty()) {
+							System.out.println(phase_dps);
+						}
 					} else if (choice == 3) {
 						stats.get_total_damage_graph(base);
 					} else if (choice == 4) {
@@ -131,7 +140,10 @@ public class Main {
 						System.out.println(stats.get_final_boons(boon_list));
 					} else if (choice == 6) {
 						stats.get_damage_logs();
-						System.out.println(stats.get_phase_boons(boon_list));
+						String phase_boons = stats.get_phase_boons(boon_list);
+						if (!phase_boons.isEmpty()) {
+							System.out.println(phase_boons);
+						}
 					}
 				}
 			}
@@ -153,7 +165,7 @@ public class Main {
 			System.out.println("Not a valid option. Try again.\n");
 			return -1;
 		}
-		System.out.println("Done!\n");
+		// System.out.println("Done!\n");
 		return 0;
 	}
 

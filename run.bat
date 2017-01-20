@@ -1,0 +1,1 @@
+start "EVTC Log Parser" /MAX java -jar C:\Users\Chris\Desktop\parser\test.jar %1%
