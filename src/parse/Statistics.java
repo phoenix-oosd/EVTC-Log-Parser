@@ -148,6 +148,10 @@ public class Statistics {
 		List<Point> fight_intervals = get_fight_intervals();
 		List<String[]> all_phase_dps = new ArrayList<String[]>();
 
+		if (fight_intervals.size() == 1) {
+			return "";
+		}
+
 		for (int i = 0; i < p_data.size(); i++) {
 
 			playerData p = p_data.get(i);
@@ -359,6 +363,10 @@ public class Statistics {
 		BoonFactory boonFactory = new BoonFactory();
 		List<String[][]> all_rates = new ArrayList<String[][]>();
 		List<Point> fight_intervals = get_fight_intervals();
+
+		if (fight_intervals.size() == 1) {
+			return "";
+		}
 
 		for (int i = 0; i < p_data.size(); i++) {
 
