@@ -35,6 +35,11 @@ public class Main {
 		try {
 			scan = new Scanner(System.in);
 			// Files
+			if (args.length == 1) {
+				parsing(1, new File(args[0]));
+				scan.nextLine();
+				return;
+			}
 			File dir = new File("./logs");
 			dir.mkdir();
 			new File("./graphs").mkdirs();
