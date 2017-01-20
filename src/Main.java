@@ -36,11 +36,9 @@ public class Main {
 			scan = new Scanner(System.in);
 			// Files
 			if (args.length > 0) {
-				parsing(1, new File(args[0]));
-				parsing(2, new File(args[0]));
-				parsing(4, new File(args[0]));
-				parsing(5, new File(args[0]));
-				parsing(6, new File(args[0]));
+				for (char c : args[1].toCharArray()) {
+					parsing(Character.getNumericValue(c), new File(args[0]));
+				}
 				System.out.println("<EOF>");
 				scan.nextLine();
 				return;
