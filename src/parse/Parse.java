@@ -163,10 +163,9 @@ public class Parse {
 			byte[] buff_dmg_buffer = new byte[4];
 			f.read(buff_dmg_buffer);
 
-			// // 2 bytes: overstack_value
-			// byte[] overstack_value_buffer = new byte[2];
-			// f.read(overstack_value_buffer);
-			f.skip(1);
+			// 2 bytes: overstack_value
+			byte[] overstack_value_buffer = new byte[2];
+			f.read(overstack_value_buffer);
 
 			// 2 bytes: skill_id
 			byte[] skill_id_buffer = new byte[2];
@@ -199,13 +198,13 @@ public class Parse {
 			byte[] is_crit_buffer = new byte[1];
 			f.read(is_crit_buffer);
 
-			// // 1 byte: is_activation
-			// byte[] is_activation_buffer = new byte[1];
-			// f.read(is_activation_buffer);
-			f.skip(2);
-			// // 1 byte: is_buffremove
-			// byte[] is_buffremove_buffer = new byte[1];
-			// f.read(is_buffremove_buffer);
+			// 1 byte: is_activation
+			byte[] is_activation_buffer = new byte[1];
+			f.read(is_activation_buffer);
+
+			// 1 byte: is_buffremove
+			byte[] is_buffremove_buffer = new byte[1];
+			f.read(is_buffremove_buffer);
 
 			// 1 byte: is_ninety
 			byte[] is_ninety_buffer = new byte[1];
@@ -219,19 +218,21 @@ public class Parse {
 			byte[] is_moving_buffer = new byte[1];
 			f.read(is_moving_buffer);
 
-			// // 1 byte: is_statechange
-			// byte[] is_statechange_buffer = new byte[1];
-			// f.read(is_statechange_buffer);
+			// 1 byte: is_statechange
+			byte[] is_statechange_buffer = new byte[1];
+			f.read(is_statechange_buffer);
 
 			// 4 bytes: garbage
 			f.skip(4);
 
 			// add combat
 			c_data.add(new combatData(get_int32(time_buffer), get_int32(src_agent_buffer), get_int32(dst_agent_buffer),
-					get_int32(value_buffer), get_int32(buff_dmg_buffer), get_int16(skill_id_buffer),
-					get_int16(src_cid_buffer), get_int16(dst_cid_buffer), get_int16(src_master_cid_buffer),
-					get_bool(iff_buffer[0]), get_bool(is_buff_buffer[0]), get_bool(is_crit_buffer[0]),
-					get_bool(is_ninety_buffer[0]), get_bool(is_fifty_buffer[0]), get_bool(is_moving_buffer[0])));
+					get_int32(value_buffer), get_int32(buff_dmg_buffer), get_int16(overstack_value_buffer),
+					get_int16(skill_id_buffer), get_int16(src_cid_buffer), get_int16(dst_cid_buffer),
+					get_int16(src_master_cid_buffer), get_bool(iff_buffer[0]), get_bool(is_buff_buffer[0]),
+					get_bool(is_crit_buffer[0]), get_bool(is_activation_buffer[0]), get_bool(is_buffremove_buffer[0]),
+					get_bool(is_ninety_buffer[0]), get_bool(is_fifty_buffer[0]), get_bool(is_moving_buffer[0]),
+					get_bool(is_statechange_buffer[0])));
 		}
 		return c_data;
 	}
@@ -414,7 +415,8 @@ public class Parse {
 	}
 
 	private int get_int16(byte[] bytes) {
-		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffff;
+		int signed = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+		return signed & 0xffff;
 	}
 
 	private int get_int32(byte[] bytes) {
@@ -422,11 +424,13 @@ public class Parse {
 	}
 
 	private boolean get_bool(byte[] bytes) {
-		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt() != 0;
+		boolean bool = (ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt() != 0);
+		return bool;
 	}
 
 	private boolean get_bool(int i) {
-		return i != 0;
+		boolean bool = (i != 0);
+		return bool;
 	}
 
 }

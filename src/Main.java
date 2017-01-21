@@ -30,6 +30,8 @@ public class Main {
 
 	// Main
 	public static void main(String[] args) {
+		// Test t = new Test();
+		// t.Testing();
 		// Start scanner
 		Scanner scan = null;
 		try {
