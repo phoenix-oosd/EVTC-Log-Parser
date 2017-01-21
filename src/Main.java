@@ -21,9 +21,9 @@ public class Main {
 
 	// Fields
 	private static boolean quitting;
-	private static final int[] damage_choices = new int[] { 1, 2, 3, 4 };
-	private static final int[] boon_choices = new int[] { 5, 6 };
-	private static final int[] all_choices = new int[] { 1, 2, 3, 4, 5, 6, 7 };
+	private static final int[] damage_choices = new int[] { 1, 2, 3, 4, 5 };
+	private static final int[] boon_choices = new int[] { 6, 7 };
+	private static final int[] all_choices = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final List<String> boon_list = Arrays.asList(new String[] { "Might", "Quickness", "Fury",
 			"Protection", "Alacrity", "Spotter", "Spirit of Frost", "Glyph of Empowerment", "Grace of the Land",
 			"Empower Allies", "Banner of Strength", "Banner of Discipline" });
@@ -60,8 +60,8 @@ public class Main {
 				while (!quitting) {
 					// Menu display
 					System.out.println("EVTC Log Parser\n" + "---------------\n" + "1. Final DPS\n" + "2. Phase DPS\n"
-							+ "3. Graph Total Damage\n" + "4. Misc. Combat Stats\n" + "5. Final Boons\n"
-							+ "6. Phase Boons\n" + "7. Text Dump Tables\n" + "8. Quit\n");
+							+ "3. Damage Distribution\n" + "4. Graph Total Damage\n" + "5. Misc. Combat Stats\n"
+							+ "6. Final Boons\n" + "7. Phase Boons\n" + "8. Text Dump Tables\n" + "9. Quit\n");
 					System.out.println("Choose an option below: ");
 
 					// Choose an option
@@ -73,7 +73,7 @@ public class Main {
 					scan.nextLine();
 
 					// Parse ".evtc" files
-					if (choice != 8) {
+					if (choice != 9) {
 						for (File log : logs) {
 							System.out.println("Parsing " + log.toString() + "...");
 							String output = parsing(choice, log);
@@ -117,7 +117,7 @@ public class Main {
 				e.printStackTrace();
 			}
 			// A single choice
-			if (choice != 7) {
+			if (choice != 8) {
 				// Damage Related
 				if (is_in(choice, damage_choices)) {
 					stats.get_damage_logs();
@@ -126,17 +126,19 @@ public class Main {
 					} else if (choice == 2) {
 						return stats.get_phase_dps();
 					} else if (choice == 3) {
-						stats.get_total_damage_graph(base);
+						return stats.get_top_k_combat();
 					} else if (choice == 4) {
+						stats.get_total_damage_graph(base);
+					} else if (choice == 5) {
 						return stats.get_combat_stats();
 					}
 				}
 				// Boon Related
 				else if (is_in(choice, boon_choices)) {
 					stats.get_boon_logs(boon_list);
-					if (choice == 5) {
+					if (choice == 6) {
 						return stats.get_final_boons(boon_list);
-					} else if (choice == 6) {
+					} else if (choice == 7) {
 						stats.get_damage_logs();
 						return stats.get_phase_boons(boon_list);
 					}
@@ -149,8 +151,9 @@ public class Main {
 				stats.get_boon_logs(boon_list);
 				try {
 					File text_dump = new File(System.getProperty("user.dir") + "/tables/" + base + ".txt");
-					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_combat_stats()
-							+ stats.get_final_boons(boon_list) + stats.get_phase_boons(boon_list), text_dump);
+					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_top_k_combat()
+							+ stats.get_combat_stats() + stats.get_final_boons(boon_list)
+							+ stats.get_phase_boons(boon_list), text_dump);
 					stats.get_total_damage_graph(base);
 				} catch (IOException e) {
 					e.printStackTrace();

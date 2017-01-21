@@ -5,9 +5,13 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
@@ -64,8 +68,8 @@ public class Statistics {
 							} else {
 								damage = c.get_value();
 							}
-							p.get_damage_logs().add(new damageLog(time, damage, c.is_buff(), c.is_crit(), c.is_ninety(),
-									c.is_moving()));
+							p.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(), c.is_buff(),
+									c.is_crit(), c.is_ninety(), c.is_moving()));
 						}
 					}
 				}
@@ -214,6 +218,54 @@ public class Statistics {
 		table.addRow(intervals);
 
 		return table.toString();
+	}
+
+	public String get_top_k_combat() {
+
+		String output = "";
+
+		for (playerData p : p_data) {
+			List<damageLog> logs = p.get_damage_logs();
+			Map<Integer, Integer> skill_damage = new HashMap<Integer, Integer>();
+
+			for (damageLog log : logs) {
+				if (skill_damage.containsKey(log.getID())) {
+					skill_damage.put(log.getID(), skill_damage.get(log.getID()) + log.getDamage());
+				} else {
+					skill_damage.put(log.getID(), log.getDamage());
+				}
+			}
+
+			skill_damage = sortByValue(skill_damage);
+
+			double damage_sum = skill_damage.values().stream().reduce(0, Integer::sum);
+
+			// Table
+			TableBuilder table = new TableBuilder();
+			table.addTitle("Damage Distribution | " + p.getName() + " | " + b_data.getName());
+
+			// Header
+			table.addRow("Skill Name", "Damage", "%");
+
+			// Rows
+			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet()) {
+				String skill_name = get_skill_name(entry.getKey());
+				double damage = entry.getValue();
+				// For logs from older versions
+				// if (skill_name.equals("(null)")) {
+				// skill_name = "id:" + String.valueOf(entry.getKey());
+				// }
+				table.addRow(skill_name, String.valueOf(damage), String.format("%.2f", (damage / damage_sum * 100)));
+			}
+
+			output += table.toString();
+
+			// System.exit(0);
+
+		}
+
+		return output;
+
 	}
 
 	public void get_total_damage_graph(String base) {
@@ -727,6 +779,11 @@ public class Statistics {
 		}
 
 		return phase_stacks;
+	}
+
+	private <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
 }
