@@ -30,18 +30,17 @@ public class Main {
 
 	// Main
 	public static void main(String[] args) {
-		// Test t = new Test();
-		// t.Testing();
 		// Start scanner
 		Scanner scan = null;
 		try {
 			scan = new Scanner(System.in);
 			// Files
 			if (args.length > 0) {
+				String output = "<OUTPUT>\n";
 				for (char c : args[1].toCharArray()) {
-					parsing(Character.getNumericValue(c), new File(args[0]));
+					output += parsing(Character.getNumericValue(c), new File(args[0]));
 				}
-				System.out.println("<EOF>");
+				System.out.println(output + "</OUTPUT>");
 				scan.nextLine();
 				return;
 			}
@@ -77,9 +76,11 @@ public class Main {
 					if (choice != 8) {
 						for (File log : logs) {
 							System.out.println("Parsing " + log.toString() + "...");
-							int status = parsing(choice, log);
-							if (status == -1) {
+							String output = parsing(choice, log);
+							if (output.isEmpty()) {
 								break;
+							} else {
+								System.out.println(output);
 							}
 						}
 					} else {
@@ -98,7 +99,7 @@ public class Main {
 	}
 
 	// Handle user choice
-	private static int parsing(int choice, File log) {
+	private static String parsing(int choice, File log) {
 		if (is_in(choice, all_choices)) {
 			// Parse the log
 			String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
@@ -121,29 +122,23 @@ public class Main {
 				if (is_in(choice, damage_choices)) {
 					stats.get_damage_logs();
 					if (choice == 1) {
-						System.out.println(stats.get_final_dps());
+						return stats.get_final_dps();
 					} else if (choice == 2) {
-						String phase_dps = stats.get_phase_dps();
-						if (!phase_dps.isEmpty()) {
-							System.out.println(phase_dps);
-						}
+						return stats.get_phase_dps();
 					} else if (choice == 3) {
 						stats.get_total_damage_graph(base);
 					} else if (choice == 4) {
-						System.out.println(stats.get_combat_stats());
+						return stats.get_combat_stats();
 					}
 				}
 				// Boon Related
 				else if (is_in(choice, boon_choices)) {
 					stats.get_boon_logs(boon_list);
 					if (choice == 5) {
-						System.out.println(stats.get_final_boons(boon_list));
+						return stats.get_final_boons(boon_list);
 					} else if (choice == 6) {
 						stats.get_damage_logs();
-						String phase_boons = stats.get_phase_boons(boon_list);
-						if (!phase_boons.isEmpty()) {
-							System.out.println(phase_boons);
-						}
+						return stats.get_phase_boons(boon_list);
 					}
 				}
 			}
@@ -163,10 +158,9 @@ public class Main {
 			}
 		} else {
 			System.out.println("Not a valid option. Try again.\n");
-			return -1;
+			return "";
 		}
-		// System.out.println("Done!\n");
-		return 0;
+		return "";
 	}
 
 	// Public Methods
