@@ -11,9 +11,9 @@ public class BoonIntensity extends Boon {
 	@Override
 	public void update(int time_passed) {
 		for (int i = 0; i < stacks.size(); i++) {
-			stacks.set(i, Integer.valueOf(stacks.get(i) - time_passed));
+			stacks.set(i, stacks.get(i) - time_passed);
 			if (stacks.get(i) <= 0) {
-				stacks.set(i, Integer.valueOf(0));
+				stacks.set(i, 0);
 			}
 		}
 	}

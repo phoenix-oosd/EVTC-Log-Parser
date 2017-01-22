@@ -702,33 +702,30 @@ public class Statistics {
 	}
 
 	private String get_average_stacks(Boon boon, List<boonLog> boon_logs) {
+		// Initialize variables
+		int t_prev = 0;
+		int t_curr = 0;
+		List<Integer> boon_stacks = new ArrayList<Integer>();
+		boon_stacks.add(0);
 
-		List<Point> boon_intervals = new ArrayList<Point>();
-		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
-		boon.add(boon_logs.get(0).getValue());
-		boon_intervals.add(new Point(t_curr, boon.get_stack_count()));
-
-		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
-			boonLog log = iter.next();
+		// Loop: fill, update, and add to stacks
+		for (boonLog log : boon_logs) {
 			t_curr = log.getTime();
+			boon_stacks.addAll(boon.get_stacks_between(t_prev, t_curr));
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
-			boon_intervals.add(new Point(t_curr, boon.get_stack_count()));
+			boon_stacks.add(boon.get_stack_count());
 			t_prev = t_curr;
 		}
 
-		// Calculate average stacks
-		double average_boon = 0;
-		int prev_time = 0;
-		int prev_stack = 0;
+		// Fill in remaining stacks
+		boon_stacks.addAll(boon.get_stacks_between(t_prev, b_data.getFightDuration()));
+		boon.update(1);
+		boon_stacks.add(boon.get_stack_count());
 
-		for (Point p : boon_intervals) {
-			average_boon = (average_boon + (prev_stack * (p.getX() - prev_time)));
-			prev_time = p.x;
-			prev_stack = p.y;
-		}
-
-		return String.format("%.2f", (average_boon / b_data.getFightDuration()));
+		// Calculate the average stacks
+		double average_stacks = boon_stacks.stream().mapToInt(Integer::intValue).sum();
+		return String.format("%.2f", average_stacks / boon_stacks.size());
 	}
 
 	private String[] get_average_stacks(Boon boon, List<boonLog> boon_logs, List<Point> fight_intervals) {

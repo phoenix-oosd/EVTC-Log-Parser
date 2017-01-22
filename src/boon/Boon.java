@@ -71,4 +71,21 @@ public abstract class Boon {
 		return stack_count;
 	}
 
+	// Get tuples in between
+	public List<Integer> get_stacks_between(int time_start, int time_stop) {
+
+		Boon boon_copy = new BoonIntensity(this.max_stacks, this.type);
+		boon_copy.stacks = new ArrayList<Integer>(this.stacks);
+		// System.out.println(boon_copy.stacks);
+
+		List<Integer> boon_stacks = new ArrayList<Integer>();
+		for (int i = time_start + 1; i < time_stop; i++) {
+			boon_copy.update(1);
+			// System.out.println(boon_copy.stacks);
+			boon_stacks.add(boon_copy.get_stack_count());
+		}
+
+		return boon_stacks;
+
+	}
 }
