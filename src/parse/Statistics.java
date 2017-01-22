@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -621,14 +620,14 @@ public class Statistics {
 	}
 
 	private List<Point> get_boon_intervals_list(Boon boon, List<boonLog> boon_logs) {
-		// Simulate in game mechanics
-		List<Point> boon_intervals = new ArrayList<Point>();
-		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
-		boon.add(boon_logs.get(0).getValue());
-		boon_intervals.add(new Point(t_curr, t_curr + boon.get_stack_duration()));
 
-		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
-			boonLog log = iter.next();
+		// Initialize variables
+		int t_prev = 0;
+		int t_curr = 0;
+		List<Point> boon_intervals = new ArrayList<Point>();
+
+		// Loop: update then add durations
+		for (boonLog log : boon_logs) {
 			t_curr = log.getTime();
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
@@ -639,7 +638,7 @@ public class Statistics {
 		// Merge intervals
 		boon_intervals = merge_intervals(boon_intervals);
 
-		// Check if last element is longer than the fight duration then merge
+		// Trim duration overflow
 		if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
 			boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
 		}
@@ -651,7 +650,6 @@ public class Statistics {
 
 		// Calculate average duration
 		double average_duration = 0;
-
 		for (Point p : boon_intervals) {
 			average_duration = (average_duration + (p.getY() - p.getX()));
 		}
@@ -725,6 +723,7 @@ public class Statistics {
 
 		// Calculate average stacks
 		double average_stacks = boon_stacks.stream().mapToInt(Integer::intValue).sum();
+
 		return String.format("%.2f", average_stacks / boon_stacks.size());
 	}
 
@@ -740,6 +739,7 @@ public class Statistics {
 			double average_stacks = phase_boon_stacks.stream().mapToInt(Integer::intValue).sum();
 			phase_stacks[i] = String.format("%.2f", average_stacks / phase_boon_stacks.size());
 		}
+
 		return phase_stacks;
 	}
 
