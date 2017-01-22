@@ -3,7 +3,7 @@ package data;
 public class damageLog {
 
 	// Fields
-	private int time;
+	private long time;
 	private int damage;
 	private int skill_id;
 	private boolean is_condi;
@@ -12,7 +12,7 @@ public class damageLog {
 	private boolean is_moving;
 
 	// Constructor
-	public damageLog(int time, int damage, int skill_id, boolean is_condi, boolean is_crit, boolean is_ninety,
+	public damageLog(long time, int damage, int skill_id, boolean is_condi, boolean is_crit, boolean is_ninety,
 			boolean is_moving) {
 		this.time = time;
 		this.damage = damage;
@@ -25,7 +25,7 @@ public class damageLog {
 
 	// Getters
 	public int getTime() {
-		return time;
+		return (int) time;
 	}
 
 	public int getDamage() {

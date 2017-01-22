@@ -48,7 +48,7 @@ public class Statistics {
 	public void get_damage_logs() {
 
 		// Start time of the fight
-		int t_start = c_data.get(0).get_time();
+		long t_start = c_data.get(0).get_time();
 
 		// Add damage logs for each player
 		for (playerData p : p_data) {
@@ -60,7 +60,7 @@ public class Statistics {
 					if ((p.getCID() == c.get_src_cid()) || (p.getCID() == c.get_src_master_cid())) {
 						// Physical or condition damage
 						if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() && (c.get_buff_dmg() > 0))) {
-							int time = c.get_time() - t_start;
+							long time = c.get_time() - t_start;
 							int damage;
 							if (c.is_buff()) {
 								damage = c.get_buff_dmg();
@@ -79,7 +79,7 @@ public class Statistics {
 	public void get_boon_logs(List<String> boon_list) {
 
 		// Start time of the fight
-		int t_start = c_data.get(0).get_time();
+		long t_start = c_data.get(0).get_time();
 
 		// Add boon logs for each player
 		for (playerData p : p_data) {
@@ -219,7 +219,7 @@ public class Statistics {
 		return table.toString();
 	}
 
-	public String get_top_k_combat() {
+	public String get_damage_distribution() {
 
 		String output = "";
 
@@ -250,11 +250,8 @@ public class Statistics {
 			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet()) {
 				String skill_name = get_skill_name(entry.getKey());
 				double damage = entry.getValue();
-				// For logs from older versions
-				// if (skill_name.equals("(null)")) {
-				// skill_name = "id:" + String.valueOf(entry.getKey());
-				// }
-				table.addRow(skill_name, String.valueOf(damage), String.format("%.2f", (damage / damage_sum * 100)));
+				table.addRow(skill_name, String.valueOf((int) damage),
+						String.format("%.2f", (damage / damage_sum * 100)));
 			}
 
 			output += table.toString();
@@ -497,7 +494,7 @@ public class Statistics {
 				return s.getName();
 			}
 		}
-		return null;
+		return "UNKNOWN";
 	}
 
 	private List<Point> get_fight_intervals() {

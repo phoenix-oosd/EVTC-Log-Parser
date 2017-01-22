@@ -3,18 +3,18 @@ package data;
 public class boonLog {
 
 	// Fields
-	private int time = 0;
+	private long time = 0;
 	private int value = 0;
 
 	// Constructor
-	public boonLog(int time, int value) {
+	public boonLog(long time, int value) {
 		this.time = time;
 		this.value = value;
 	}
 
 	// Getters
 	public int getTime() {
-		return time;
+		return (int) time;
 	}
 
 	public int getValue() {

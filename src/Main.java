@@ -30,6 +30,10 @@ public class Main {
 
 	// Main
 	public static void main(String[] args) {
+
+		Test t = new Test();
+		t.Testing();
+
 		// Start scanner
 		Scanner scan = null;
 		try {
@@ -104,9 +108,10 @@ public class Main {
 			// Parse the log
 			String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
 			// System.out.println("Parsing " + base + "...");
-			Parse parser = new Parse(log);
+			Parse parser = null;
 			Statistics stats = null;
 			try {
+				parser = new Parse(log);
 				bossData b_data = parser.get_boss_data();
 				List<playerData> p_data = parser.get_player_data();
 				List<skillData> s_data = parser.get_skill_data();
@@ -126,7 +131,7 @@ public class Main {
 					} else if (choice == 2) {
 						return stats.get_phase_dps();
 					} else if (choice == 3) {
-						return stats.get_top_k_combat();
+						return stats.get_damage_distribution();
 					} else if (choice == 4) {
 						stats.get_total_damage_graph(base);
 					} else if (choice == 5) {
@@ -151,7 +156,7 @@ public class Main {
 				stats.get_boon_logs(boon_list);
 				try {
 					File text_dump = new File(System.getProperty("user.dir") + "/tables/" + base + ".txt");
-					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_top_k_combat()
+					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_damage_distribution()
 							+ stats.get_combat_stats() + stats.get_final_boons(boon_list)
 							+ stats.get_phase_boons(boon_list), text_dump);
 					stats.get_total_damage_graph(base);
@@ -173,9 +178,9 @@ public class Main {
 
 	// Private Methods
 	private static void writeToFile(String string, File file) throws IOException {
-		try (BufferedReader reader = new BufferedReader(new StringReader(string));
+		try (BufferedReader geter = new BufferedReader(new StringReader(string));
 				PrintWriter writer = new PrintWriter(file, "UTF-8");) {
-			reader.lines().forEach(line -> writer.println(line));
+			geter.lines().forEach(line -> writer.println(line));
 			writer.close();
 		}
 	}

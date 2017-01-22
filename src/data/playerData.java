@@ -8,7 +8,7 @@ import java.util.Map;
 public class playerData {
 
 	// Fields
-	private int agent = 0;
+	private long agent = 0;
 	private int CID = 0;
 	private String name = null;
 	private String prof = null;
@@ -19,7 +19,7 @@ public class playerData {
 	private Map<String, List<boonLog>> boon_logs = new HashMap<>();
 
 	// Constructor
-	public playerData(int agent, int CID, String name, String prof, int toughness, int healing, int condition) {
+	public playerData(long agent, int CID, String name, String prof, int toughness, int healing, int condition) {
 		this.agent = agent;
 		this.CID = CID;
 		this.name = name;
@@ -30,7 +30,7 @@ public class playerData {
 	}
 
 	// Getters
-	public int getAgent() {
+	public long getAgent() {
 		return agent;
 	}
 

@@ -3,16 +3,16 @@ package data;
 public class combatData {
 
 	// Fields
-	private int time;
-	private int src_agent;
-	private int dst_agent;
+	private long time;
+	private long src_agent;
+	private long dst_agent;
 	private int value;
 	private int buff_dmg;
 	private int overstack_value;
-	private int skill_id;
-	private int src_cid;
-	private int dst_cid;
-	private int src_master_cid;
+	private short skill_id;
+	private short src_cid;
+	private short dst_cid;
+	private short src_master_cid;
 	private boolean iff;
 	private boolean is_buff;
 	private boolean is_crit;
@@ -24,10 +24,10 @@ public class combatData {
 	private boolean is_statechange;
 
 	// Constructor
-	public combatData(int time, int src_agent, int dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, boolean is_crit,
-			boolean is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
-			boolean is_statechange) {
+	public combatData(long time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
+			short skill_id, short src_cid, short dst_cid, short src_master_cid, boolean iff, boolean is_buff,
+			boolean is_crit, boolean is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty,
+			boolean is_moving, boolean is_statechange) {
 		this.time = time;
 		this.src_agent = src_agent;
 		this.dst_agent = dst_agent;
@@ -50,24 +50,16 @@ public class combatData {
 	}
 
 	// Getters
-	public int get_src_agent() {
+	public long get_time() {
+		return time;
+	}
+
+	public long get_src_agent() {
 		return src_agent;
 	}
 
-	public int get_dst_agent() {
+	public long get_dst_agent() {
 		return dst_agent;
-	}
-
-	public int get_src_cid() {
-		return src_cid;
-	}
-
-	public int get_dst_cid() {
-		return dst_cid;
-	}
-
-	public int get_time() {
-		return time;
 	}
 
 	public int get_value() {
@@ -82,11 +74,19 @@ public class combatData {
 		return overstack_value;
 	}
 
-	public int get_skill_id() {
+	public short get_skill_id() {
 		return skill_id;
 	}
 
-	public int get_src_master_cid() {
+	public short get_src_cid() {
+		return src_cid;
+	}
+
+	public short get_dst_cid() {
+		return dst_cid;
+	}
+
+	public short get_src_master_cid() {
 		return src_master_cid;
 	}
 
@@ -127,20 +127,20 @@ public class combatData {
 	}
 
 	// Setters
-	public void set_src_agent(int src_agent) {
+	public void set_src_agent(long src_agent) {
 		this.src_agent = src_agent;
 	}
 
-	public void set_dst_agent(int dst_agent) {
+	public void set_dst_agent(long dst_agent) {
 		this.dst_agent = dst_agent;
 	}
 
 	public void set_src_cid(int src_cid) {
-		this.src_cid = src_cid;
+		this.src_cid = (short) src_cid;
 	}
 
 	public void set_dst_cid(int dst_cid) {
-		this.dst_cid = dst_cid;
+		this.dst_cid = (short) dst_cid;
 	}
 
 }
