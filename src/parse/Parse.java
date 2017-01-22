@@ -46,7 +46,9 @@ public class Parse {
 		f.position(f.position() + 4);
 
 		// 8 bytes: date of build
-		long date = f.getLong();
+
+		byte[] date_buffer = new byte[8];
+		f.get(date_buffer);
 
 		// 1 byte: position
 		f.position(f.position() + 1);
@@ -57,11 +59,7 @@ public class Parse {
 		// 1 byte: position
 		f.position(f.position() + 1);
 
-		// System.out.println(get_String(date_buffer));
-		// System.out.println(cid);
-		// System.exit(0);
-
-		return new bossData(0, cid, get_boss_name(cid), get_boss_HP(cid), 0, date);
+		return new bossData(0, cid, get_boss_name(cid), get_boss_HP(cid), 0, get_String(date_buffer));
 	}
 
 	public List<playerData> get_player_data() throws IOException {

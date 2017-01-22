@@ -277,14 +277,9 @@ public class Statistics {
 		chart.getStyler().setYAxisMin(0.0);
 		chart.getStyler().setLegendFont(new Font("Dialog", Font.PLAIN, 16));
 
-		// Map<String, XYSeries> series = chart.getSeriesMap();
-		// for (Map.Entry<String, XYSeries> entry : series.entrySet()) {
-		// entry.getValue().setMarker(SeriesMarkers.NONE);
-		// }
-
 		for (playerData p : p_data) {
 			List<damageLog> logs = p.get_damage_logs();
-			if (logs.size() > 0) {
+			if (!logs.isEmpty()) {
 				double[] x = new double[logs.size()];
 				double[] y = new double[logs.size()];
 				double total_damage = 0;
@@ -299,8 +294,6 @@ public class Statistics {
 		}
 
 		try {
-			// BitmapEncoder.saveBitmap(chart, "./graphs/" + base + ".png",
-			// BitmapFormat.PNG);
 			BitmapEncoder.saveBitmapWithDPI(chart, "./graphs/" + base + ".png", BitmapFormat.PNG, 300);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -375,7 +368,7 @@ public class Statistics {
 				Boon boon_object = boonFactory.makeBoon(boon);
 				String rate = "0.00";
 
-				if (boon_logs.get(boon).size() > 1) {
+				if (!boon_logs.get(boon).isEmpty()) {
 					if (boon_object.get_type().equals("Duration")) {
 						List<Point> boon_intervals = get_boon_intervals_list(boon_object, boon_logs.get(boon));
 						rate = get_boon_duration(boon_intervals);
@@ -432,7 +425,7 @@ public class Statistics {
 				String[] rate = new String[fight_intervals.size()];
 				Arrays.fill(rate, "0.00");
 
-				if (boon_logs.get(boon).size() > 1) {
+				if (!boon_logs.get(boon).isEmpty()) {
 					Boon boon_object = boonFactory.makeBoon(boon);
 					if (boon_object.get_type().equals("Duration")) {
 						List<Point> boon_intervals = get_boon_intervals_list(boon_object, boon_logs.get(boon));
@@ -628,7 +621,7 @@ public class Statistics {
 			t_curr = log.getTime();
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
-			boon_intervals.add(new Point(t_curr, t_curr + boon.get_stack_duration()));
+			boon_intervals.add(new Point(t_curr, t_curr + boon.get_stack_value()));
 			t_prev = t_curr;
 		}
 
@@ -697,21 +690,21 @@ public class Statistics {
 		// Loop: fill, update, and add to stacks
 		for (boonLog log : boon_logs) {
 			t_curr = log.getTime();
-			boon_stacks.addAll(boon.get_stacks_between(t_prev, t_curr));
+			boon.add_stacks_between(boon_stacks, t_prev, t_curr);
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
 			if (t_curr != t_prev) {
-				boon_stacks.add(boon.get_stack_count());
+				boon_stacks.add(boon.get_stack_value());
 			} else {
-				boon_stacks.set(boon_stacks.size() - 1, boon.get_stack_count());
+				boon_stacks.set(boon_stacks.size() - 1, boon.get_stack_value());
 			}
 			t_prev = t_curr;
 		}
 
 		// Fill in remaining stacks
-		boon_stacks.addAll(boon.get_stacks_between(t_prev, b_data.getFightDuration()));
+		boon.add_stacks_between(boon_stacks, t_prev, b_data.getFightDuration());
 		boon.update(1);
-		boon_stacks.add(boon.get_stack_count());
+		boon_stacks.add(boon.get_stack_value());
 
 		return boon_stacks;
 	}

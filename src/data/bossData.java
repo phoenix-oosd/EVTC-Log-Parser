@@ -8,10 +8,10 @@ public class bossData {
 	private String name = null;
 	private int HP = 0;
 	private long fight_duration = 0;
-	private long date = 0;
+	private String date = null;
 
 	// Constructor
-	public bossData(int agent, int CID, String name, int HP, long fight_duration, long date) {
+	public bossData(int agent, int CID, String name, int HP, long fight_duration, String date) {
 		this.agent = agent;
 		this.CID = CID;
 		this.name = name;
@@ -42,7 +42,7 @@ public class bossData {
 		return (int) fight_duration;
 	}
 
-	public long getDate() {
+	public String getDate() {
 		return date;
 	}
 
