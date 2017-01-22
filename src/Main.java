@@ -36,11 +36,11 @@ public class Main {
 			scan = new Scanner(System.in);
 			// Files
 			if (args.length > 0) {
-				String output = "<OUTPUT>\n";
+				String output = "<START>\n";
 				for (char c : args[1].toCharArray()) {
 					output += parsing(Character.getNumericValue(c), new File(args[0]));
 				}
-				System.out.println(output + "</OUTPUT>");
+				System.out.println(output + "<END>");
 				scan.nextLine();
 				return;
 			}
