@@ -381,9 +381,11 @@ public class Statistics {
 
 				if (boon_logs.get(boon).size() > 1) {
 					if (boon_object.get_type().equals("Duration")) {
-						rate = get_boon_duration(boon_object, boon_logs.get(boon));
+						List<Point> boon_intervals = get_boon_intervals_list(boon_object, boon_logs.get(boon));
+						rate = get_boon_duration(boon_intervals);
 					} else if (boon_object.get_type().equals("Intensity")) {
-						rate = get_average_stacks(boon_object, boon_logs.get(boon));
+						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, boon_logs.get(boon));
+						rate = get_average_stacks(boon_stacks);
 					}
 				}
 				rates[j] = rate;
@@ -437,9 +439,11 @@ public class Statistics {
 				if (boon_logs.get(boon).size() > 1) {
 					Boon boon_object = boonFactory.makeBoon(boon);
 					if (boon_object.get_type().equals("Duration")) {
-						rate = get_boon_duration(boon_object, boon_logs.get(boon), fight_intervals);
+						List<Point> boon_intervals = get_boon_intervals_list(boon_object, boon_logs.get(boon));
+						rate = get_boon_duration(boon_intervals, fight_intervals);
 					} else if (boon_object.get_type().equals("Intensity")) {
-						rate = get_average_stacks(boon_object, boon_logs.get(boon), fight_intervals);
+						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, boon_logs.get(boon));
+						rate = get_average_stacks(boon_stacks, fight_intervals);
 					}
 				}
 				rates[j] = rate;
@@ -616,8 +620,7 @@ public class Statistics {
 
 	}
 
-	private String get_boon_duration(Boon boon, List<boonLog> boon_logs) {
-
+	private List<Point> get_boon_intervals_list(Boon boon, List<boonLog> boon_logs) {
 		// Simulate in game mechanics
 		List<Point> boon_intervals = new ArrayList<Point>();
 		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
@@ -641,6 +644,11 @@ public class Statistics {
 			boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
 		}
 
+		return boon_intervals;
+	}
+
+	private String get_boon_duration(List<Point> boon_intervals) {
+
 		// Calculate average duration
 		double average_duration = 0;
 
@@ -651,31 +659,12 @@ public class Statistics {
 		return String.format("%.2f", (average_duration / b_data.getFightDuration()));
 	}
 
-	private String[] get_boon_duration(Boon boon, List<boonLog> boon_logs, List<Point> fight_intervals) {
+	private String[] get_boon_duration(List<Point> boon_intervals, List<Point> fight_intervals) {
 
-		// Simulate in game mechanics
-		List<Point> boon_intervals = new ArrayList<Point>();
-		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
-		boon.add(boon_logs.get(0).getValue());
-		boon_intervals.add(new Point(t_curr, t_curr + boon.get_stack_duration()));
-
-		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
-			boonLog log = iter.next();
-			t_curr = log.getTime();
-			boon.update(t_curr - t_prev);
-			boon.add(log.getValue());
-			boon_intervals.add(new Point(t_curr, t_curr + boon.get_stack_duration()));
-			t_prev = t_curr;
-		}
-
-		// Merge intervals and remove boon overflow
-		boon_intervals = merge_intervals(boon_intervals);
-		if (boon_intervals.get(boon_intervals.size() - 1).getY() > b_data.getFightDuration()) {
-			boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
-		}
-
-		// Calculate boon duration for each phase
+		// Phase durations
 		String[] phase_durations = new String[fight_intervals.size()];
+
+		// Loop: add intervals in between, merge, calculate duration
 		for (int i = 0; i < fight_intervals.size(); i++) {
 			Point p = fight_intervals.get(i);
 			List<Point> boons_intervals_during_phase = new ArrayList<Point>();
@@ -698,10 +687,12 @@ public class Statistics {
 			}
 			phase_durations[i] = String.format("%.2f", (duration / (p.getY() - p.getX())));
 		}
+
 		return phase_durations;
 	}
 
-	private String get_average_stacks(Boon boon, List<boonLog> boon_logs) {
+	private List<Integer> get_boon_stacks_list(Boon boon, List<boonLog> boon_logs) {
+
 		// Initialize variables
 		int t_prev = 0;
 		int t_curr = 0;
@@ -714,7 +705,11 @@ public class Statistics {
 			boon_stacks.addAll(boon.get_stacks_between(t_prev, t_curr));
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
-			boon_stacks.add(boon.get_stack_count());
+			if (t_curr != t_prev) {
+				boon_stacks.add(boon.get_stack_count());
+			} else {
+				boon_stacks.set(boon_stacks.size() - 1, boon.get_stack_count());
+			}
 			t_prev = t_curr;
 		}
 
@@ -723,58 +718,28 @@ public class Statistics {
 		boon.update(1);
 		boon_stacks.add(boon.get_stack_count());
 
-		// Calculate the average stacks
+		return boon_stacks;
+	}
+
+	private String get_average_stacks(List<Integer> boon_stacks) {
+
+		// Calculate average stacks
 		double average_stacks = boon_stacks.stream().mapToInt(Integer::intValue).sum();
 		return String.format("%.2f", average_stacks / boon_stacks.size());
 	}
 
-	private String[] get_average_stacks(Boon boon, List<boonLog> boon_logs, List<Point> fight_intervals) {
+	private String[] get_average_stacks(List<Integer> boon_stacks, List<Point> fight_intervals) {
 
-		List<Point> boon_intervals = new ArrayList<Point>();
-		int t_prev = 0, t_curr = boon_logs.get(0).getTime();
-		boon.add(boon_logs.get(0).getValue());
-		boon_intervals.add(new Point(t_curr, boon.get_stack_count()));
-
-		for (ListIterator<boonLog> iter = boon_logs.listIterator(2); iter.hasNext();) {
-			boonLog log = iter.next();
-			t_curr = log.getTime();
-			boon.update(t_curr - t_prev);
-			boon.add(log.getValue());
-			boon_intervals.add(new Point(t_curr, boon.get_stack_count()));
-			t_prev = t_curr;
-		}
-
+		// Phase stacks
 		String[] phase_stacks = new String[fight_intervals.size()];
-		List<Point> boons_intervals_during_phase = new ArrayList<Point>();
 
+		// Loop: get sublist and calculate average stacks
 		for (int i = 0; i < fight_intervals.size(); i++) {
-
-			// Clear intervals
 			Point p = fight_intervals.get(i);
-			boons_intervals_during_phase.clear();
-
-			// Find intervals during phase
-			for (Point b : boon_intervals) {
-
-				if (p.x <= b.x && b.x <= p.y) {
-					boons_intervals_during_phase.add(b);
-				}
-			}
-
-			double average_stacks = 0;
-			int prev_time = 0;
-			int prev_stack = 0;
-
-			for (Point interval : boons_intervals_during_phase) {
-				average_stacks = (average_stacks + (prev_stack * (interval.getX() - prev_time)));
-				prev_time = interval.x;
-				prev_stack = interval.y;
-			}
-
-			phase_stacks[i] = String.format("%.2f", (average_stacks / (p.getY() - p.getX())));
-
+			List<Integer> phase_boon_stacks = new ArrayList<Integer>(boon_stacks.subList(p.x, p.y));
+			double average_stacks = phase_boon_stacks.stream().mapToInt(Integer::intValue).sum();
+			phase_stacks[i] = String.format("%.2f", average_stacks / phase_boon_stacks.size());
 		}
-
 		return phase_stacks;
 	}
 
