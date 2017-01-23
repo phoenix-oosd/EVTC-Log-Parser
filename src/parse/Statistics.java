@@ -294,7 +294,8 @@ public class Statistics {
 		}
 
 		try {
-			BitmapEncoder.saveBitmapWithDPI(chart, "./graphs/" + base + ".png", BitmapFormat.PNG, 300);
+			BitmapEncoder.saveBitmapWithDPI(chart, "./graphs/" + base + "_" + b_data.getName() + ".png",
+					BitmapFormat.PNG, 300);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

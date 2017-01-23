@@ -81,11 +81,7 @@ public class Main {
 						for (File log : logs) {
 							System.out.println("Parsing " + log.toString() + "...");
 							String output = parsing(choice, log);
-							if (output.isEmpty()) {
-								break;
-							} else {
-								System.out.println(output);
-							}
+							System.out.println(output);
 						}
 					} else {
 						quitting = true;
@@ -110,9 +106,10 @@ public class Main {
 			// System.out.println("Parsing " + base + "...");
 			Parse parser = null;
 			Statistics stats = null;
+			bossData b_data = null;
 			try {
 				parser = new Parse(log);
-				bossData b_data = parser.get_boss_data();
+				b_data = parser.get_boss_data();
 				List<playerData> p_data = parser.get_player_data();
 				List<skillData> s_data = parser.get_skill_data();
 				List<combatData> c_data = parser.get_combat_data();
@@ -155,7 +152,8 @@ public class Main {
 				stats.get_damage_logs();
 				stats.get_boon_logs(boon_list);
 				try {
-					File text_dump = new File(System.getProperty("user.dir") + "/tables/" + base + ".txt");
+					File text_dump = new File(
+							System.getProperty("user.dir") + "/tables/" + base + "_" + b_data.getName() + ".txt");
 					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_damage_distribution()
 							+ stats.get_combat_stats() + stats.get_final_boons(boon_list)
 							+ stats.get_phase_boons(boon_list), text_dump);
@@ -163,6 +161,7 @@ public class Main {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				return "";
 			}
 		} else {
 			System.out.println("Not a valid option. Try again.\n");
