@@ -9,7 +9,7 @@ public class combatData {
 	private int value;
 	private int buff_dmg;
 	private int overstack_value;
-	private short skill_id;
+	private int skill_id;
 	private short src_cid;
 	private short dst_cid;
 	private short src_master_cid;
@@ -25,7 +25,7 @@ public class combatData {
 
 	// Constructor
 	public combatData(long time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
-			short skill_id, short src_cid, short dst_cid, short src_master_cid, boolean iff, boolean is_buff,
+			int skill_id, short src_cid, short dst_cid, short src_master_cid, boolean iff, boolean is_buff,
 			boolean is_crit, boolean is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty,
 			boolean is_moving, boolean is_statechange) {
 		this.time = time;
@@ -74,7 +74,7 @@ public class combatData {
 		return overstack_value;
 	}
 
-	public short get_skill_id() {
+	public int get_skill_id() {
 		return skill_id;
 	}
 

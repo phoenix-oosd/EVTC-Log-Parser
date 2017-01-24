@@ -158,7 +158,7 @@ public class Parse {
 			short overstack_value = f.getShort();
 
 			// 2 bytes: skill_id
-			short skill_id = f.getShort();
+			int skill_id = f.getShort() & 0xffff;
 
 			// 2 bytes: src_cid
 			short src_cid = f.getShort();
