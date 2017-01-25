@@ -449,6 +449,8 @@ public class Statistics {
 		}
 
 		StringBuilder all_tables = new StringBuilder();
+		all_tables.append("_______________________________\n\n" + "Phase Boons - " + b_data.getName()
+				+ "\n_______________________________");
 		String[] boon_array = new String[] { "MGHT", "QCKN", "FURY", "PROT", "ALAC", "SPOT", "FRST", "GoE", "GotL",
 				"EA", "BoS", "BoD" };
 
@@ -456,7 +458,7 @@ public class Statistics {
 
 			// Table
 			TableBuilder table = new TableBuilder();
-			table.addTitle("Phase " + (i + 1) + " Boon Rates - " + b_data.getName());
+			table.addTitle("Phase " + (i + 1));
 
 			// Header
 			table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
@@ -473,7 +475,7 @@ public class Statistics {
 				table.addRow(concat(new String[] { p.getName(), p.getProf() }, row_rates));
 			}
 
-			all_tables.append(table.toString());
+			all_tables.append("\n" + table.toString());
 		}
 
 		return all_tables.toString();
