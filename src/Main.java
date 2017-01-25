@@ -21,6 +21,7 @@ public class Main {
 
 	// Fields
 	private static boolean quitting;
+	private static boolean displaying_version = true;
 	private static final int[] damage_choices = new int[] { 1, 2, 3, 4, 5 };
 	private static final int[] boon_choices = new int[] { 6, 7 };
 	private static final int[] all_choices = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -39,10 +40,13 @@ public class Main {
 		try {
 			scan = new Scanner(System.in);
 			// Files
-			if (args.length > 0) {
+			if (args.length == 2) {
+				displaying_version = false;
 				String output = "<START>\n";
 				for (char c : args[1].toCharArray()) {
-					output += parsing(Character.getNumericValue(c), new File(args[0]));
+					if (!(c == '4')) {
+						output += parsing(Character.getNumericValue(c), new File(args[0]));
+					}
 				}
 				System.out.println(output + "<END>");
 				scan.nextLine();
@@ -63,10 +67,11 @@ public class Main {
 				quitting = false;
 				while (!quitting) {
 					// Menu display
-					System.out.println("EVTC Log Parser\n" + "_______________\n\n" + "1. Final DPS\n" + "2. Phase DPS\n"
-							+ "3. Damage Distribution\n" + "4. Graph Total Damage\n" + "5. Miscellaneous Combat Stats\n"
-							+ "6. Final Boons\n" + "7. Phase Boons\n" + "8. Text Dump Tables\n" + "9. Quit\n");
-					System.out.println("Choose an option below: ");
+					System.out.println("_______________\n\nEVTC Log Parser\n" + "_______________\n\n" + "1. Final DPS\n"
+							+ "2. Phase DPS\n" + "3. Damage Distribution\n" + "4. Graph Total Damage\n"
+							+ "5. Miscellaneous Combat Stats\n" + "6. Final Boons\n" + "7. Phase Boons\n"
+							+ "8. Text Dump Tables\n" + "9. Quit\n_______________\n");
+					System.out.println("Enter an option below: ");
 
 					// Choose an option
 					int choice = -1;
@@ -79,7 +84,7 @@ public class Main {
 					// Parse ".evtc" files
 					if (choice != 9) {
 						for (File log : logs) {
-							System.out.println("Parsing " + log.toString() + "...");
+							System.out.println("\nInput file :\t" + log.getName() + "...");
 							String output = parsing(choice, log);
 							System.out.println(output);
 						}
@@ -119,7 +124,9 @@ public class Main {
 			}
 			// A single choice
 			if (choice != 8) {
-				System.out.println("Log version " + b_data.getVersion() + "...");
+				if (displaying_version) {
+					System.out.println("Log version:\t" + b_data.getVersion() + "...");
+				}
 				// Damage Related
 				if (is_in(choice, damage_choices)) {
 					stats.get_damage_logs();
@@ -155,9 +162,9 @@ public class Main {
 					File text_dump = new File(
 							System.getProperty("user.dir") + "/tables/" + base + "_" + b_data.getName() + ".txt");
 					writeToFile(
-							stats.get_final_dps() + "\n\n" + stats.get_phase_dps() + "\n\n"
-									+ stats.get_damage_distribution() + "\n\n" + stats.get_combat_stats() + "\n\n"
-									+ stats.get_final_boons(boon_list) + "\n\n" + stats.get_phase_boons(boon_list),
+							stats.get_final_dps() + "\n" + stats.get_phase_dps() + "\n"
+									+ stats.get_damage_distribution() + "\n" + stats.get_combat_stats() + "\n"
+									+ stats.get_final_boons(boon_list) + "\n" + stats.get_phase_boons(boon_list),
 							text_dump);
 					stats.get_total_damage_graph(base);
 				} catch (IOException e) {
