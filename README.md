@@ -4,6 +4,24 @@
 
 This program is a parser for ` .evtc ` logs in GW2. It is written in Java 8, so requires an installation of ` JRE 1.8 `. Upon running the following folders will be created in the launch directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. Copy ` .evtc ` files for parsing into the ` /logs/ ` folder. The program will recursively search the folder for ` .evtc ` files, and process all of them with the selected option. Both ` /graphs/ ` and ` /tables/ ` are output folders.
 
+The log files can be found at ` Documents\arcdps.cbtlogs `. Each numbered folder corresponds to a different fight, consult the table to find the logs you want to parse:
+
+
+| Folder        | Boss           |
+| ------------- |----------------|
+| 15438         | Vale Guardian  |
+| 15429         | Gorseval       |
+| 15375         | Sabetha        |
+| 16123         | Slothasor      |
+| 16088         | Berg           |
+| 16137         | Zane           |
+| 16125         | Narella        | 
+| 16115         | Matthias       |
+| 16235         | Keep Construct |
+| 16246         | Xera           |
+
+
+
 ## Running
 
 The Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in the program not running. To circumvent this, run the program either in the command line or using the supplied ` run.bat ` file. Edit the  ` .bat ` files such that there is a path to the parser. There are two different ways to run this program:
