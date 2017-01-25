@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class BoonIntensity extends Boon {
+public class Intensity extends Boon {
 
 	// Constructor
-	public BoonIntensity(int max_stacks, String type) {
+	public Intensity(int max_stacks, String type) {
 		super(max_stacks, type);
 	}
 
@@ -37,7 +37,7 @@ public class BoonIntensity extends Boon {
 	@Override
 	public void add_stacks_between(List<Integer> boon_stacks, int start, int end) {
 
-		Boon boon_copy = new BoonIntensity(this.max_stacks, this.type);
+		Boon boon_copy = new Intensity(this.max_stacks, this.type);
 		boon_copy.stacks = new ArrayList<Integer>(this.stacks);
 
 		for (int i = start + 1; i < end; i++) {

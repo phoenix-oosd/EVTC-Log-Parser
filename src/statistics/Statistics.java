@@ -1,4 +1,4 @@
-package parse;
+package statistics;
 
 import java.awt.Font;
 import java.awt.Point;
@@ -60,7 +60,7 @@ public class Statistics {
 					if ((p.getCID() == c.get_src_cid()) || (p.getCID() == c.get_src_master_cid())) {
 						// Physical or condition damage
 						if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() && (c.get_buff_dmg() > 0))) {
-							long time = c.get_time() - t_start;
+							int time = (int) (c.get_time() - t_start);
 							int damage;
 							if (c.is_buff()) {
 								damage = c.get_buff_dmg();
@@ -92,7 +92,14 @@ public class Statistics {
 					// If the skill is a buff and in the boon list
 					String skill_name = get_skill_name(c.get_skill_id());
 					if ((c.is_buff() && (c.get_value() > 0)) && (boon_list.contains(skill_name))) {
-						p.get_boon_logs().get(skill_name).add(new boonLog(c.get_time() - t_start, c.get_value()));
+						int time = (int) (c.get_time() - t_start);
+						int src_cid;
+						if (c.get_src_cid() > 0) {
+							src_cid = c.get_src_cid();
+						} else {
+							src_cid = c.get_src_master_cid();
+						}
+						p.get_boon_logs().get(skill_name).add(new boonLog(time, c.get_value(), src_cid));
 					}
 				}
 			}
@@ -127,10 +134,10 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Final DPS | " + b_data.getName() + " | " + b_data.getDate());
+		table.addTitle("Final DPS - " + b_data.getName());
 
 		// Header
-		table.addRow("Character Name", "Profession", "Final DPS", "Damage");
+		table.addRow("Name", "Profession", "Final DPS", "Damage");
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
@@ -179,11 +186,11 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Phase DPS | " + b_data.getName() + " | " + b_data.getDate());
+		table.addTitle("Phase DPS - " + b_data.getName());
 
 		// Header
 		String[] header = new String[2 + fight_intervals.size()];
-		header[0] = "Character Name";
+		header[0] = "Name";
 		header[1] = "Profession";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
 			header[i] = "Phase " + String.valueOf(i - 1);
@@ -221,7 +228,10 @@ public class Statistics {
 
 	public String get_damage_distribution() {
 
-		String output = "";
+		TableBuilder table = new TableBuilder();
+
+		String output = "_________________________________________\n\n" + "Damage Distribution - " + b_data.getName()
+				+ "\n_________________________________________";
 
 		for (playerData p : p_data) {
 			List<damageLog> logs = p.get_damage_logs();
@@ -240,8 +250,8 @@ public class Statistics {
 			double damage_sum = skill_damage.values().stream().reduce(0, Integer::sum);
 
 			// Table
-			TableBuilder table = new TableBuilder();
-			table.addTitle("Damage Distribution | " + p.getName() + " | " + b_data.getName());
+			table = new TableBuilder();
+			table.addTitle(p.getName() + " - " + p.getProf());
 
 			// Header
 			table.addRow("Skill Name", "Damage", "%");
@@ -254,9 +264,7 @@ public class Statistics {
 						String.format("%.2f", (damage / damage_sum * 100)));
 			}
 
-			output += table.toString();
-
-			// System.exit(0);
+			output += "\n\n" + table.toString();
 
 		}
 
@@ -267,9 +275,8 @@ public class Statistics {
 	public void get_total_damage_graph(String base) {
 
 		// Generate a graph
-		final XYChart chart = new XYChartBuilder().width(1600).height(900)
-				.title("Total Damage | " + b_data.getName() + " | " + b_data.getDate()).xAxisTitle("Time (s)")
-				.yAxisTitle("Damage (k)").build();
+		final XYChart chart = new XYChartBuilder().width(1600).height(900).title("Total Damage - " + b_data.getName())
+				.xAxisTitle("Time (s)").yAxisTitle("Damage (k)").build();
 		chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
 		chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
 		chart.getStyler().setMarkerSize(1);
@@ -289,7 +296,7 @@ public class Statistics {
 					x[i] = logs.get(i).getTime() / 1000.0;
 					y[i] = total_damage / 1000.0;
 				}
-				chart.addSeries(p.getName() + " | " + p.getProf(), x, y);
+				chart.addSeries(p.getName() + " - " + p.getProf(), x, y);
 			}
 		}
 
@@ -335,10 +342,10 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Combat Statistics | " + b_data.getName() + " | " + b_data.getDate());
+		table.addTitle("Combat Statistics - " + b_data.getName());
 
 		// Header
-		table.addRow("Character Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND");
+		table.addRow("Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND");
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
@@ -385,12 +392,12 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Final Boon Rates | " + b_data.getName() + " | " + b_data.getDate());
+		table.addTitle("Final Boon Rates - " + b_data.getName());
 
 		// Header
 		String[] boon_array = new String[] { "MGHT", "QCKN", "FURY", "PROT", "ALAC", "SPOT", "FRST", "GoE", "GotL",
 				"EA", "BoS", "BoD" };
-		table.addRow(concat(new String[] { "Character Name", "Profession" }, boon_array));
+		table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
@@ -449,10 +456,10 @@ public class Statistics {
 
 			// Table
 			TableBuilder table = new TableBuilder();
-			table.addTitle("Phase " + (i + 1) + " Boon Rates | " + b_data.getName() + " | " + b_data.getDate());
+			table.addTitle("Phase " + (i + 1) + " Boon Rates - " + b_data.getName());
 
 			// Header
-			table.addRow(concat(new String[] { "Character Name", "Profession" }, boon_array));
+			table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
 
 			// Body
 			for (int j = 0; j < p_data.size(); j++) {

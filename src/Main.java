@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
+import data.Parse;
 import data.bossData;
 import data.combatData;
 import data.playerData;
 import data.skillData;
-import parse.Parse;
-import parse.Statistics;
+import statistics.Statistics;
 
 public class Main {
 
@@ -63,8 +63,8 @@ public class Main {
 				quitting = false;
 				while (!quitting) {
 					// Menu display
-					System.out.println("EVTC Log Parser\n" + "---------------\n" + "1. Final DPS\n" + "2. Phase DPS\n"
-							+ "3. Damage Distribution\n" + "4. Graph Total Damage\n" + "5. Misc. Combat Stats\n"
+					System.out.println("EVTC Log Parser\n" + "_______________\n\n" + "1. Final DPS\n" + "2. Phase DPS\n"
+							+ "3. Damage Distribution\n" + "4. Graph Total Damage\n" + "5. Miscellaneous Combat Stats\n"
 							+ "6. Final Boons\n" + "7. Phase Boons\n" + "8. Text Dump Tables\n" + "9. Quit\n");
 					System.out.println("Choose an option below: ");
 
@@ -103,7 +103,6 @@ public class Main {
 		if (is_in(choice, all_choices)) {
 			// Parse the log
 			String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
-			// System.out.println("Parsing " + base + "...");
 			Parse parser = null;
 			Statistics stats = null;
 			bossData b_data = null;
@@ -120,6 +119,7 @@ public class Main {
 			}
 			// A single choice
 			if (choice != 8) {
+				System.out.println("Log version " + b_data.getVersion() + "...");
 				// Damage Related
 				if (is_in(choice, damage_choices)) {
 					stats.get_damage_logs();
@@ -154,9 +154,11 @@ public class Main {
 				try {
 					File text_dump = new File(
 							System.getProperty("user.dir") + "/tables/" + base + "_" + b_data.getName() + ".txt");
-					writeToFile(stats.get_final_dps() + stats.get_phase_dps() + stats.get_damage_distribution()
-							+ stats.get_combat_stats() + stats.get_final_boons(boon_list)
-							+ stats.get_phase_boons(boon_list), text_dump);
+					writeToFile(
+							stats.get_final_dps() + "\n\n" + stats.get_phase_dps() + "\n\n"
+									+ stats.get_damage_distribution() + "\n\n" + stats.get_combat_stats() + "\n\n"
+									+ stats.get_final_boons(boon_list) + "\n\n" + stats.get_phase_boons(boon_list),
+							text_dump);
 					stats.get_total_damage_graph(base);
 				} catch (IOException e) {
 					e.printStackTrace();

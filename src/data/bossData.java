@@ -5,20 +5,19 @@ public class bossData {
 	// Fields
 	private long agent = 0;
 	private int CID = 0;
-	private String name = null;
+	private String name = "";
 	private int HP = 0;
 	private long fight_duration = 0;
-	private String date = null;
+	private String version = "";
 
 	// Constructor
-	public bossData(int agent, int CID, String name, int HP, long fight_duration, String date) {
+	public bossData(long agent, int CID, String name, int HP, long fight_duration, String version) {
 		this.agent = agent;
 		this.CID = CID;
 		this.name = name;
 		this.HP = HP;
 		this.fight_duration = fight_duration;
-		this.date = date;
-
+		this.version = version;
 	}
 
 	// Getters
@@ -42,8 +41,8 @@ public class bossData {
 		return (int) fight_duration;
 	}
 
-	public String getDate() {
-		return date;
+	public String getVersion() {
+		return version;
 	}
 
 	// Setters

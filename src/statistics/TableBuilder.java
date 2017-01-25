@@ -1,4 +1,4 @@
-package parse;
+package statistics;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -54,12 +54,11 @@ public class TableBuilder {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		int[] colWidths = getWidths();
-		str.append("```\n");
 		// Title
 		if (!title.equals("")) {
-			str.append(fill(title.length(), '*') + "\n");
+			str.append(fill(title.length(), '_') + "\n\n");
 			str.append(title + "\n");
-			str.append(fill(title.length(), '*') + "\n");
+			str.append(fill(title.length(), '_') + "\n\n");
 		}
 		// Header
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
@@ -68,10 +67,10 @@ public class TableBuilder {
 		}
 		str.append("\n");
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			str.append(center(fill(colWidths[colNum], '-'), colWidths[colNum]));
+			str.append(center(fill(colWidths[colNum], '_'), colWidths[colNum]));
 			str.append("   ");
 		}
-		str.append("\n");
+		str.append("\n\n");
 		// Body
 		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
 			String[] row = iter.next();
@@ -81,7 +80,6 @@ public class TableBuilder {
 			}
 			str.append('\n');
 		}
-		str.append("```\n");
 		return str.toString();
 	}
 

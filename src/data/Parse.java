@@ -1,4 +1,4 @@
-package parse;
+package data;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,15 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import data.bossData;
-import data.combatData;
-import data.playerData;
-import data.skillData;
-
 public class Parse {
 
 	// Fields
-	// private BufferedInputStream f = null;
 	private FileInputStream stream = null;
 	private MappedByteBuffer f = null;
 
@@ -37,11 +31,8 @@ public class Parse {
 	}
 
 	// Public Methods
-	// public void close() throws IOException {
-	// this.channel.close();
-	// }
-
 	public bossData get_boss_data() throws IOException {
+
 		// 4 bytes: EVTC
 		f.position(f.position() + 4);
 
@@ -50,11 +41,11 @@ public class Parse {
 		byte[] date_buffer = new byte[8];
 		f.get(date_buffer);
 
-		// 1 byte: position
+		// 1 byte: skip
 		f.position(f.position() + 1);
 
 		// 2 bytes: Boss CID
-		int cid = f.getShort();
+		int cid = Short.toUnsignedInt(f.getShort());
 
 		// 1 byte: position
 		f.position(f.position() + 1);
@@ -76,9 +67,7 @@ public class Parse {
 
 		// 96 bytes: each player
 		for (int i = 0; i < player_count; i++) {
-
 			// 8 bytes: agent
-
 			long agent = f.getLong();
 
 			// 4 bytes: profession
@@ -91,7 +80,7 @@ public class Parse {
 			int healing = f.getInt();
 
 			// 4 bytes: healing
-			int toughness = f.getInt();
+			int toughness = f.getInt() + 1000;
 
 			// 4 bytes: condition
 			int condition = f.getInt();
@@ -103,12 +92,12 @@ public class Parse {
 			// add player
 			p_data.add(new playerData(agent, 0, get_String(name_buffer), get_prof(prof_id, is_elite), toughness,
 					healing, condition));
-
 		}
 		return p_data;
 	}
 
 	public List<skillData> get_skill_data() throws IOException {
+
 		// skillData array
 		List<skillData> s_data = new ArrayList<skillData>();
 
@@ -117,7 +106,6 @@ public class Parse {
 
 		// 68 bytes: each skill
 		for (int i = 0; i < skill_count; i++) {
-
 			// 4 bytes: id
 			int id = f.getInt();
 
@@ -127,7 +115,6 @@ public class Parse {
 
 			// add skill
 			s_data.add(new skillData(id, get_String(name_buffer)));
-
 		}
 		return s_data;
 	}
@@ -139,12 +126,12 @@ public class Parse {
 
 		// 64 bytes: each combat
 		while (f.remaining() >= 64) {
-
 			// 8 bytes: time
 			long time = f.getLong();
 
 			// 8 bytes: src_agent
 			long src_agent = f.getLong();
+
 			// 8 bytes: dst_agent
 			long dst_agent = f.getLong();
 
@@ -155,19 +142,19 @@ public class Parse {
 			int buff_dmg = f.getInt();
 
 			// 2 bytes: overstack_value
-			short overstack_value = f.getShort();
+			int overstack_value = f.getShort();
 
 			// 2 bytes: skill_id
-			int skill_id = f.getShort() & 0xffff;
+			int skill_id = Short.toUnsignedInt(f.getShort());
 
 			// 2 bytes: src_cid
-			short src_cid = f.getShort();
+			int src_cid = Short.toUnsignedInt(f.getShort());
 
 			// 2 bytes: dst_cid
-			short dst_cid = f.getShort();
+			int dst_cid = Short.toUnsignedInt(f.getShort());
 
 			// 2 bytes: src_master_cid
-			short src_master_cid = f.getShort();
+			int src_master_cid = Short.toUnsignedInt(f.getShort());
 
 			// 9 bytes: garbage
 			f.position(f.position() + 9);
@@ -212,6 +199,7 @@ public class Parse {
 
 	public void fill_missing_data(bossData b_data, List<playerData> p_data, List<skillData> s_data,
 			List<combatData> c_data) {
+
 		// Update boss agent
 		for (combatData c : c_data) {
 			if (c.get_src_cid() == b_data.getCID()) {
@@ -266,12 +254,10 @@ public class Parse {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// Private Methods
 	private String get_boss_name(int cid) {
-
 		if (cid == 15438) {
 			return "Vale Guardian";
 		} else if (cid == 15429) {
@@ -396,8 +382,7 @@ public class Parse {
 	}
 
 	private boolean get_bool(int i) {
-		boolean bool = (i != 0);
-		return bool;
+		return (i != 0);
 	}
 
 }

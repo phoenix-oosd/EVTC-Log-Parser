@@ -2,10 +2,10 @@ package boon;
 
 import java.util.List;
 
-public class BoonDuration extends Boon {
+public class Duration extends Boon {
 
 	// Constructor
-	public BoonDuration(int max_stacks, String type) {
+	public Duration(int max_stacks, String type) {
 		super(max_stacks, type);
 	}
 
