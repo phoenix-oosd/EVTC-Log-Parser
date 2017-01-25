@@ -44,7 +44,7 @@ public class Main {
 				displaying_version = false;
 				String output = "<START>\n";
 				for (char c : args[1].toCharArray()) {
-					if (!(c == '4')) {
+					if (!(c == '4' || c == '8')) {
 						output += parsing(Character.getNumericValue(c), new File(args[0]));
 					}
 				}

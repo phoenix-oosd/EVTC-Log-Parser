@@ -2,24 +2,48 @@
 
 ## About
 
-This program is a parser for ` .evtc ` raid logs in GW2. It is written in Java, so requires an installation of ` JRE 1.8 `. Upon its first time running (and if the following folders do not exist), these folders will be created in the same directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. The ` /logs/ ` folder is where you put the ` .evtc ` files you are interested in parsing. Both ` /graphs/ ` and ` /tables/ ` are output folders.
+This program is a parser for ` .evtc ` logs in GW2. It is written in Java 8, so requires an installation of ` JRE 1.8 `. Upon running the following folders will be created in the launch directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. Copy ` .evtc ` files for parsing into the ` /logs/ ` folder. The program will recursively search the folder for ` .evtc ` files, and process all of them with the selected option. Both ` /graphs/ ` and ` /tables/ ` are output folders.
 
 ## Running
 
-The Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in the program not running. To circumvent this, run the program either in the command line or using the supplied ` .bat `.
+The Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in the program not running. To circumvent this, run the program either in the command line or using the supplied ` run.bat ` file. Edit the  ` .bat ` files such that there is a path to the parser. There are two different ways to run this program:
+
+### Standalone ###
+Double clicking the standalone  `standalone .bat` will open a console. This will display a menu which will apply the chosen option to each  ` .evtc ` in the  `/logs/` directory. Simply enter the option you want by number (e.g. 1 for Final DPS) and press Enter.
+
+### File Association ###
+Double clicking any  ` .evtc ` file and when prompted with "Open with..." select the  ` fileassociation.bat` file. This will display the output into a console based on the command arguments given. The default argument is  ` "156" ` which displays the Final DPS, Misc. Combat Stats, and Final Boons in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
 
 ## Options
 
-The program displays all data in a tabular format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Rates are a number between 0 and 1 (100% uptime). The parser has the following options:
+The program displays all data in a tabular or graphical format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Phases are sections of the fight when the bosses are vulnerable to damage. The parser has the following options:
 
-1. Final DPS - Displays DPS and total damage for each player. Also displays the team DPS and team total damage, along with the boss of the HP to gauge log accuracy.
-2. Phase DPS - Displays DPS for each player during each damage phase. Only supports W1 + Xera.
-3. Total Damage Graph (not implemented yet)
-4. Combat Statistics - Displays miscelleneous combat stats such as moving rate and scholar rate.
-5. Final Boons - Displays the uptime of each releveant boon and class buff by the end of the fight.
-6. Phase Boons (not implemented yet)
-7. Text Dump - Saves each of the above tables into a single file at ` /tables/ `.
+1. Final DPS
+    * DPS by player and group
+    * Damage dealt by each player and group
+2. Phase DPS
+    * DPS for each phase where applicable
+    * Phase duration
+3. Damage Distribution - ranks damage output by skill by each player
+    * Damage breakdown of each player by skill
+    * Ranks skills in order of contribution
+4. Total Damage Graph
+    * Graphs the damage
+    * Can be used to identify mechanical portions of the fight (e.g. flat lines for Matthias sacrifices)
+5. Miscellaneous Combat Statistics
+    * Healing, Toughness and Condition damage of each player
+    * Fight rates such as Scholar uptime, seaweed salad movement, and critical rates
+6. Final Boons
+    * Show relevant boon uptime
+    * Show relevant class buff uptime
+7. Phase Boons
+    * Boons for each phase where applicable
+8. Text Dump
+    * Saves the above graph(s) into ` /graphs/ `
+    * Saves the above tables into ` /tables/ `
+
  
 ## Known Problems
-1. Players that disconnect or join a fight late will be ignored.
-2. Damage numbers on Xera will be overestimated, depending on how much damage is dealt during her break phases.
+Players that disconnect or join a fight late will be ignored.
+Invulnerable detection on KC, Xera is not supported.
+This program has only been tested on Windows.
