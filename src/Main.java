@@ -43,8 +43,10 @@ public class Main {
 			if (args.length == 2) {
 				displaying_version = false;
 				String output = "<START>\n";
-				for (char c : args[1].toCharArray()) {
-					if (!(c == '4') || !(c == '8')) {
+				char[] choices = args[1].toCharArray();
+				char[] possible = new char[] { '1', '2', '3', '5', '6', '7' };
+				for (char c : choices) {
+					if (is_in(c, possible)) {
 						output += parsing(Character.getNumericValue(c), new File(args[0]));
 					}
 				}
@@ -185,6 +187,10 @@ public class Main {
 	}
 
 	// Private Methods
+	public static boolean is_in(char c, char[] array) {
+		return new String(array).contains("" + c);
+	}
+
 	private static void writeToFile(String string, File file) throws IOException {
 		try (BufferedReader geter = new BufferedReader(new StringReader(string));
 				PrintWriter writer = new PrintWriter(file, "UTF-8");) {
