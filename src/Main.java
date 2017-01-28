@@ -57,7 +57,7 @@ public class Main {
 			new File("./tables").mkdirs();
 			List<File> logs = new ArrayList<File>();
 			recursiveFileSearch("./logs", logs);
-			if (logs.size() == 0) {
+			if (logs.isEmpty()) {
 				System.out.println("/logs/ has no .evtc files.\nNothing to parse.\nPress Enter to exit.\n");
 				scan.nextLine();
 				return;

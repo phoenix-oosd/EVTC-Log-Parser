@@ -1,6 +1,7 @@
 package boon;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,10 +40,29 @@ public class Intensity extends Boon {
 
 		Boon boon_copy = new Intensity(this.max_stacks, this.type);
 		boon_copy.stacks = new ArrayList<Integer>(this.stacks);
+		List<Integer> stacks = boon_copy.stacks;
 
-		for (int i = start + 1; i < end; i++) {
-			boon_copy.update(1);
-			boon_stacks.add(boon_copy.get_stack_value());
+		int loops = end - start;
+
+		if (!stacks.isEmpty()) {
+			int t_passed = 0;
+			int minimum = Collections.min(stacks);
+
+			for (int i = 1; i < loops; i++) {
+				if ((i - t_passed) >= minimum) {
+					boon_copy.update(i - t_passed);
+					if (!stacks.isEmpty()) {
+						minimum = Collections.min(stacks);
+					}
+					t_passed = i;
+				}
+				boon_stacks.add(boon_copy.get_stack_value());
+			}
+		} else {
+			for (int i = 1; i < loops; i++) {
+				boon_stacks.add(0);
+			}
+
 		}
 
 	}

@@ -588,7 +588,7 @@ public class Statistics {
 
 	private List<Point> merge_intervals(List<Point> intervals) {
 
-		if (intervals.size() <= 1) {
+		if (intervals.size() == 1) {
 			return intervals;
 		}
 
@@ -633,8 +633,9 @@ public class Statistics {
 		boon_intervals = merge_intervals(boon_intervals);
 
 		// Trim duration overflow
-		if ((boon_intervals.get(boon_intervals.size() - 1).getY()) > b_data.getFightDuration()) {
-			boon_intervals.get(boon_intervals.size() - 1).y = b_data.getFightDuration();
+		int last = boon_intervals.size() - 1;
+		if ((boon_intervals.get(last).getY()) > b_data.getFightDuration()) {
+			boon_intervals.get(last).y = b_data.getFightDuration();
 		}
 
 		return boon_intervals;
