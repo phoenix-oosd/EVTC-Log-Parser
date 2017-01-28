@@ -20,7 +20,7 @@ import statistics.Statistics;
 public class Main {
 
 	// Fields
-	private static boolean quitting;
+	private static boolean quitting = false;
 	private static boolean displaying_version = true;
 	private static final int[] damage_choices = new int[] { 1, 2, 3, 4, 5 };
 	private static final int[] boon_choices = new int[] { 6, 7 };
@@ -32,9 +32,6 @@ public class Main {
 	// Main
 	public static void main(String[] args) {
 
-		// Test t = new Test();
-		// t.Testing();
-
 		// Start scanner
 		Scanner scan = null;
 		try {
@@ -42,12 +39,12 @@ public class Main {
 			// Files
 			if (args.length == 2) {
 				displaying_version = false;
-				String output = "<START>\n";
+				String output = "<START>";
 				char[] choices = args[1].toCharArray();
 				char[] possible = new char[] { '1', '2', '3', '5', '6', '7' };
 				for (char c : choices) {
 					if (is_in(c, possible)) {
-						output += parsing(Character.getNumericValue(c), new File(args[0]));
+						output += "\n" + parsing(Character.getNumericValue(c), new File(args[0]));
 					}
 				}
 				System.out.println(output + "<END>");
@@ -71,7 +68,7 @@ public class Main {
 					// Menu display
 					System.out.println("_______________\n\nEVTC Log Parser\n" + "_______________\n\n" + "1. Final DPS\n"
 							+ "2. Phase DPS\n" + "3. Damage Distribution\n" + "4. Graph Total Damage\n"
-							+ "5. Miscellaneous Combat Stats\n" + "6. Final Boons\n" + "7. Phase Boons\n"
+							+ "5. Miscellaneous Combat Statistics\n" + "6. Final Boons\n" + "7. Phase Boons\n"
 							+ "8. Text Dump Tables\n" + "9. Quit\n_______________\n");
 					System.out.println("Enter an option below: ");
 
@@ -86,7 +83,7 @@ public class Main {
 					// Parse ".evtc" files
 					if (choice != 9) {
 						for (File log : logs) {
-							System.out.println("\nInput file :\t" + log.getName() + "...");
+							System.out.println("\nInput file:\t" + log.getName());
 							String output = parsing(choice, log);
 							System.out.println(output);
 						}
@@ -121,14 +118,14 @@ public class Main {
 				List<combatData> c_data = parser.get_combat_data();
 				parser.fill_missing_data(b_data, p_data, s_data, c_data);
 				stats = new Statistics(b_data, p_data, s_data, c_data);
+				if (displaying_version) {
+					System.out.println("Log version:\t" + b_data.getVersion());
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			// A single choice
 			if (choice != 8) {
-				if (displaying_version) {
-					System.out.println("Log version:\t" + b_data.getVersion() + "...");
-				}
 				// Damage Related
 				if (is_in(choice, damage_choices)) {
 					stats.get_damage_logs();
@@ -139,7 +136,7 @@ public class Main {
 					} else if (choice == 3) {
 						return stats.get_damage_distribution();
 					} else if (choice == 4) {
-						stats.get_total_damage_graph(base);
+						System.out.println("Output file:\t" + stats.get_total_damage_graph(base));
 					} else if (choice == 5) {
 						return stats.get_combat_stats();
 					}
@@ -161,21 +158,18 @@ public class Main {
 				stats.get_damage_logs();
 				stats.get_boon_logs(boon_list);
 				try {
-					File text_dump = new File(
-							System.getProperty("user.dir") + "/tables/" + base + "_" + b_data.getName() + ".txt");
-					writeToFile(
-							stats.get_final_dps() + "\n" + stats.get_phase_dps() + "\n"
-									+ stats.get_damage_distribution() + "\n" + stats.get_combat_stats() + "\n"
-									+ stats.get_final_boons(boon_list) + "\n" + stats.get_phase_boons(boon_list),
-							text_dump);
-					stats.get_total_damage_graph(base);
+					File text_dump = new File("./tables/" + base + "_" + b_data.getName() + ".txt");
+					writeToFile(stats.get_final_dps() + "\n" + stats.get_phase_dps() + "\n" + stats.get_combat_stats()
+							+ "\n" + stats.get_final_boons(boon_list) + "\n" + stats.get_phase_boons(boon_list) + "\n"
+							+ stats.get_damage_distribution(), text_dump);
+					System.out.println("Output file:\t" + text_dump.getName());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				return "";
 			}
 		} else {
-			System.out.println("Not a valid option. Try again.\n");
+			System.out.println("Invalid option. Try again.\n");
 			return "";
 		}
 		return "";

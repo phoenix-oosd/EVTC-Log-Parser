@@ -24,7 +24,6 @@ public class Parse {
 			this.stream = new FileInputStream(f);
 			this.f = stream.getChannel().map(MapMode.READ_ONLY, 0, f.length());
 			this.f.order(ByteOrder.LITTLE_ENDIAN);
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -33,13 +32,9 @@ public class Parse {
 	// Public Methods
 	public bossData get_boss_data() throws IOException {
 
-		// 4 bytes: EVTC
-		f.position(f.position() + 4);
-
-		// 8 bytes: date of build
-
-		byte[] date_buffer = new byte[8];
-		f.get(date_buffer);
+		// 12 bytes: version of build
+		byte[] version_buffer = new byte[12];
+		f.get(version_buffer);
 
 		// 1 byte: skip
 		f.position(f.position() + 1);
@@ -50,7 +45,7 @@ public class Parse {
 		// 1 byte: position
 		f.position(f.position() + 1);
 
-		return new bossData(0, cid, get_boss_name(cid), get_boss_HP(cid), 0, get_String(date_buffer));
+		return new bossData(0, cid, get_boss_name(cid), get_boss_HP(cid), 0, get_String(version_buffer));
 	}
 
 	public List<playerData> get_player_data() throws IOException {
@@ -61,7 +56,7 @@ public class Parse {
 		// 4 bytes: player count
 		int player_count = f.getInt();
 		if (!((player_count >= 1) && (player_count <= 10))) {
-			System.out.println("Not a valid .evtc file.");
+			System.out.println("Invalid .evtc file.");
 			System.exit(0);
 		}
 
@@ -194,6 +189,14 @@ public class Parse {
 					dst_cid, src_master_cid, iff, is_buff, is_crit, is_activation, is_buffremove, is_ninety, is_fifty,
 					is_moving, is_statechange));
 		}
+
+		// Close stream
+		try {
+			this.stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return c_data;
 	}
 
@@ -248,12 +251,6 @@ public class Parse {
 			}
 		}
 
-		// Close stream
-		try {
-			this.stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	// Private Methods

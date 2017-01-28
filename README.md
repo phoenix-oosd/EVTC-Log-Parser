@@ -2,10 +2,11 @@
 
 ## About
 
-This program is a parser for ` .evtc ` logs in GW2. It is written in Java 8, so requires an installation of ` JRE 1.8 `. Upon running the following folders will be created in the launch directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. Copy ` .evtc ` files for parsing into the ` /logs/ ` folder. The program will recursively search the folder for ` .evtc ` files, and process all of them with the selected option. Both ` /graphs/ ` and ` /tables/ ` are output folders.
+This program is a parser for ` .evtc ` event chain logs created by ` arcdps `. It is written in Java 8, so requires an installation of ` JRE 1.8 `.
 
-The log files can be found at ` Documents\arcdps.cbtlogs `. Each numbered folder corresponds to a different fight, consult the table to find the logs you want to parse:
+On first use, the following folders are created in the launch directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. Copy ` .evtc ` file(s) for parsing into ` /logs/ `. The program will recursively search ` /logs/ ` for ` .evtc ` files. Both ` /graphs/ ` and ` /tables/ ` are output folders.
 
+The ` .evtc ` files can be found at ` Documents\arcdps.cbtlogs `. Each folder corresponds to a different event, consult the table below to find the files you need.
 
 | Folder        | Boss           |
 | ------------- |----------------|
@@ -20,17 +21,17 @@ The log files can be found at ` Documents\arcdps.cbtlogs `. Each numbered folder
 | 16235         | Keep Construct |
 | 16246         | Xera           |
 
+## Instructions
 
+This Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in nothing happening. To circumvent this, run the program either in the command line or using the supplied ` run.bat ` file. You **must** edit the ` .bat ` file so that the path to ` evtc_log_parser.jar ` is correct.
 
-## Running
+### Running ###
 
-The Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in the program not running. To circumvent this, run the program either in the command line or using the supplied ` run.bat ` file. Edit the  ` .bat ` files such that there is a path to the parser. There are two different ways to run this program:
-
-### Standalone ###
-Double clicking the standalone  `standalone .bat` will open a console. This will display a menu which will apply the chosen option to each  ` .evtc ` in the  `/logs/` directory. Simply enter the option you want by number (e.g. 1 for Final DPS) and press Enter.
+Double clicking `run .bat` will open a console with a menu. Enter the option you want by number (e.g. 1 for Final DPS) and press Enter. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed on the console.
 
 ### File Association ###
-Double clicking any  ` .evtc ` file and when prompted with "Open with..." select the  ` fileassociation.bat` file. This will display the output into a console based on the command arguments given. The default argument is  ` "156" ` which displays the Final DPS, Misc. Combat Stats, and Final Boons in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
+
+Double clicking any ` .evtc ` file will display an ` Open with... ` dialogue. Tick ` Always use this app to open .evtc files` and choose ` run.bat`. Now, whenever you double-click an ` .evtc ` file, the file will be parsed on the spot based on the second command argument. The default argument is  ` "516" ` which displays the ` Miscellaneous Combat Statistics`, ` Final DPS `, and ` Final Boons ` in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
 
 ## Options
 
@@ -56,12 +57,10 @@ The program displays all data in a tabular or graphical format. All DPS numbers 
     * Show relevant class buff uptime
 7. Phase Boons
     * Boons for each phase where applicable
-8. Text Dump
-    * Saves the above graph(s) into ` /graphs/ `
+8. Text Dump Tables
     * Saves the above tables into ` /tables/ `
 
- 
 ## Known Problems
-Players that disconnect or join a fight late will be ignored.
-Invulnerable detection on KC, Xera is not supported.
-This program has only been tested on Windows.
+    * Players that disconnect or join a fight late will be ignored.
+    * Phase related statistics may not work if the log is not a boss clear.
+    * This program has only been tested on Windows 10.

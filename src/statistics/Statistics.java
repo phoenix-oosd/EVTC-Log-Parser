@@ -268,7 +268,7 @@ public class Statistics {
 
 	}
 
-	public void get_total_damage_graph(String base) {
+	public String get_total_damage_graph(String base) {
 
 		// Generate a graph
 		final XYChart chart = new XYChartBuilder().width(1600).height(900).title("Total Damage - " + b_data.getName())
@@ -302,6 +302,8 @@ public class Statistics {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return base + "_" + b_data.getName() + ".png";
 
 	}
 
