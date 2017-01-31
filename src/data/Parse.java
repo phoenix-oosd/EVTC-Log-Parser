@@ -72,10 +72,10 @@ public class Parse {
 			boolean is_elite = get_bool(f.getInt());
 
 			// 4 bytes: toughness
-			int healing = f.getInt();
+			int toughness = f.getInt() + 1000;
 
 			// 4 bytes: healing
-			int toughness = f.getInt() + 1000;
+			int healing = f.getInt();
 
 			// 4 bytes: condition
 			int condition = f.getInt();
