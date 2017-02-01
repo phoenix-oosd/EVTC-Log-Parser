@@ -24,12 +24,14 @@ public class Duration extends Boon {
 		}
 		// Remove from the highest stack
 		else {
-			stacks.set(0, Integer.valueOf(stacks.get(0) - time_passed));
+			stacks.set(0, stacks.get(0) - time_passed);
 			if (stacks.get(0) <= 0) {
 				// Spend leftover time
 				time_passed = Math.abs(stacks.get(0));
 				stacks.remove(0);
 				this.update(time_passed);
+			} else {
+				return;
 			}
 		}
 	}
