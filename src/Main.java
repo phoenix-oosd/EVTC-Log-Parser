@@ -26,13 +26,16 @@ public class Main {
 
 			// File Association
 			if (args.length == 2) {
+
 				displaying_version = false;
 				int[] choices = args[1].chars().map(x -> x - '0').toArray();
 
 				StringBuilder output = new StringBuilder("<START>");
 				for (int i : choices) {
 					Choice c = Choice.getChoice(i);
-					if (i > 0) {
+					if (c == null) {
+						continue;
+					} else if (c.canBeAssociated()) {
 						output.append(System.lineSeparator());
 						output.append(parsing(c, new File(args[0])));
 					}
@@ -40,6 +43,7 @@ public class Main {
 				output.append("<END>");
 				System.out.println(output.toString());
 				scan.nextLine();
+
 				return;
 			}
 
