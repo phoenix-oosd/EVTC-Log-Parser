@@ -46,29 +46,38 @@ public class Statistics {
 
 	// Public Methods
 	public void get_damage_logs() {
-
 		// Start time of the fight
 		long t_start = c_data.get(0).get_time();
 
 		// Add damage logs for each player
 		for (playerData p : p_data) {
+			boolean is_dead = false;
 			// Check all combat logs
 			for (combatData c : c_data) {
-				// The target is the boss and the player is an enemy
-				if ((c.get_dst_cid() == b_data.getCID()) && c.iff()) {
+				if (!is_dead) {
 					// The player or their pets is the source
 					if ((p.getCID() == c.get_src_cid()) || (p.getCID() == c.get_src_master_cid())) {
-						// Physical or condition damage
-						if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() && (c.get_buff_dmg() > 0))) {
-							int time = (int) (c.get_time() - t_start);
-							int damage;
-							if (c.is_buff()) {
-								damage = c.get_buff_dmg();
-							} else {
-								damage = c.get_value();
+						// The target is the boss and the player is an enemy
+						if ((c.get_dst_cid() == b_data.getCID()) && c.iff()) {
+							// Physical or condition damage
+							if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() && (c.get_buff_dmg() > 0))) {
+								int time = (int) (c.get_time() - t_start);
+								int damage;
+								if (c.is_buff()) {
+									damage = c.get_buff_dmg();
+								} else {
+									damage = c.get_value();
+								}
+								p.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(), c.is_buff(),
+										c.is_crit(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
 							}
-							p.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(), c.is_buff(),
-									c.is_crit(), c.is_ninety(), c.is_moving()));
+						} else if (p.getCID() == c.get_src_cid() && c.get_value() == 0 && c.is_statechange() > 0) {
+							int time = (int) (c.get_time() - t_start);
+							p.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(), c.is_buff(), c.is_crit(),
+									c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+							if (c.is_statechange() == 4) {
+								is_dead = true;
+							}
 						}
 					}
 				}
@@ -316,8 +325,10 @@ public class Statistics {
 
 			List<damageLog> damage_logs = p.get_damage_logs();
 			double i = 0.0, crit = 0.0, schl = 0.0, move = 0.0;
+			int down = 0, resd = 0, died = 0;
 
 			for (damageLog log : damage_logs) {
+
 				if (!log.is_condi()) {
 					if (log.is_crit()) {
 						crit++;
@@ -330,10 +341,22 @@ public class Statistics {
 					}
 					i++;
 				}
+				if (log.is_statechange() == 5) {
+					down++;
+				}
+				if (log.is_statechange() == 3) {
+					resd++;
+				}
+				if (log.is_statechange() == 4) {
+					died = log.getTime();
+				}
+
 			}
+
 			String[] combat_stats = new String[] { String.format("%.2f", crit / i), String.format("%.2f", schl / i),
 					String.format("%.2f", move / i), String.valueOf(p.getToughness()), String.valueOf(p.getHealing()),
-					String.valueOf(p.getCondition()) };
+					String.valueOf(p.getCondition()), String.valueOf(down), String.valueOf(resd),
+					String.valueOf((double) died / 1000) };
 
 			all_combat_stats.add(combat_stats);
 		}
@@ -343,7 +366,7 @@ public class Statistics {
 		table.addTitle("Combat Statistics - " + b_data.getName());
 
 		// Header
-		table.addRow("Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND");
+		table.addRow("NAME", "PROF", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "RESD", "DIED");
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
@@ -443,6 +466,8 @@ public class Statistics {
 		}
 
 		StringBuilder all_tables = new StringBuilder();
+		TableBuilder table = new TableBuilder();
+
 		all_tables.append("_______________________________\n\n" + "Phase Boons - " + b_data.getName()
 				+ "\n_______________________________");
 		String[] boon_array = new String[] { "MGHT", "QCKN", "FURY", "PROT", "ALAC", "SPOT", "FRST", "GoE", "GotL",
@@ -450,14 +475,8 @@ public class Statistics {
 
 		for (int i = 0; i < fight_intervals.size(); i++) {
 
-			// Table
-			TableBuilder table = new TableBuilder();
 			table.addTitle("Phase " + (i + 1));
-
-			// Header
 			table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
-
-			// Body
 			for (int j = 0; j < p_data.size(); j++) {
 				playerData p = p_data.get(j);
 
@@ -470,6 +489,7 @@ public class Statistics {
 			}
 
 			all_tables.append("\n" + table.toString());
+			table.clear();
 		}
 
 		return all_tables.toString();
