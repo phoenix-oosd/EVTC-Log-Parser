@@ -252,9 +252,6 @@ public class Parse {
 				}
 			}
 		}
-
-		toString(b_data, p_data, s_data, c_data);
-
 	}
 
 	public String toString(bossData b_data, List<playerData> p_data, List<skillData> s_data, List<combatData> c_data) {
