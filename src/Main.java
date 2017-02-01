@@ -24,14 +24,13 @@ public class Main {
 	private static boolean displaying_version = true;
 	private static final int[] damage_choices = new int[] { 1, 2, 3, 4, 5 };
 	private static final int[] boon_choices = new int[] { 6, 7 };
-	private static final int[] all_choices = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+	private static final int[] all_choices = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final List<String> boon_list = Arrays.asList(new String[] { "Might", "Quickness", "Fury",
 			"Protection", "Alacrity", "Spotter", "Spirit of Frost", "Glyph of Empowerment", "Grace of the Land",
 			"Empower Allies", "Banner of Strength", "Banner of Discipline" });
 
 	// Main
 	public static void main(String[] args) {
-
 		// Start scanner
 		Scanner scan = null;
 		try {
@@ -66,10 +65,10 @@ public class Main {
 				quitting = false;
 				while (!quitting) {
 					// Menu display
-					System.out.println("_______________\n\nEVTC Log Parser\n" + "_______________\n\n" + "1. Final DPS\n"
-							+ "2. Phase DPS\n" + "3. Damage Distribution\n" + "4. Graph Total Damage\n"
-							+ "5. Miscellaneous Combat Statistics\n" + "6. Final Boons\n" + "7. Phase Boons\n"
-							+ "8. Text Dump Tables\n" + "9. Quit\n_______________\n");
+					System.out.println("_______________\n\nEVTC Log Parser\n" + "_______________\n\n" + "0. Dump EVTC\n"
+							+ "1. Final DPS\n" + "2. Phase DPS\n" + "3. Damage Distribution\n"
+							+ "4. Graph Total Damage\n" + "5. Miscellaneous Combat Statistics\n" + "6. Final Boons\n"
+							+ "7. Phase Boons\n" + "8. Text Dump Tables\n" + "9. Quit\n_______________\n");
 					System.out.println("Enter an option below: ");
 
 					// Choose an option
@@ -110,23 +109,47 @@ public class Main {
 			Parse parser = null;
 			Statistics stats = null;
 			bossData b_data = null;
+			List<playerData> p_data = null;
+			List<skillData> s_data = null;
+			List<combatData> c_data = null;
 			try {
 				parser = new Parse(log);
 				b_data = parser.get_boss_data();
-				List<playerData> p_data = parser.get_player_data();
-				List<skillData> s_data = parser.get_skill_data();
-				List<combatData> c_data = parser.get_combat_data();
+				p_data = parser.get_player_data();
+				s_data = parser.get_skill_data();
+				c_data = parser.get_combat_data();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
 				parser.fill_missing_data(b_data, p_data, s_data, c_data);
 				stats = new Statistics(b_data, p_data, s_data, c_data);
 				if (displaying_version) {
 					System.out.println("Log version:\t" + b_data.getVersion());
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
-			// A single choice
-			if (choice != 8) {
-				// Damage Related
+			if (choice == 0) {
+				try {
+					File evtc_dump = new File("./tables/" + base + "_" + b_data.getName() + "_evtc-dump.txt");
+					writeToFile(parser.toString(b_data, p_data, s_data, c_data), evtc_dump);
+					System.out.println("Output file:\t" + evtc_dump.getName());
+					return "";
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (choice == 8) {
+				stats.get_damage_logs();
+				stats.get_boon_logs(boon_list);
+				try {
+					File text_dump = new File("./tables/" + base + "_" + b_data.getName() + "_all-tables.txt");
+					writeToFile(stats.get_final_dps() + "\n" + stats.get_phase_dps() + "\n" + stats.get_combat_stats()
+							+ "\n" + stats.get_final_boons(boon_list) + "\n" + stats.get_phase_boons(boon_list) + "\n"
+							+ stats.get_damage_distribution(), text_dump);
+					System.out.println("Output file:\t" + text_dump.getName());
+					return "";
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
 				if (is_in(choice, damage_choices)) {
 					stats.get_damage_logs();
 					if (choice == 1) {
@@ -140,9 +163,7 @@ public class Main {
 					} else if (choice == 5) {
 						return stats.get_combat_stats();
 					}
-				}
-				// Boon Related
-				else if (is_in(choice, boon_choices)) {
+				} else if (is_in(choice, boon_choices)) {
 					stats.get_boon_logs(boon_list);
 					if (choice == 6) {
 						return stats.get_final_boons(boon_list);
@@ -151,22 +172,6 @@ public class Main {
 						return stats.get_phase_boons(boon_list);
 					}
 				}
-			}
-			// All choices
-			else {
-				// Write to file
-				stats.get_damage_logs();
-				stats.get_boon_logs(boon_list);
-				try {
-					File text_dump = new File("./tables/" + base + "_" + b_data.getName() + ".txt");
-					writeToFile(stats.get_final_dps() + "\n" + stats.get_phase_dps() + "\n" + stats.get_combat_stats()
-							+ "\n" + stats.get_final_boons(boon_list) + "\n" + stats.get_phase_boons(boon_list) + "\n"
-							+ stats.get_damage_distribution(), text_dump);
-					System.out.println("Output file:\t" + text_dump.getName());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return "";
 			}
 		} else {
 			System.out.println("Invalid option. Try again.\n");

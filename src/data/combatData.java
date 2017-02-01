@@ -15,18 +15,18 @@ public class combatData {
 	private boolean iff;
 	private boolean is_buff;
 	private boolean is_crit;
-	private boolean is_activation;
+	private int is_activation;
 	private boolean is_buffremove;
 	private boolean is_ninety;
 	private boolean is_fifty;
 	private boolean is_moving;
-	private boolean is_statechange;
+	private int is_statechange;
 
 	// Constructor
 	public combatData(long time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
 			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, boolean is_crit,
-			boolean is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
-			boolean is_statechange) {
+			int is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
+			int is_statechange) {
 		this.time = time;
 		this.src_agent = src_agent;
 		this.dst_agent = dst_agent;
@@ -46,6 +46,31 @@ public class combatData {
 		this.is_fifty = is_fifty;
 		this.is_moving = is_moving;
 		this.is_statechange = is_statechange;
+	}
+
+	// Public Methods
+	public String[] toStringArray() {
+		String[] array = new String[19];
+		array[0] = String.valueOf(time);
+		array[1] = String.valueOf(src_agent);
+		array[2] = String.valueOf(dst_agent);
+		array[3] = String.valueOf(value);
+		array[4] = String.valueOf(buff_dmg);
+		array[5] = String.valueOf(overstack_value);
+		array[6] = String.valueOf(skill_id);
+		array[7] = String.valueOf(src_cid);
+		array[8] = String.valueOf(dst_cid);
+		array[9] = String.valueOf(src_master_cid);
+		array[10] = String.valueOf(iff);
+		array[11] = String.valueOf(is_buff);
+		array[12] = String.valueOf(is_crit);
+		array[13] = String.valueOf(is_activation);
+		array[14] = String.valueOf(is_buffremove);
+		array[15] = String.valueOf(is_ninety);
+		array[16] = String.valueOf(is_fifty);
+		array[17] = String.valueOf(is_moving);
+		array[18] = String.valueOf(is_statechange);
+		return array;
 	}
 
 	// Getters
@@ -101,7 +126,7 @@ public class combatData {
 		return is_crit;
 	}
 
-	public boolean is_activation() {
+	public int is_activation() {
 		return is_activation;
 	}
 
@@ -121,7 +146,7 @@ public class combatData {
 		return is_moving;
 	}
 
-	public boolean is_statechange() {
+	public int is_statechange() {
 		return is_statechange;
 	}
 

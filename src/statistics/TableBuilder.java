@@ -20,6 +20,11 @@ public class TableBuilder {
 		rows.add(cols);
 	}
 
+	public void clear() {
+		title = "";
+		rows = new LinkedList<String[]>();
+	}
+
 	// Private Methods
 	private int[] getWidths() {
 		int cols = 0;

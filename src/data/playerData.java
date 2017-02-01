@@ -29,6 +29,19 @@ public class playerData {
 		this.condition = condition;
 	}
 
+	// Public Methods
+	public String[] toStringArray() {
+		String[] array = new String[7];
+		array[0] = String.valueOf(agent);
+		array[1] = String.valueOf(CID);
+		array[2] = String.valueOf(name);
+		array[3] = String.valueOf(prof);
+		array[4] = String.valueOf(toughness);
+		array[5] = String.valueOf(healing);
+		array[6] = String.valueOf(condition);
+		return array;
+	}
+
 	// Getters
 	public long getAgent() {
 		return agent;

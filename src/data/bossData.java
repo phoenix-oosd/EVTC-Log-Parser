@@ -20,6 +20,18 @@ public class bossData {
 		this.version = version;
 	}
 
+	// Public Methods
+	public String[] toStringArray() {
+		String[] array = new String[6];
+		array[0] = String.valueOf(agent);
+		array[1] = String.valueOf(CID);
+		array[2] = String.valueOf(name);
+		array[3] = String.valueOf(HP);
+		array[4] = String.valueOf(fight_duration);
+		array[5] = String.valueOf(version);
+		return array;
+	}
+
 	// Getters
 	public long getAgent() {
 		return agent;

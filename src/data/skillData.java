@@ -12,6 +12,14 @@ public class skillData {
 		this.name = name;
 	}
 
+	// Public Methods
+	public String[] toStringArray() {
+		String[] array = new String[2];
+		array[0] = String.valueOf(ID);
+		array[1] = String.valueOf(name);
+		return array;
+	}
+
 	// Getters
 	public int getID() {
 		return ID;

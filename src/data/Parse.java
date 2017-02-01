@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import statistics.TableBuilder;
+
 public class Parse {
 
 	// Fields
@@ -164,7 +166,7 @@ public class Parse {
 			boolean is_crit = get_bool(f.get());
 
 			// 1 byte: is_activation
-			boolean is_activation = get_bool(f.get());
+			int is_activation = f.get();
 
 			// 1 byte: is_buffremove
 			boolean is_buffremove = get_bool(f.get());
@@ -179,9 +181,9 @@ public class Parse {
 			boolean is_moving = get_bool(f.get());
 
 			// 1 byte: is_statechange
-			boolean is_statechange = get_bool(f.get());
+			int is_statechange = f.get();
 
-			// 4 bytes: garbage
+			// 4 bytes: garbage + compiler
 			f.position(f.position() + 4);
 
 			// add combat
@@ -251,6 +253,52 @@ public class Parse {
 			}
 		}
 
+		toString(b_data, p_data, s_data, c_data);
+
+	}
+
+	public String toString(bossData b_data, List<playerData> p_data, List<skillData> s_data, List<combatData> c_data) {
+
+		// Build tables
+		String all_tables = "";
+		TableBuilder table = new TableBuilder();
+
+		// Boss Data Table
+		table.addTitle("BOSS DATA");
+		table.addRow("agent", "CID", "name", "HP", "fight_duration", "version");
+		table.addRow(b_data.toStringArray());
+		all_tables += table.toString() + "\n";
+		table.clear();
+
+		// Player Data
+		table.addTitle("PLAYER DATA");
+		table.addRow("agent", "CID", "name", "prof", "toughness", "healing", "condition");
+		for (playerData p : p_data) {
+			table.addRow(p.toStringArray());
+		}
+		all_tables += table.toString() + "\n";
+		table.clear();
+
+		// Skill Data
+		table.addTitle("SKILL DATA");
+		table.addRow("ID", "name");
+		for (skillData s : s_data) {
+			table.addRow(s.toStringArray());
+		}
+		all_tables += table.toString() + "\n";
+		table.clear();
+
+		// Combat Data Table
+		table.addTitle("COMBAT DATA");
+		table.addRow("time", "src_agent", "dst_agent", "value", "buff_dmg", "overstack_value", "skill_id", "src_cid",
+				"dst_cid", "src_master_cid", "iff", "is_buff", "is_crit", "is_activation", "is_buffremove",
+				"boolean is_ninety", "is_fifty", "is_moving", "is_statechange");
+		for (combatData c : c_data) {
+			table.addRow(c.toStringArray());
+		}
+		all_tables += table.toString();
+
+		return all_tables;
 	}
 
 	// Private Methods
@@ -375,7 +423,7 @@ public class Parse {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		return "";
+		return "UNKNOWN";
 	}
 
 	private boolean get_bool(int i) {
