@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import log.boonLog;
+import log.damageLog;
+
 public class playerData {
 
 	// Fields

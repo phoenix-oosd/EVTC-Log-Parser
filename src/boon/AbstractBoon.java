@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Boon {
+public abstract class AbstractBoon {
 
 	// Fields
 	protected List<Integer> stacks = new ArrayList<Integer>();
 	protected int max_stacks;
-	protected String type;
 
 	// Constructor
-	public Boon(int max_stacks, String type) {
+	public AbstractBoon(int max_stacks) {
 		this.max_stacks = max_stacks;
-		this.type = type;
 	}
 
 	// Abstract Methods
@@ -45,10 +43,5 @@ public abstract class Boon {
 
 	protected void sort() {
 		Collections.sort(stacks, Collections.reverseOrder());
-	}
-
-	// Getters
-	public String get_type() {
-		return this.type;
 	}
 }

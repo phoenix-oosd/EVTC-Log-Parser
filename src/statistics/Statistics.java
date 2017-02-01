@@ -19,14 +19,16 @@ import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 
-import boon.Boon;
+import boon.AbstractBoon;
 import boon.BoonFactory;
-import data.boonLog;
 import data.bossData;
 import data.combatData;
-import data.damageLog;
 import data.playerData;
 import data.skillData;
+import enums.Boon;
+import log.boonLog;
+import log.damageLog;
+import utility.TableBuilder;
 
 public class Statistics {
 
@@ -37,15 +39,16 @@ public class Statistics {
 	private List<combatData> c_data = null;
 
 	// Constructor
-	public Statistics(bossData b_data, List<playerData> p_data, List<skillData> s_data, List<combatData> c_data) {
-		this.b_data = b_data;
-		this.p_data = p_data;
-		this.s_data = s_data;
-		this.c_data = c_data;
+	public Statistics(Parse parsed) {
+		this.b_data = parsed.getB();
+		this.p_data = parsed.getP();
+		this.s_data = parsed.getS();
+		this.c_data = parsed.getC();
 	}
 
 	// Public Methods
 	public void get_damage_logs() {
+
 		// Start time of the fight
 		long t_start = c_data.get(0).get_time();
 
@@ -85,10 +88,11 @@ public class Statistics {
 		}
 	}
 
-	public void get_boon_logs(List<String> boon_list) {
+	public void get_boon_logs() {
 
 		// Start time of the fight
 		long t_start = c_data.get(0).get_time();
+		List<String> boon_list = Boon.getList();
 
 		// Add boon logs for each player
 		for (playerData p : p_data) {
@@ -380,9 +384,10 @@ public class Statistics {
 
 	}
 
-	public String get_final_boons(List<String> boon_list) {
+	public String get_final_boons() {
 
 		// Final boons
+		List<String> boon_list = Boon.getList();
 		BoonFactory boonFactory = new BoonFactory();
 		List<String[]> all_rates = new ArrayList<String[]>();
 
@@ -395,16 +400,17 @@ public class Statistics {
 
 			for (int j = 0; j < boon_list.size(); j++) {
 
-				String boon = boon_list.get(j);
-				Boon boon_object = boonFactory.makeBoon(boon);
+				Boon boon = Boon.getBoon(boon_list.get(j));
+				AbstractBoon boon_object = boonFactory.makeBoon(boon);
 				String rate = "0.00";
+				List<boonLog> logs = boon_logs.get(boon.getName());
 
-				if (!boon_logs.get(boon).isEmpty()) {
-					if (boon_object.get_type().equals("Duration")) {
-						List<Point> boon_intervals = get_boon_intervals_list(boon_object, boon_logs.get(boon));
+				if (!logs.isEmpty()) {
+					if (boon.getType().equals("duration")) {
+						List<Point> boon_intervals = get_boon_intervals_list(boon_object, logs);
 						rate = get_boon_duration(boon_intervals);
-					} else if (boon_object.get_type().equals("Intensity")) {
-						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, boon_logs.get(boon));
+					} else if (boon.getType().equals("intensity")) {
+						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, logs);
 						rate = get_average_stacks(boon_stacks);
 					}
 				}
@@ -418,8 +424,7 @@ public class Statistics {
 		table.addTitle("Final Boon Rates - " + b_data.getName());
 
 		// Header
-		String[] boon_array = new String[] { "MGHT", "QCKN", "FURY", "PROT", "ALAC", "SPOT", "FRST", "GoE", "GotL",
-				"EA", "BoS", "BoD" };
+		String[] boon_array = Boon.getArray();
 		table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
 
 		// Body
@@ -431,9 +436,10 @@ public class Statistics {
 		return table.toString();
 	}
 
-	public String get_phase_boons(List<String> boon_list) {
+	public String get_phase_boons() {
 
 		// Phase Boons
+		List<String> boon_list = Boon.getList();
 		BoonFactory boonFactory = new BoonFactory();
 		List<String[][]> all_rates = new ArrayList<String[][]>();
 		List<Point> fight_intervals = get_fight_intervals();
@@ -447,18 +453,19 @@ public class Statistics {
 
 			for (int j = 0; j < boon_list.size(); j++) {
 
-				String boon = boon_list.get(j);
-
+				Boon boon = Boon.getBoon(boon_list.get(j));
 				String[] rate = new String[fight_intervals.size()];
 				Arrays.fill(rate, "0.00");
 
-				if (!boon_logs.get(boon).isEmpty()) {
-					Boon boon_object = boonFactory.makeBoon(boon);
-					if (boon_object.get_type().equals("Duration")) {
-						List<Point> boon_intervals = get_boon_intervals_list(boon_object, boon_logs.get(boon));
+				List<boonLog> logs = boon_logs.get(boon.getName());
+
+				if (!logs.isEmpty()) {
+					AbstractBoon boon_object = boonFactory.makeBoon(boon);
+					if (boon.getType().equals("duration")) {
+						List<Point> boon_intervals = get_boon_intervals_list(boon_object, logs);
 						rate = get_boon_duration(boon_intervals, fight_intervals);
-					} else if (boon_object.get_type().equals("Intensity")) {
-						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, boon_logs.get(boon));
+					} else if (boon.getType().equals("intensity")) {
+						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, logs);
 						rate = get_average_stacks(boon_stacks, fight_intervals);
 					}
 				}
@@ -472,8 +479,7 @@ public class Statistics {
 
 		all_tables.append("_______________________________\n\n" + "Phase Boons - " + b_data.getName()
 				+ "\n_______________________________");
-		String[] boon_array = new String[] { "MGHT", "QCKN", "FURY", "PROT", "ALAC", "SPOT", "FRST", "GoE", "GotL",
-				"EA", "BoS", "BoD" };
+		String[] boon_array = Boon.getArray();
 
 		for (int i = 0; i < fight_intervals.size(); i++) {
 
@@ -635,7 +641,7 @@ public class Statistics {
 
 	}
 
-	private List<Point> get_boon_intervals_list(Boon boon, List<boonLog> boon_logs) {
+	private List<Point> get_boon_intervals_list(AbstractBoon boon, List<boonLog> boon_logs) {
 
 		// Initialize variables
 		int t_prev = 0;
@@ -706,7 +712,7 @@ public class Statistics {
 		return phase_durations;
 	}
 
-	private List<Integer> get_boon_stacks_list(Boon boon, List<boonLog> boon_logs) {
+	private List<Integer> get_boon_stacks_list(AbstractBoon boon, List<boonLog> boon_logs) {
 
 		// Initialize variables
 		int t_prev = 0;

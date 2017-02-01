@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class Intensity extends Boon {
+public class Intensity extends AbstractBoon {
 
 	// Constructor
-	public Intensity(int max_stacks, String type) {
-		super(max_stacks, type);
+	public Intensity(int max_stacks) {
+		super(max_stacks);
 	}
 
 	// Public Methods
@@ -38,7 +38,7 @@ public class Intensity extends Boon {
 	@Override
 	public void add_stacks_between(List<Integer> boon_stacks, int start, int end) {
 
-		Boon boon_copy = new Intensity(this.max_stacks, this.type);
+		Intensity boon_copy = new Intensity(this.max_stacks);
 		boon_copy.stacks = new ArrayList<Integer>(this.stacks);
 		List<Integer> stacks = boon_copy.stacks;
 

@@ -1,97 +1,127 @@
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
-import data.Parse;
-import data.bossData;
-import data.combatData;
-import data.playerData;
-import data.skillData;
+import enums.Choice;
+import statistics.Parse;
 import statistics.Statistics;
+import utility.Utility;
 
 public class Main {
 
 	// Fields
 	private static boolean quitting = false;
 	private static boolean displaying_version = true;
-	private static final int[] damage_choices = new int[] { 1, 2, 3, 4, 5 };
-	private static final int[] boon_choices = new int[] { 6, 7 };
-	private static final int[] all_choices = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-	private static final List<String> boon_list = Arrays.asList(new String[] { "Might", "Quickness", "Fury",
-			"Protection", "Alacrity", "Spotter", "Spirit of Frost", "Glyph of Empowerment", "Grace of the Land",
-			"Empower Allies", "Banner of Strength", "Banner of Discipline" });
 
 	// Main
 	public static void main(String[] args) {
-		// Start scanner
+
+		// Scanner
 		Scanner scan = null;
 		try {
 			scan = new Scanner(System.in);
-			// Files
+
+			// File Association
 			if (args.length == 2) {
 				displaying_version = false;
-				String output = "<START>";
-				char[] choices = args[1].toCharArray();
-				char[] possible = new char[] { '1', '2', '3', '5', '6', '7' };
-				for (char c : choices) {
-					if (is_in(c, possible)) {
-						output += "\n" + parsing(Character.getNumericValue(c), new File(args[0]));
+				int[] choices = args[1].chars().map(x -> x - '0').toArray();
+
+				StringBuilder output = new StringBuilder("<START>");
+				for (int i : choices) {
+					Choice c = Choice.getChoice(i);
+					if (i > 0) {
+						output.append(System.lineSeparator());
+						output.append(parsing(c, new File(args[0])));
 					}
 				}
-				System.out.println(output + "<END>");
+				output.append("<END>");
+				System.out.println(output.toString());
 				scan.nextLine();
 				return;
 			}
-			File dir = new File("./logs");
-			dir.mkdir();
-			new File("./graphs").mkdirs();
-			new File("./tables").mkdirs();
-			List<File> logs = new ArrayList<File>();
-			recursiveFileSearch("./logs", logs);
-			if (logs.isEmpty()) {
-				System.out.println("/logs/ has no .evtc files.\nNothing to parse.\nPress Enter to exit.\n");
-				scan.nextLine();
-				return;
-			} else {
-				// Menu loop
-				quitting = false;
-				while (!quitting) {
-					// Menu display
-					System.out.println("_______________\n\nEVTC Log Parser\n" + "_______________\n\n" + "0. Dump EVTC\n"
-							+ "1. Final DPS\n" + "2. Phase DPS\n" + "3. Damage Distribution\n"
-							+ "4. Graph Total Damage\n" + "5. Miscellaneous Combat Statistics\n" + "6. Final Boons\n"
-							+ "7. Phase Boons\n" + "8. Text Dump Tables\n" + "9. Quit\n_______________\n");
-					System.out.println("Enter an option below: ");
 
-					// Choose an option
-					int choice = -1;
-					try {
-						choice = scan.nextInt();
-					} catch (InputMismatchException e) {
-					}
+			// Menu
+			else {
+
+				// Create required directories
+				new File("./logs").mkdir();
+				new File("./graphs").mkdirs();
+				new File("./tables").mkdirs();
+
+				// Obtain list of .evtc files in /logs/
+				List<File> logs = new ArrayList<File>();
+				Utility.recursiveFileSearch("./logs", logs);
+
+				// /logs/ must be non-empty
+				if (logs.isEmpty()) {
+					System.out.println("/logs/ contains no .evtc files.");
+					System.out.printf("%n");
+					System.out.println("Press Enter to exit.");
+					System.out.printf("%n");
 					scan.nextLine();
+					return;
+				}
 
-					// Parse ".evtc" files
-					if (choice != 9) {
-						for (File log : logs) {
-							System.out.println("\nInput file:\t" + log.getName());
-							String output = parsing(choice, log);
-							System.out.println(output);
+				// Display menu
+				else {
+					while (!quitting) {
+						System.out.println("_______________");
+						System.out.printf("%n");
+						System.out.println("EVTC Log Parser");
+						System.out.println("_______________");
+						System.out.printf("%n");
+						System.out.println("0. Dump EVTC");
+						System.out.println("1. Final DPS");
+						System.out.println("2. Phase DPS");
+						System.out.println("3. Damage Distribution");
+						System.out.println("4. Graph Total Damage");
+						System.out.println("5. Misc. Combat Stats");
+						System.out.println("6. Final Boons");
+						System.out.println("7. Phase Boons");
+						System.out.println("8. Dump Tables");
+						System.out.println("9. Quit");
+						System.out.println("_______________");
+						System.out.printf("%n");
+						System.out.println("Enter an option by number below:");
+
+						// Read user input
+						Choice choice = null;
+						try {
+							choice = Choice.getChoice(scan.nextInt());
+
+						} catch (InputMismatchException e) {
+							e.printStackTrace();
 						}
-					} else {
-						quitting = true;
+						scan.nextLine();
+
+						// Invalid choice
+						if (choice == null) {
+							System.out.println("Invalid option. Try again.\n");
+						}
+
+						// Quitting
+						else if (choice.equals(Choice.QUIT)) {
+							quitting = true;
+						}
+
+						// Valid choice
+						else {
+
+							// Apply option to all .evtc files in /logs/
+							for (File log : logs) {
+								System.out.println("\nInput file:\t" + log.getName());
+								String output = parsing(choice, log);
+								System.out.println(output);
+							}
+						}
 					}
 				}
 			}
 		}
+
 		// Close scanner
 		finally {
 			if (scan != null) {
@@ -101,113 +131,82 @@ public class Main {
 		return;
 	}
 
-	// Handle user choice
-	private static String parsing(int choice, File log) {
-		if (is_in(choice, all_choices)) {
-			// Parse the log
-			String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
-			Parse parser = null;
-			Statistics stats = null;
-			bossData b_data = null;
-			List<playerData> p_data = null;
-			List<skillData> s_data = null;
-			List<combatData> c_data = null;
-			try {
-				parser = new Parse(log);
-				b_data = parser.get_boss_data();
-				p_data = parser.get_player_data();
-				s_data = parser.get_skill_data();
-				c_data = parser.get_combat_data();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				parser.fill_missing_data(b_data, p_data, s_data, c_data);
-				stats = new Statistics(b_data, p_data, s_data, c_data);
-				if (displaying_version) {
-					System.out.println("Log version:\t" + b_data.getVersion());
-				}
+	private static String parsing(Choice choice, File log) {
+
+		// Parse the log
+		String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
+		Parse parsed = null;
+		Statistics stats = null;
+		try {
+			parsed = new Parse(log);
+			if (displaying_version) {
+				System.out.println("Log version:\t" + parsed.getB().getVersion());
 			}
-			if (choice == 0) {
+			stats = new Statistics(parsed);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Damage related options
+		if (choice.getType().equals("damage")) {
+			stats.get_damage_logs();
+			if (choice.equals(Choice.FINAL_DPS)) {
+				return stats.get_final_dps();
+			}
+
+			else if (choice.equals(Choice.PHASE_DPS)) {
+				return stats.get_phase_dps();
+			}
+
+			else if (choice.equals(Choice.DMG_DIST)) {
+				return stats.get_damage_distribution();
+			}
+
+			else if (choice.equals(Choice.G_TOTAL_DMG)) {
+				return "Output file:\t" + stats.get_total_damage_graph(base);
+			}
+
+			else if (choice.equals(Choice.MISC_STATS)) {
+				return stats.get_combat_stats();
+			}
+		}
+
+		// Boon related options
+		else if (choice.getType().equals("boons")) {
+			stats.get_boon_logs();
+			if (choice.equals(Choice.FINAL_BOONS)) {
+				return stats.get_final_boons();
+			} else if (choice.equals(Choice.PHASE_BOONS)) {
+				return stats.get_phase_boons();
+			}
+
+		}
+
+		// Text Dumps
+		else if (choice.getType().equals("text")) {
+			if (choice.equals(Choice.DUMP_EVTC)) {
+				File evtc_dump = new File("./tables/" + base + "_" + parsed.getB().getName() + "_evtc-dump.txt");
 				try {
-					File evtc_dump = new File("./tables/" + base + "_" + b_data.getName() + "_evtc-dump.txt");
-					writeToFile(parser.toString(b_data, p_data, s_data, c_data), evtc_dump);
-					System.out.println("Output file:\t" + evtc_dump.getName());
-					return "";
+					Utility.writeToFile(parsed.toString(), evtc_dump);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			} else if (choice == 8) {
+				return "Output file:\t" + evtc_dump.getName();
+			} else if (choice.equals(Choice.DUMP_TABLES)) {
 				stats.get_damage_logs();
-				stats.get_boon_logs(boon_list);
+				stats.get_boon_logs();
+				File text_dump = new File("./tables/" + base + "_" + parsed.getB().getName() + "_all-tables.txt");
 				try {
-					File text_dump = new File("./tables/" + base + "_" + b_data.getName() + "_all-tables.txt");
-					writeToFile(stats.get_final_dps() + "\n" + stats.get_phase_dps() + "\n" + stats.get_combat_stats()
-							+ "\n" + stats.get_final_boons(boon_list) + "\n" + stats.get_phase_boons(boon_list) + "\n"
-							+ stats.get_damage_distribution(), text_dump);
-					System.out.println("Output file:\t" + text_dump.getName());
-					return "";
+					Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
+							+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()
+							+ stats.get_final_boons() + System.lineSeparator() + stats.get_phase_boons()
+							+ System.lineSeparator() + stats.get_damage_distribution(), text_dump);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			} else {
-				if (is_in(choice, damage_choices)) {
-					stats.get_damage_logs();
-					if (choice == 1) {
-						return stats.get_final_dps();
-					} else if (choice == 2) {
-						return stats.get_phase_dps();
-					} else if (choice == 3) {
-						return stats.get_damage_distribution();
-					} else if (choice == 4) {
-						System.out.println("Output file:\t" + stats.get_total_damage_graph(base));
-					} else if (choice == 5) {
-						return stats.get_combat_stats();
-					}
-				} else if (is_in(choice, boon_choices)) {
-					stats.get_boon_logs(boon_list);
-					if (choice == 6) {
-						return stats.get_final_boons(boon_list);
-					} else if (choice == 7) {
-						stats.get_damage_logs();
-						return stats.get_phase_boons(boon_list);
-					}
-				}
+				return "Output file:\t" + text_dump.getName();
 			}
-		} else {
-			System.out.println("Invalid option. Try again.\n");
-			return "";
 		}
 		return "";
 	}
-
-	// Public Methods
-	public static boolean is_in(int i, int[] array) {
-		return IntStream.of(array).anyMatch(x -> x == i);
-	}
-
-	// Private Methods
-	public static boolean is_in(char c, char[] array) {
-		return new String(array).contains("" + c);
-	}
-
-	private static void writeToFile(String string, File file) throws IOException {
-		try (BufferedReader geter = new BufferedReader(new StringReader(string));
-				PrintWriter writer = new PrintWriter(file, "UTF-8");) {
-			geter.lines().forEach(line -> writer.println(line));
-			writer.close();
-		}
-	}
-
-	private static void recursiveFileSearch(String dirName, List<File> files) {
-		File dir = new File(dirName);
-		File[] file_array = dir.listFiles();
-		for (File f : file_array) {
-			if (f.isFile() && f.toString().endsWith(".evtc")) {
-				files.add(f);
-			} else if (f.isDirectory()) {
-				recursiveFileSearch(f.getAbsolutePath(), files);
-			}
-		}
-	}
-
 }

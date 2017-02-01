@@ -1,4 +1,4 @@
-package statistics;
+package utility;
 
 import java.util.Arrays;
 import java.util.LinkedList;

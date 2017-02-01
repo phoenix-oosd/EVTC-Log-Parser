@@ -1,4 +1,4 @@
-package data;
+package log;
 
 public class damageLog {
 
