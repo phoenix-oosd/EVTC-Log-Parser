@@ -246,7 +246,9 @@ public class Statistics {
 				if (skill_damage.containsKey(log.getID())) {
 					skill_damage.put(log.getID(), skill_damage.get(log.getID()) + log.getDamage());
 				} else {
-					skill_damage.put(log.getID(), log.getDamage());
+					if (log.getID() > 0) {
+						skill_damage.put(log.getID(), log.getDamage());
+					}
 				}
 			}
 
