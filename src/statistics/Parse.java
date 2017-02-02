@@ -10,6 +10,7 @@ import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 import data.bossData;
 import data.combatData;
@@ -23,14 +24,17 @@ import utility.Utility;
 public class Parse {
 
 	// Fields
+	private boolean players_are_hidden = false;
 	private bossData b_data = null;
 	private List<playerData> p_data = null;
 	private List<skillData> s_data = null;
 	private List<combatData> c_data = null;
 
 	// Constructor
-	public Parse(File file) throws IOException {
 
+	public Parse(File file, boolean players_are_hidden) throws IOException {
+
+		this.players_are_hidden = players_are_hidden;
 		FileInputStream stream = null;
 		MappedByteBuffer f = null;
 
@@ -59,7 +63,6 @@ public class Parse {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -160,8 +163,17 @@ public class Parse {
 		// 4 bytes: player count
 		int player_count = f.getInt();
 		if (!((player_count >= 1) && (player_count <= 10))) {
-			System.out.println("Invalid .evtc file.");
-			System.exit(0);
+			System.out.println("Invalid .evtc file. Version: " + b_data.getVersion());
+			System.out.println("Player table has not been created properly: " + player_count + " players detected.");
+			System.out.println("Send this log to deltaconnected if you suspect there is a bug with .evtc generation.");
+			Scanner scan = null;
+			try {
+				scan = new Scanner(System.in);
+				scan.nextLine();
+			} finally {
+				scan.close();
+				System.exit(0);
+			}
 		}
 
 		// 96 bytes: each player
@@ -192,12 +204,15 @@ public class Parse {
 			Profession p = Profession.getProfession(prof_id, is_elite);
 
 			// Add player
-			if (p == null) {
-				this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), "UNKNOWN", toughness, healing,
+			if (players_are_hidden) {
+				this.p_data.add(new playerData(agent, 0, "Player " + String.valueOf(i), p.getName(), toughness, healing,
 						condition));
-			} else {
+			} else if (p != null) {
 				this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), p.getName(), toughness,
 						healing, condition));
+			} else {
+				this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), "UNKNOWN", toughness, healing,
+						condition));
 			}
 		}
 	}

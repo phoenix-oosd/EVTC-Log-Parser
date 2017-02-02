@@ -15,6 +15,7 @@ public class Main {
 	// Fields
 	private static boolean quitting = false;
 	private static boolean displaying_version = true;
+	private static boolean players_are_hidden = false;
 
 	// Main
 	public static void main(String[] args) {
@@ -25,7 +26,10 @@ public class Main {
 			scan = new Scanner(System.in);
 
 			// File Association
-			if (args.length == 2) {
+			if (args.length >= 2) {
+				if (args.length >= 3 && args[2].equals("anon")) {
+					players_are_hidden = true;
+				}
 
 				displaying_version = false;
 				int[] choices = args[1].chars().map(x -> x - '0').toArray();
@@ -36,8 +40,7 @@ public class Main {
 					if (c == null) {
 						continue;
 					} else if (c.canBeAssociated()) {
-						output.append(System.lineSeparator());
-						output.append(parsing(c, new File(args[0])));
+						output.append(System.lineSeparator() + parsing(c, new File(args[0])));
 					}
 				}
 				output.append("<END>");
@@ -62,9 +65,7 @@ public class Main {
 				// /logs/ must be non-empty
 				if (logs.isEmpty()) {
 					System.out.println("/logs/ contains no .evtc files.");
-					System.out.printf("%n");
 					System.out.println("Press Enter to exit.");
-					System.out.printf("%n");
 					scan.nextLine();
 					return;
 				}
@@ -142,7 +143,7 @@ public class Main {
 		Parse parsed = null;
 		Statistics stats = null;
 		try {
-			parsed = new Parse(log);
+			parsed = new Parse(log, players_are_hidden);
 			if (displaying_version) {
 				System.out.println("Log version:\t" + parsed.getB().getVersion());
 			}
