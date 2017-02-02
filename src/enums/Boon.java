@@ -13,6 +13,7 @@ public enum Boon {
 	ALACRITY(9, "duration", "Alacrity", "ALAC"),
 	SPOTTER(1, "duration", "Spotter", "SPOT"),
 	SPIRIT_OF_FROST(1, "duration", "Spirit of Frost", "FRST"),
+	SUN_SPIRIT(1, "duration", "Sun Spirit", "SUNS"),
 	GLYPH_OF_EMPOWERMENT(1, "duration", "Glyph of Empowerment", "GoE"),
 	GRACE_OF_THE_LAND(5, "intensity", "Grace of the Land", "GoTL"),
 	EMPOWER_ALLIES(1, "duration", "Empower Allies", "EA"),
