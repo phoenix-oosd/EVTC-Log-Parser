@@ -103,7 +103,7 @@ public class Main {
 
 						// Invalid choice
 						if (choice == null) {
-							System.out.println("Invalid option. Try again.\n");
+							System.out.println("Invalid option. Try again." + System.lineSeparator());
 						}
 
 						// Quitting
@@ -116,7 +116,7 @@ public class Main {
 
 							// Apply option to all .evtc files in /logs/
 							for (File log : logs) {
-								System.out.println("\nInput file:\t" + log.getName());
+								System.out.println(System.lineSeparator() + "Input file:\t" + log.getName());
 								String output = parsing(choice, log);
 								System.out.println(output);
 							}

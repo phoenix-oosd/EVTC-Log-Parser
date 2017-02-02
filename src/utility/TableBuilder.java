@@ -1,7 +1,6 @@
 package utility;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -9,7 +8,7 @@ public class TableBuilder {
 
 	// Fields
 	private String title = "";
-	private List<String[]> rows = new LinkedList<String[]>();
+	private List<String[]> rows = new ArrayList<String[]>();
 
 	// Public Methods
 	public void addTitle(String title) {
@@ -22,7 +21,40 @@ public class TableBuilder {
 
 	public void clear() {
 		title = "";
-		rows = new LinkedList<String[]>();
+		rows = new ArrayList<String[]>();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder output = new StringBuilder();
+		int[] colWidths = getWidths();
+		// Title
+		if (!title.equals("")) {
+			output.append(Utility.fill(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
+			output.append(title + System.lineSeparator());
+			output.append(Utility.fill(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
+		}
+		// Header
+		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
+			output.append(Utility.center(rows.get(0)[colNum], colWidths[colNum]));
+			output.append("   ");
+		}
+		output.append(System.lineSeparator());
+		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
+			output.append(Utility.center(Utility.fill(colWidths[colNum], '_'), colWidths[colNum]));
+			output.append("   ");
+		}
+		output.append(System.lineSeparator() + System.lineSeparator());
+		// Body
+		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
+			String[] row = iter.next();
+			for (int colNum = 0; colNum < row.length; colNum++) {
+				output.append(Utility.center(row[colNum], colWidths[colNum]));
+				output.append("   ");
+			}
+			output.append(System.lineSeparator());
+		}
+		return output.toString();
 	}
 
 	// Private Methods
@@ -38,54 +70,4 @@ public class TableBuilder {
 		}
 		return widths;
 	}
-
-	private String center(String text, int len) {
-		String out = String.format("%" + len + "s%s%" + len + "s", "", text, "");
-		float start = (out.length() / 2) - (len / 2);
-		return out.substring((int) start, (int) (start + len));
-	}
-
-	private String fill(int length, char charToFill) {
-		if (length > 0) {
-			char[] array = new char[length];
-			Arrays.fill(array, charToFill);
-			return new String(array);
-		}
-		return "";
-	}
-
-	// Public Methods
-	@Override
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		int[] colWidths = getWidths();
-		// Title
-		if (!title.equals("")) {
-			str.append(fill(title.length(), '_') + "\n\n");
-			str.append(title + "\n");
-			str.append(fill(title.length(), '_') + "\n\n");
-		}
-		// Header
-		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			str.append(center(rows.get(0)[colNum], colWidths[colNum]));
-			str.append("   ");
-		}
-		str.append("\n");
-		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			str.append(center(fill(colWidths[colNum], '_'), colWidths[colNum]));
-			str.append("   ");
-		}
-		str.append("\n\n");
-		// Body
-		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
-			String[] row = iter.next();
-			for (int colNum = 0; colNum < row.length; colNum++) {
-				str.append(center(row[colNum], colWidths[colNum]));
-				str.append("   ");
-			}
-			str.append('\n');
-		}
-		return str.toString();
-	}
-
 }

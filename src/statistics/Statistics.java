@@ -5,12 +5,9 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
@@ -29,6 +26,7 @@ import enums.Boon;
 import log.boonLog;
 import log.damageLog;
 import utility.TableBuilder;
+import utility.Utility;
 
 public class Statistics {
 
@@ -54,34 +52,29 @@ public class Statistics {
 
 		// Add damage logs for each player
 		for (playerData p : p_data) {
-			boolean is_dead = false;
+
 			// Check all combat logs
 			for (combatData c : c_data) {
-				if (!is_dead) {
-					// The player or their pets is the source
-					if ((p.getCID() == c.get_src_cid()) || (p.getCID() == c.get_src_master_cid())) {
-						// The target is the boss and the player is an enemy
-						if ((c.get_dst_cid() == b_data.getCID()) && c.iff()) {
-							// Physical or condition damage
-							if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() && (c.get_buff_dmg() > 0))) {
-								int time = (int) (c.get_time() - t_start);
-								int damage;
-								if (c.is_buff()) {
-									damage = c.get_buff_dmg();
-								} else {
-									damage = c.get_value();
-								}
-								p.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(), c.is_buff(),
-										c.is_crit(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
-							}
-						} else if (p.getCID() == c.get_src_cid() && c.get_value() == 0 && c.is_statechange() > 0) {
+				// The player or their pets is the source
+				if ((p.getCID() == c.get_src_cid()) || (p.getCID() == c.get_src_master_cid())) {
+					// The target is the boss and the player is an enemy
+					if ((c.get_dst_cid() == b_data.getCID()) && c.iff()) {
+						// Physical or condition damage
+						if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() && (c.get_buff_dmg() > 0))) {
 							int time = (int) (c.get_time() - t_start);
-							p.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(), c.is_buff(), c.is_crit(),
-									c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
-							if (c.is_statechange() == 4) {
-								is_dead = true;
+							int damage;
+							if (c.is_buff()) {
+								damage = c.get_buff_dmg();
+							} else {
+								damage = c.get_value();
 							}
+							p.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(), c.is_buff(),
+									c.is_crit(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
 						}
+					} else if (p.getCID() == c.get_src_cid() && c.get_value() == 0 && c.is_statechange() > 0) {
+						int time = (int) (c.get_time() - t_start);
+						p.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(), c.is_buff(), c.is_crit(),
+								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 					}
 				}
 			}
@@ -209,7 +202,7 @@ public class Statistics {
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
 			playerData p = p_data.get(i);
-			table.addRow(concat(new String[] { p.getName(), p.getProf() }, all_phase_dps.get(i)));
+			table.addRow(Utility.concat(new String[] { p.getName(), p.getProf() }, all_phase_dps.get(i)));
 		}
 
 		// Footer
@@ -238,11 +231,13 @@ public class Statistics {
 	public String get_damage_distribution() {
 
 		TableBuilder table = new TableBuilder();
-
-		String output = "_________________________________________\n\n" + "Damage Distribution - " + b_data.getName()
-				+ "\n_________________________________________";
+		StringBuilder output = new StringBuilder();
+		output.append("_________________________________________" + System.lineSeparator() + System.lineSeparator());
+		output.append("Damage Distribution - " + b_data.getName() + System.lineSeparator());
+		output.append("_________________________________________" + System.lineSeparator());
 
 		for (playerData p : p_data) {
+
 			List<damageLog> logs = p.get_damage_logs();
 			Map<Integer, Integer> skill_damage = new HashMap<Integer, Integer>();
 
@@ -256,30 +251,24 @@ public class Statistics {
 				}
 			}
 
-			skill_damage = sortByValue(skill_damage);
-
 			double damage_sum = skill_damage.values().stream().reduce(0, Integer::sum);
 
 			// Table
-			table = new TableBuilder();
+			table.clear();
 			table.addTitle(p.getName() + " - " + p.getProf());
-
-			// Header
 			table.addRow("Skill Name", "Damage", "%");
-
-			// Rows
+			skill_damage = Utility.sortByValue(skill_damage);
 			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet()) {
 				String skill_name = get_skill_name(entry.getKey());
 				double damage = entry.getValue();
 				table.addRow(skill_name, String.valueOf((int) damage),
 						String.format("%.2f", (damage / damage_sum * 100)));
 			}
-
-			output += "\n\n" + table.toString();
-
+			output.append(System.lineSeparator());
+			output.append(table.toString());
 		}
 
-		return output;
+		return output.toString();
 
 	}
 
@@ -328,10 +317,10 @@ public class Statistics {
 		List<String[]> all_combat_stats = new ArrayList<String[]>();
 
 		for (playerData p : p_data) {
-
 			List<damageLog> damage_logs = p.get_damage_logs();
 			double i = 0.0, crit = 0.0, schl = 0.0, move = 0.0;
-			int down = 0, resd = 0, died = 0;
+			int down = 0, died = 0;
+			boolean is_dead = false;
 
 			for (damageLog log : damage_logs) {
 
@@ -349,20 +338,15 @@ public class Statistics {
 				}
 				if (log.is_statechange() == 5) {
 					down++;
-				}
-				if (log.is_statechange() == 3) {
-					resd++;
-				}
-				if (log.is_statechange() == 4) {
+				} else if (!is_dead && log.is_statechange() == 4) {
 					died = log.getTime();
+					is_dead = true;
 				}
-
 			}
 
 			String[] combat_stats = new String[] { String.format("%.2f", crit / i), String.format("%.2f", schl / i),
 					String.format("%.2f", move / i), String.valueOf(p.getToughness()), String.valueOf(p.getHealing()),
-					String.valueOf(p.getCondition()), String.valueOf(down), String.valueOf(resd),
-					String.valueOf((double) died / 1000) };
+					String.valueOf(p.getCondition()), String.valueOf(down), String.valueOf((double) died / 1000) };
 
 			all_combat_stats.add(combat_stats);
 		}
@@ -372,12 +356,12 @@ public class Statistics {
 		table.addTitle("Combat Statistics - " + b_data.getName());
 
 		// Header
-		table.addRow("NAME", "PROF", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "RESD", "DIED");
+		table.addRow("NAME", "PROF", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "DIED");
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
 			playerData p = p_data.get(i);
-			table.addRow(concat(new String[] { p.getName(), p.getProf() }, all_combat_stats.get(i)));
+			table.addRow(Utility.concat(new String[] { p.getName(), p.getProf() }, all_combat_stats.get(i)));
 		}
 
 		return table.toString();
@@ -425,12 +409,12 @@ public class Statistics {
 
 		// Header
 		String[] boon_array = Boon.getArray();
-		table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
+		table.addRow(Utility.concat(new String[] { "Name", "Profession" }, boon_array));
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
 			playerData p = p_data.get(i);
-			table.addRow(concat(new String[] { p.getName(), p.getProf() }, all_rates.get(i)));
+			table.addRow(Utility.concat(new String[] { p.getName(), p.getProf() }, all_rates.get(i)));
 		}
 
 		return table.toString();
@@ -474,17 +458,19 @@ public class Statistics {
 			all_rates.add(rates);
 		}
 
-		StringBuilder all_tables = new StringBuilder();
+		StringBuilder output = new StringBuilder();
 		TableBuilder table = new TableBuilder();
-
-		all_tables.append("_______________________________\n\n" + "Phase Boons - " + b_data.getName()
-				+ "\n_______________________________");
 		String[] boon_array = Boon.getArray();
+
+		output.append("_________________________________________" + System.lineSeparator() + System.lineSeparator());
+		output.append("Phase - " + b_data.getName() + System.lineSeparator());
+		output.append("_________________________________________" + System.lineSeparator());
 
 		for (int i = 0; i < fight_intervals.size(); i++) {
 
+			table.clear();
 			table.addTitle("Phase " + (i + 1));
-			table.addRow(concat(new String[] { "Name", "Profession" }, boon_array));
+			table.addRow(Utility.concat(new String[] { "Name", "Profession" }, boon_array));
 			for (int j = 0; j < p_data.size(); j++) {
 				playerData p = p_data.get(j);
 
@@ -493,26 +479,17 @@ public class Statistics {
 				for (int k = 0; k < boon_array.length; k++) {
 					row_rates[k] = player_rates[k][i];
 				}
-				table.addRow(concat(new String[] { p.getName(), p.getProf() }, row_rates));
+				table.addRow(Utility.concat(new String[] { p.getName(), p.getProf() }, row_rates));
 			}
 
-			all_tables.append("\n" + table.toString());
-			table.clear();
+			output.append(System.lineSeparator() + table.toString());
+
 		}
 
-		return all_tables.toString();
+		return output.toString();
 	}
 
 	// Private Methods
-	private String[] concat(String[] a, String[] b) {
-		int i = a.length;
-		int j = b.length;
-		String[] str = new String[i + j];
-		System.arraycopy(a, 0, str, 0, i);
-		System.arraycopy(b, 0, str, i, j);
-		return str;
-	}
-
 	private String get_skill_name(int ID) {
 		for (skillData s : s_data) {
 			if (s.getID() == ID) {
@@ -614,33 +591,6 @@ public class Statistics {
 
 	}
 
-	private List<Point> merge_intervals(List<Point> intervals) {
-
-		if (intervals.size() == 1) {
-			return intervals;
-		}
-
-		List<Point> merged = new ArrayList<Point>();
-		int x = intervals.get(0).x;
-		int y = intervals.get(0).y;
-
-		for (int i = 1; i < intervals.size(); i++) {
-			Point current = intervals.get(i);
-			if (current.x <= y) {
-				y = Math.max(current.y, y);
-			} else {
-				merged.add(new Point(x, y));
-				x = current.x;
-				y = current.y;
-			}
-		}
-
-		merged.add(new Point(x, y));
-
-		return merged;
-
-	}
-
 	private List<Point> get_boon_intervals_list(AbstractBoon boon, List<boonLog> boon_logs) {
 
 		// Initialize variables
@@ -658,7 +608,7 @@ public class Statistics {
 		}
 
 		// Merge intervals
-		boon_intervals = merge_intervals(boon_intervals);
+		boon_intervals = Utility.merge_intervals(boon_intervals);
 
 		// Trim duration overflow
 		int last = boon_intervals.size() - 1;
@@ -764,11 +714,6 @@ public class Statistics {
 		}
 
 		return phase_stacks;
-	}
-
-	private <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-		return map.entrySet().stream().sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
 }
