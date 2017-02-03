@@ -3,18 +3,22 @@
 ## About ##
 
 The project was started to help re-live boss encounters and identify areas for improvement in my own organized group raids. The resultant program is a parser for ` .evtc ` event chain logs created by [arcdps](https://www.deltaconnected.com/arcdps/).
-It is written in Java 8 and requires an installation of [JRE 1.8](https://www.java.com/en/download/) (you probably already have it installed).
+It is written in Java 8 and requires an installation of [JRE 1.8](https://www.java.com/en/download/), but in most cases you probably already have it installed.
 
 ## User Manual ##
 
-Because of the way Java works in tandem with Windows you don't want to run the program by double-clicking ` evtc_log_parser.jar `. Instead you will have to use the supplied `run .bat`, though this allows more customization (more on this later). Double clicking `run .bat` will open a console with a menu. Enter the option you want by number (e.g. 1 for Final DPS) and press Enter to confirm. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed on the console.
+Because of the way Java works in tandem with Windows you don't want to run the program by double-clicking ` evtc_log_parser.jar `. Instead you will have to use the supplied `run .bat`, more on this later. For basic use you can double click `run .bat` which will open up a console with a menu.
 
-On first run, the following folders are created in the launch directory: /logs/, /graphs/, and /tables/. Copy .evtc file(s) for parsing into /logs/. The program will recursively search /logs/ for .evtc files. Both /graphs/ and /tables/ are output folders for the related options.
+On the very first run, the following folders are created in the launch directory: `/logs/`, `/graphs/`, and `/tables/`. You will want to re-run the program after it detects `/logs/` is empty. Copy .evtc file(s) for parsing into /logs/. The program will recursively search `/logs/` and its subdirectories for `.evtc files`. Both `/graphs/` and `/tables/` are output folders for the related options.
+
+Enter the option you want by number (e.g. 1 for Final DPS) and press Enter to confirm. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed directly in the console or be directed to the appropiate folders.
 
 ### Locating the Logs ###
+
 The ` .evtc ` files are automatically created by ` arcdps ` at the end of boss encounters.
 Your files can be found at ` Documents\arcdps.cbtlogs `, each subdirectory corresponds to a different boss encounter.
 Consult the table below to find the logs you need want to analyze.
+
 
 | Folder        | Boss           |
 | ------------- |----------------|
@@ -28,11 +32,17 @@ Consult the table below to find the logs you need want to analyze.
 | 16115         | Matthias       |
 | 16235         | Keep Construct |
 | 16246         | Xera           |
+| ?????         | BotP 1         |
+| ?????         | BotP 2         |
+| ?????         | BotP 3         |
+| ?????         | BotP 4         |
 
 ### File Association ###
+
 Double clicking any ` .evtc ` file will display an ` Open with... ` dialogue. Tick ` Always use this app to open .evtc files` and choose ` run.bat`. Now, whenever you double-click an ` .evtc ` file, the file will be parsed on the spot based on the `options` command argument.The default argument is  ` "516" ` which displays the ` Miscellaneous Combat Statistics`, ` Final DPS `, and ` Final Boons ` in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
 
 ### Output Customization ###
+
 You can customize the parser to your liking by opening `run .bat` in a text editor (Notepad will suffice).
 You will notice everything is on a single line prefixed by ` start "EVTC Log Parser" /MAX `. If you don't want to maximize the console you can delete this such that only ` java -jar "%USERPROFILE%\Desktop\EVTC Log Parser\evtc_log_parser.jar" file_path=%1 options=5126 is_anon=0 ` remains.
 
@@ -52,11 +62,12 @@ The program has the following arguments specific to file association:
 2. options
     * The default value is `5126`
     * *NEVER* remove this argument as it is requried for file association
-    * You can edit this string to match any of the available options below to display tables in a certain order during for file 
+    * You can edit this string to match any of the available options below to display tables in a certain order during for file
+   
 
-## Options ##
+### Options ###
 
-All DPS numbers are derived from damage to *ONLY* the boss. Phases are sections of the fight when the bosses are vulnerable to damage, and only work for static phase fights (so not Keep Construct).
+All DPS numbers are derived from damage to *ONLY* the boss. Phases are sections of the fight when the bosses are vulnerable to damage, and only work for static invuln sections fights (so not Keep Construct).
 
 The parser has the following options:
 
@@ -82,6 +93,10 @@ The parser has the following options:
     * Boons for each phase where applicable
 8. Text Dump Tables
     * Saves the above tables into ` /tables/ `
+
+### Interpreting Output ###
+
+TODO
 
 ## Future ##
 
