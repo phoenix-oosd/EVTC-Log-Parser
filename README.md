@@ -7,16 +7,20 @@ It is written in Java 8 and requires an installation of [JRE 1.8](https://www.ja
 
 ## User Manual ##
 
-Because of the way Java works in tandem with Windows you don't want to run the program by double-clicking ` evtc_log_parser.jar `. Instead you will have to use the supplied `run .bat`, more on this later. For basic use you can double click `run .bat` which will open up a console with a menu.
+### Setting Up ###
+
+Because of the way Java works in tandem with Windows, you don't want to run the program by just double-clicking ` evtc_log_parser.jar `. Instead you will have to run using the supplied `run .bat`, but more on this later. First you want to create a folder to contain the two files.
 
 On the very first run, the following folders are created in the launch directory: `/logs/`, `/graphs/`, and `/tables/`. You will want to re-run the program after it detects `/logs/` is empty. Copy .evtc file(s) for parsing into /logs/. The program will recursively search `/logs/` and its subdirectories for `.evtc files`. Both `/graphs/` and `/tables/` are output folders for the related options.
 
-Enter the option you want by number (e.g. 1 for Final DPS) and press Enter to confirm. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed directly in the console or be directed to the appropiate folders.
+### Basic Use ###
+
+For basic use you can double click `run .bat` which will open up a console with a menu. Enter the option you want by number (e.g. 1 for Final DPS) and press Enter to confirm. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed directly into the console, or be directed to files in the subdirectories where appropriate.
 
 ### Locating the Logs ###
 
-The ` .evtc ` files are automatically created by ` arcdps ` at the end of boss encounters.
-Your files can be found at ` Documents\arcdps.cbtlogs `, each subdirectory corresponds to a different boss encounter.
+The ` .evtc ` files are automatically created by ` arcdps ` at the end of encounters.
+Your files can be found at ` Documents\arcdps.cbtlogs `, each subdirectory corresponds to a different encounter.
 Consult the table below to find the logs you need want to analyze.
 
 
@@ -39,16 +43,19 @@ Consult the table below to find the logs you need want to analyze.
 
 ### File Association ###
 
-Double clicking any ` .evtc ` file will display an ` Open with... ` dialogue. Tick ` Always use this app to open .evtc files` and choose ` run.bat`. Now, whenever you double-click an ` .evtc ` file, the file will be parsed on the spot based on the `options` command argument.The default argument is  ` "516" ` which displays the ` Miscellaneous Combat Statistics`, ` Final DPS `, and ` Final Boons ` in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
+Double clicking any ` .evtc ` file will display an ` Open with... ` dialogue. Tick ` Always use this app to open .evtc files` and choose ` run.bat`. Now, whenever you double-click an ` .evtc ` file, the file will be parsed on the spot based on the `options` command argument. The default argument is ` options=516 ` which displays the ` Miscellaneous Combat Statistics`, ` Final DPS `, and ` Final Boons ` in that order. Option 4 and 8 do not work with file association.
 
 ### Output Customization ###
 
-You can customize the parser to your liking by opening `run .bat` in a text editor (Notepad will suffice).
-You will notice everything is on a single line prefixed by ` start "EVTC Log Parser" /MAX `. If you don't want to maximize the console you can delete this such that only ` java -jar "%USERPROFILE%\Desktop\EVTC Log Parser\evtc_log_parser.jar" file_path=%1 options=5126 is_anon=0 ` remains.
+You can customize the parsing to your liking by opening `run .bat` in a text editor such as `Notepad`.
 
-The `java -jar "path"` section is required and you *MUST* make sure you have an absolute path to ` evtc_log_parser.jar` (e.g. `C:\Users\JohnDoe\Desktop\EVTC Log Parser\evtc_log_parser.jar`). On Windows, the default path will work if you create a desktop folder named "EVTC Log Parser" and move the attached files from the latest release into it.
+You will notice everything is on a single line prefixed by ` start "EVTC Log Parser" /MAX `. If you don't want to maximize the console you can delete this, but it is highly recommended to maximize the console so text does not wrap around.
 
-The program has the following general arguments: 
+The `java -jar "path"` section is required and you *MUST* make sure you have an absolute path to ` evtc_log_parser.jar` (e.g. `C:\Users\JohnDoe\Desktop\EVTC Log Parser\evtc_log_parser.jar`). On Windows, the default path will only work if you create a desktop folder named "EVTC Log Parser" on your desktop, and move the attached files from the latest release into it.
+
+After the path is specificed you can add arguments in any order by space separating `arg_name=value`. For convienience all the arguments have already been written for you.
+
+The program has the following general arguments that apply to both basic running and file association: 
 
 1. is_anon
     * The default value is `0`
@@ -67,7 +74,7 @@ The program has the following arguments specific to file association:
 
 ### Options ###
 
-All DPS numbers are derived from damage to *ONLY* the boss. Phases are sections of the fight when the boss is vulnerable to damage, and only work for encounters which consist of static invulnerability sections fights (not Keep Construct).
+All DPS numbers are derived from the players (and pets) to *ONLY* the boss. Phases are sections of the fight when the boss is vulnerable to damage. This only works for encounters which consist of predictable invulnerability sections, so not Keep Construct.
 
 The program has the following options:
 
