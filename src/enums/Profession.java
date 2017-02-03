@@ -3,6 +3,8 @@ package enums;
 public enum Profession {
 
 	// Constants
+	NPC(-1, "NPC"),
+	GADGET(0, "Gadget"),
 	GUARDIAN(1, "Guardian"),
 	WARRIOR(2, "Warrior"),
 	ENGINEER(3, "Engineer"),
@@ -33,15 +35,21 @@ public enum Profession {
 	}
 
 	// Public Methods
-	public static Profession getProfession(int ID, boolean is_elite) {
+	public static Profession getProfession(int ID, int is_elite) {
 		for (Profession p : values()) {
-			if (!is_elite) {
+			if (is_elite == 0) {
 				if (p.getID() == ID) {
 					return p;
 				}
-			} else {
+			} else if (is_elite == 1) {
 				if (p.getID() == ID + 9) {
 					return p;
+				}
+			} else if (is_elite == -1) {
+				if (p.getID() == -1) {
+					return Profession.GADGET;
+				} else {
+					return Profession.NPC;
 				}
 			}
 		}

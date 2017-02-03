@@ -184,7 +184,7 @@ public class Parse {
 			int prof_id = f.getInt();
 
 			// 4 bytes: is_elite
-			boolean is_elite = Utility.get_bool(f.getInt());
+			int is_elite = f.getInt();
 
 			// 4 bytes: toughness
 			int toughness = f.getInt() + 1000;
