@@ -1,8 +1,10 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import enums.Choice;
@@ -16,6 +18,7 @@ public class Main {
 	private static boolean quitting = false;
 	private static boolean displaying_version = true;
 	private static boolean players_are_hidden = false;
+	private static Map<String, String> arguments = new HashMap<>();;
 
 	// Main
 	public static void main(String[] args) {
@@ -25,22 +28,35 @@ public class Main {
 		try {
 			scan = new Scanner(System.in);
 
-			// File Association
-			if (args.length >= 2) {
-				if (args.length >= 3 && args[2].equals("anon")) {
-					players_are_hidden = true;
+			// Read arguments
+			for (String arg : args) {
+				if (arg.contains("=")) {
+					arguments.put(arg.substring(0, arg.indexOf('=')), arg.substring(arg.indexOf('=') + 1));
 				}
+			}
+			String is_anon = arguments.get("is_anon");
+			String file_path = arguments.get("file_path");
+			String options = arguments.get("options");
 
+			// Data anonymization
+			if (is_anon != null) {
+				players_are_hidden = Utility.get_bool(Integer.valueOf(is_anon));
+			}
+
+			// File Association
+			if (file_path != null && !file_path.isEmpty() && options != null) {
 				displaying_version = false;
-				int[] choices = args[1].chars().map(x -> x - '0').toArray();
+				int[] choices = options.chars().map(x -> x - '0').toArray();
+
+				// System.out.println(file_path);
+				// System.out.println(options);
+				// scan.nextLine();
 
 				StringBuilder output = new StringBuilder("<START>");
 				for (int i : choices) {
 					Choice c = Choice.getChoice(i);
-					if (c == null) {
-						continue;
-					} else if (c.canBeAssociated()) {
-						output.append(System.lineSeparator() + parsing(c, new File(args[0])));
+					if (c != null && c.canBeAssociated()) {
+						output.append(System.lineSeparator() + parsing(c, new File(file_path)));
 					}
 				}
 				output.append("<END>");

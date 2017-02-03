@@ -31,7 +31,6 @@ public class Parse {
 	private List<combatData> c_data = null;
 
 	// Constructor
-
 	public Parse(File file, boolean players_are_hidden) throws IOException {
 
 		this.players_are_hidden = players_are_hidden;
@@ -146,11 +145,11 @@ public class Parse {
 
 		// Boss
 		Boss b = Boss.getBoss(cid);
-		if (b == null) {
-			this.b_data = new bossData(0, cid, "UNKNOWN", 0, 0, Utility.get_String(version_buffer));
-		} else {
-
+		if (b != null) {
 			this.b_data = new bossData(0, cid, b.getName(), b.getHP(), 0, Utility.get_String(version_buffer));
+
+		} else {
+			this.b_data = new bossData(0, cid, "UNKNOWN", 0, 0, Utility.get_String(version_buffer));
 		}
 
 	}
