@@ -62,15 +62,17 @@ The program has the following arguments specific to file association:
 2. options
     * The default value is `5126`
     * *NEVER* remove this argument as it is requried for file association
-    * You can edit this string to match any of the available options below to display tables in a certain order during for file
+    * You can edit this string to match any of the available options below to display tables in a certain order
    
 
 ### Options ###
 
-All DPS numbers are derived from damage to *ONLY* the boss. Phases are sections of the fight when the bosses are vulnerable to damage, and only work for static invuln sections fights (so not Keep Construct).
+All DPS numbers are derived from damage to *ONLY* the boss. Phases are sections of the fight when the boss is vulnerable to damage, and only work for encounters which consist of static invulnerability sections fights (not Keep Construct).
 
-The parser has the following options:
+The program has the following options:
 
+0. Text Dump
+    * For debugging, or if you want to see a human readable version of the log
 1. Final DPS
     * DPS by player and group
     * Damage dealt by each player and group
@@ -92,11 +94,11 @@ The parser has the following options:
 7. Phase Boons
     * Boons for each phase where applicable
 8. Text Dump Tables
-    * Saves the above tables into ` /tables/ `
+    * Saves options 1, 2, 3, 5, 6, and 7 tables into ` /tables/ `
 
 ### Interpreting Output ###
 
-TODO
+![example][logo]
 
 ## Future ##
 
