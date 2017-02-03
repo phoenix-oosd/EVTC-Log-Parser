@@ -1,12 +1,20 @@
-# EVTC Log Parser
+# EVTC Log Parser #
 
-## About
+## About ##
 
-This program is a parser for ` .evtc ` event chain logs created by ` arcdps `. It is written in Java 8, so requires an installation of ` JRE 1.8 `.
+The project was started to help re-live boss encounters and identify areas for improvement in my own organized group raids. The resultant program is a parser for ` .evtc ` event chain logs created by [arcdps](https://www.deltaconnected.com/arcdps/).
+It is written in Java 8 and requires an installation of [JRE 1.8](https://www.java.com/en/download/) (you probably already have it installed).
 
-On first use, the following folders are created in the launch directory: ` /logs/ `, ` /graphs/ `, and ` /tables/ `. Copy ` .evtc ` file(s) for parsing into ` /logs/ `. The program will recursively search ` /logs/ ` for ` .evtc ` files. Both ` /graphs/ ` and ` /tables/ ` are output folders.
+## User Manual ##
 
-The ` .evtc ` files can be found at ` Documents\arcdps.cbtlogs `. Each folder corresponds to a different event, consult the table below to find the files you need.
+Because of the way Java works in tandem with Windows you don't want to run the program by double-clicking ` evtc_log_parser.jar `. Instead you will have to use the supplied `run .bat`, though this allows more customization (more on this later). Double clicking `run .bat` will open a console with a menu. Enter the option you want by number (e.g. 1 for Final DPS) and press Enter to confirm. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed on the console.
+
+On first run, the following folders are created in the launch directory: /logs/, /graphs/, and /tables/. Copy .evtc file(s) for parsing into /logs/. The program will recursively search /logs/ for .evtc files. Both /graphs/ and /tables/ are output folders for the related options.
+
+### Locating the Logs ###
+The ` .evtc ` files are automatically created by ` arcdps ` at the end of boss encounters.
+Your files can be found at ` Documents\arcdps.cbtlogs `, each subdirectory corresponds to a different boss encounter.
+Consult the table below to find the logs you need want to analyze.
 
 | Folder        | Boss           |
 | ------------- |----------------|
@@ -21,21 +29,36 @@ The ` .evtc ` files can be found at ` Documents\arcdps.cbtlogs `. Each folder co
 | 16235         | Keep Construct |
 | 16246         | Xera           |
 
-## Instructions
-
-This Java program is a console application and needs to be ran with ` java.exe `. By default (on Windows), double-clicking a ` .jar ` file will instead run the program with ` javaw.exe `, resulting in nothing happening. To circumvent this, run the program either in the command line or using the supplied ` run.bat ` file. You **must** edit the ` .bat ` file so that the path to ` evtc_log_parser.jar ` is correct.
-
-### Running ###
-
-Double clicking `run .bat` will open a console with a menu. Enter the option you want by number (e.g. 1 for Final DPS) and press Enter. Each  ` .evtc ` file in `/logs/` will be processed. The results will be displayed on the console.
-
 ### File Association ###
+Double clicking any ` .evtc ` file will display an ` Open with... ` dialogue. Tick ` Always use this app to open .evtc files` and choose ` run.bat`. Now, whenever you double-click an ` .evtc ` file, the file will be parsed on the spot based on the `options` command argument.The default argument is  ` "516" ` which displays the ` Miscellaneous Combat Statistics`, ` Final DPS `, and ` Final Boons ` in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
 
-Double clicking any ` .evtc ` file will display an ` Open with... ` dialogue. Tick ` Always use this app to open .evtc files` and choose ` run.bat`. Now, whenever you double-click an ` .evtc ` file, the file will be parsed on the spot based on the second command argument. The default argument is  ` "516" ` which displays the ` Miscellaneous Combat Statistics`, ` Final DPS `, and ` Final Boons ` in that order. Option 4 and 8 do not work with file association. Edit the  ` .bat ` file for the desired output.
+### Output Customization ###
+You can customize the parser to your liking by opening `run .bat` in a text editor (Notepad will suffice).
+You will notice everything is on a single line prefixed by ` start "EVTC Log Parser" /MAX `. If you don't want to maximize the console you can delete this such that only ` java -jar "%USERPROFILE%\Desktop\EVTC Log Parser\evtc_log_parser.jar" file_path=%1 options=5126 is_anon=0 ` remains.
 
-## Options
+The `java -jar "path"` section is required and you *MUST* make sure you have an absolute path to ` evtc_log_parser.jar` (e.g. `C:\Users\JohnDoe\Desktop\EVTC Log Parser\evtc_log_parser.jar`). On Windows, the default path will work if you create a desktop folder named "EVTC Log Parser" and move the attached files from the latest release into it.
 
-The program displays all data in a tabular or graphical format. All DPS numbers are calculated from the damage each player deals to the boss (no cleave damage). Phases are sections of the fight when the bosses are vulnerable to damage. The parser has the following options:
+The program has the following general arguments: 
+
+1. is_anon
+    * The default value is `0`
+    * You can edit this string to `1` to anonymize all player names
+
+The program has the following arguments specific to file association:
+
+1. file_path
+    * The default value is `%1`
+    * *NEVER* change or remove this argument as it is required for file association.
+2. options
+    * The default value is `5126`
+    * *NEVER* remove this argument as it is requried for file association
+    * You can edit this string to match any of the available options below to display tables in a certain order during for file 
+
+## Options ##
+
+All DPS numbers are derived from damage to *ONLY* the boss. Phases are sections of the fight when the bosses are vulnerable to damage, and only work for static phase fights (so not Keep Construct).
+
+The parser has the following options:
 
 1. Final DPS
     * DPS by player and group
@@ -60,7 +83,16 @@ The program displays all data in a tabular or graphical format. All DPS numbers 
 8. Text Dump Tables
     * Saves the above tables into ` /tables/ `
 
-## Known Problems
-    * Players that disconnect or join a fight late will be ignored.
-    * Phase related statistics may not work if the log is not a boss clear.
-    * This program has only been tested on Windows 10.
+## Future ##
+
+### Known Problems ###
+
+-Players that disconnect or join a fight late will be ignored
+-Phase related statistics if you don't reach the final phase of the boss
+-This program has only been tested on Windows 10
+
+### Working on... ###
+
+-Dynamic phase detection for non-linear fights like Keep Construct 
+-Damage taken statistics
+-If you have a request for a feature you can contact via PM on [reddit](https://www.reddit.com/user/ghandi-gandhi) or GW2 (Phoenix.5719)
