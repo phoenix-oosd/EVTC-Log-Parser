@@ -98,18 +98,22 @@ The program has the following options:
 
 ### Interpreting Output ###
 
-![example][logo]
+![example](https://github.com/phoenix-oosd/EVTC-Log-Parser/blob/master/example.png)
 
 ## Future ##
 
 ### Known Problems ###
 
--Players that disconnect or join a fight late will be ignored
--Phase related statistics if you don't reach the final phase of the boss
--This program has only been tested on Windows 10
+  -Players that disconnect or join a fight late will be ignored
+  
+  -Phase related statistics if you don't reach the final phase of the boss
+  
+  -This program has only been tested on Windows 10
 
 ### Working on... ###
 
--Dynamic phase detection for non-linear fights like Keep Construct 
--Damage taken statistics
--If you have a request for a feature you can contact via PM on [reddit](https://www.reddit.com/user/ghandi-gandhi) or GW2 (Phoenix.5719)
+  -Dynamic phase detection for non-linear fights like Keep Construct 
+  
+  -Damage taken statistics
+  
+  -If you have a request for a feature you can contact via PM on [reddit](https://www.reddit.com/user/ghandi-gandhi) or GW2 (Phoenix.5719)
