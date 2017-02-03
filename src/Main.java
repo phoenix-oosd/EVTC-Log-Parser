@@ -89,11 +89,9 @@ public class Main {
 				// Display menu
 				else {
 					while (!quitting) {
-						System.out.println("_______________");
-						System.out.printf("%n");
+						System.out.println("_______________" + System.lineSeparator());
 						System.out.println("EVTC Log Parser");
-						System.out.println("_______________");
-						System.out.printf("%n");
+						System.out.println("_______________" + System.lineSeparator());
 						System.out.println("0. Dump EVTC");
 						System.out.println("1. Final DPS");
 						System.out.println("2. Phase DPS");
@@ -104,8 +102,7 @@ public class Main {
 						System.out.println("7. Phase Boons");
 						System.out.println("8. Dump Tables");
 						System.out.println("9. Quit");
-						System.out.println("_______________");
-						System.out.printf("%n");
+						System.out.println("_______________" + System.lineSeparator());
 						System.out.println("Enter an option by number below:");
 
 						// Read user input
