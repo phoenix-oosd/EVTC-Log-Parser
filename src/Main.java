@@ -198,6 +198,7 @@ public class Main {
 			if (choice.equals(Choice.FINAL_BOONS)) {
 				return stats.get_final_boons();
 			} else if (choice.equals(Choice.PHASE_BOONS)) {
+				stats.get_damage_logs();
 				return stats.get_phase_boons();
 			}
 
