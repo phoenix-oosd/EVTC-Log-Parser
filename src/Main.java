@@ -48,10 +48,6 @@ public class Main {
 				displaying_version = false;
 				int[] choices = options.chars().map(x -> x - '0').toArray();
 
-				// System.out.println(file_path);
-				// System.out.println(options);
-				// scan.nextLine();
-
 				StringBuilder output = new StringBuilder("<START>");
 				for (int i : choices) {
 					Choice c = Choice.getChoice(i);

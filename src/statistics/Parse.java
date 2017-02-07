@@ -10,7 +10,6 @@ import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
 import data.bossData;
 import data.combatData;
@@ -161,19 +160,22 @@ public class Parse {
 
 		// 4 bytes: player count
 		int player_count = f.getInt();
-		if (!((player_count >= 1) && (player_count <= 10))) {
-			System.out.println("Invalid .evtc file. Version: " + b_data.getVersion());
-			System.out.println("Player table has not been created properly: " + player_count + " players detected.");
-			System.out.println("Send this log to deltaconnected if you suspect there is a bug with .evtc generation.");
-			Scanner scan = null;
-			try {
-				scan = new Scanner(System.in);
-				scan.nextLine();
-			} finally {
-				scan.close();
-				System.exit(0);
-			}
-		}
+		// if (!((player_count >= 1) && (player_count <= 10))) {
+		// System.out.println("Invalid .evtc file. Version: " +
+		// b_data.getVersion());
+		// System.out.println("Player table has not been created properly: " +
+		// player_count + " players detected.");
+		// System.out.println("Send this log to deltaconnected if you suspect
+		// there is a bug with .evtc generation.");
+		// Scanner scan = null;
+		// try {
+		// scan = new Scanner(System.in);
+		// scan.nextLine();
+		// } finally {
+		// scan.close();
+		// System.exit(0);
+		// }
+		// }
 
 		// 96 bytes: each player
 		for (int i = 0; i < player_count; i++) {
@@ -203,15 +205,17 @@ public class Parse {
 			Profession p = Profession.getProfession(prof_id, is_elite);
 
 			// Add player
-			if (players_are_hidden) {
-				this.p_data.add(new playerData(agent, 0, "Player " + String.valueOf(i), p.getName(), toughness, healing,
-						condition));
-			} else if (p != null) {
-				this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), p.getName(), toughness,
-						healing, condition));
-			} else {
-				this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), "UNKNOWN", toughness, healing,
-						condition));
+			if (p != Profession.GADGET && p != Profession.NPC) {
+				if (players_are_hidden) {
+					this.p_data.add(new playerData(agent, 0, "Player " + String.valueOf(i), p.getName(), toughness,
+							healing, condition));
+				} else if (p != null) {
+					this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), p.getName(), toughness,
+							healing, condition));
+				} else {
+					this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), "UNKNOWN", toughness,
+							healing, condition));
+				}
 			}
 		}
 	}
