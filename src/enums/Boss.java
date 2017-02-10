@@ -16,7 +16,7 @@ public enum Boss {
 	CAIRN_THE_INDOMITABLE("Cairn the Indomitable", 17194, 20000000),
 	MURSAAT_OVERSEER("Mursaat Overseer", -1, -1),
 	SAMAROG("Samarog", 17188, 30000000),
-	DEIMOS("Deimos", -1, -1);
+	DEIMOS("Deimos", 17154, -1);
 
 	// Fields
 	private String name;
