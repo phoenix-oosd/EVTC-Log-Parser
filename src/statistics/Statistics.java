@@ -23,6 +23,7 @@ import data.combatData;
 import data.playerData;
 import data.skillData;
 import enums.Boon;
+import enums.Result;
 import log.boonLog;
 import log.damageLog;
 import utility.TableBuilder;
@@ -69,11 +70,11 @@ public class Statistics {
 								damage = c.get_value();
 							}
 							p.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(), c.is_buff(),
-									c.is_crit(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
+									c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
 						}
 					} else if (p.getCID() == c.get_src_cid() && c.get_value() == 0 && c.is_statechange() > 0) {
 						int time = (int) (c.get_time() - t_start);
-						p.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(), c.is_buff(), c.is_crit(),
+						p.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(), c.is_buff(), c.get_result(),
 								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 					}
 				}
@@ -325,7 +326,7 @@ public class Statistics {
 			for (damageLog log : damage_logs) {
 
 				if (!log.is_condi()) {
-					if (log.is_crit()) {
+					if (Result.getEnum(log.get_result()).equals(Result.CRIT)) {
 						crit++;
 					}
 					if (log.is_ninety()) {
