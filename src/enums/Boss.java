@@ -3,31 +3,35 @@ package enums;
 public enum Boss {
 
 	// Constants
-	VALE_GUARDIAN(15438, 22400000, "Vale Guardian"),
-	GORSEVAL(15429, 21600000, "Gorseval"),
-	SABETHA(15375, 34000000, "Sabetha"),
-	SLOTHASOR(16123, 19000000, "Slothasor"),
-	BERG(16088, 6900000, "Berg"),
-	ZANE(16137, 5900000, "Zane"),
-	NARELLA(16125, 4900000, "Narella"),
-	MATTHIAS(16115, 25900000, "Matthias"),
-	KEEP_CONSTRUCT(16235, 55053600, "Keep Construct"),
-	XERA(16246, 22611300, "Xera");
+	VALE_GUARDIAN("Vale Guardian", 15438, 22400000),
+	GORSEVAL("Gorseval", 15429, 21600000),
+	SABETHA("Sabetha", 15375, 34000000),
+	SLOTHASOR("Slothasor", 16123, 19000000),
+	BERG("Berg", 16088, 6900000),
+	ZANE("Zane", 16137, 5900000),
+	NARELLA("Narella", 16125, 4900000),
+	MATTHIAS("Matthias", 16115, 25900000),
+	KEEP_CONSTRUCT("Keep Construct", 16235, 55053600),
+	XERA("Xera", 16246, 22611300),
+	CAIRN_THE_INDOMITABLE("Cairn the Indomitable", 17194, 20000000),
+	MURSAAT_OVERSEER("Mursaat Overseer", -1, -1),
+	SAMAROG("Samarog", 17188, 30000000),
+	DEIMOS("Deimos", -1, -1);
 
 	// Fields
+	private String name;
 	private int ID;
 	private int HP;
-	private String name;
 
 	// Constructor
-	Boss(int ID, int HP, String name) {
+	Boss(String name, int ID, int HP) {
+		this.name = name;
 		this.ID = ID;
 		this.HP = HP;
-		this.name = name;
 	}
 
 	// Public Methods
-	public static Boss getBoss(int ID) {
+	public static Boss getEnum(int ID) {
 		for (Boss b : values()) {
 			if (b.getID() == ID) {
 				return b;
@@ -37,16 +41,16 @@ public enum Boss {
 	}
 
 	// Getters
+	public String getName() {
+		return this.name;
+	}
+
 	public int getID() {
 		return this.ID;
 	}
 
 	public int getHP() {
 		return this.HP;
-	}
-
-	public String getName() {
-		return this.name;
 	}
 
 }
