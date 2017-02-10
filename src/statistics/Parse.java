@@ -103,7 +103,7 @@ public class Parse {
 			this.b_data = new bossData(0, cid, b.getName(), b.getHP(), 0, Utility.get_String(version_buffer));
 
 		} else {
-			this.b_data = new bossData(0, cid, "CID: " + String.valueOf(cid), 0, 0, Utility.get_String(version_buffer));
+			this.b_data = new bossData(0, cid, String.valueOf(cid), 0, 0, Utility.get_String(version_buffer));
 		}
 
 	}
@@ -152,8 +152,8 @@ public class Parse {
 					this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), p.getName(), toughness,
 							healing, condition));
 				} else {
-					this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer),
-							"Prof ID: " + String.valueOf(prof_id), toughness, healing, condition));
+					this.p_data.add(new playerData(agent, 0, Utility.get_String(name_buffer), String.valueOf(prof_id),
+							toughness, healing, condition));
 				}
 			}
 		}

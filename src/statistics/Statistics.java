@@ -497,7 +497,7 @@ public class Statistics {
 				return s.getName();
 			}
 		}
-		return "UNKNOWN";
+		return "id: " + String.valueOf(ID);
 	}
 
 	private List<Point> get_fight_intervals() {
@@ -522,6 +522,9 @@ public class Statistics {
 		} else if (b_data.getName().equals("Slothasor")) {
 			i_count = 5;
 			t_invuln = 7000;
+		} else if (b_data.getName().equals("Samarog")) {
+			i_count = 2;
+			t_invuln = 20000;
 		} else {
 			fight_intervals.add(new Point(0, b_data.getFightDuration()));
 			return fight_intervals;
