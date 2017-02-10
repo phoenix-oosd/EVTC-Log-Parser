@@ -36,9 +36,9 @@ Consult the table below to find the logs you need want to analyze.
 | 16115         | Matthias       |
 | 16235         | Keep Construct |
 | 16246         | Xera           |
-| ?????         | BotP 1         |
+| 17194         | Cairn          |
 | ?????         | BotP 2         |
-| ?????         | BotP 3         |
+| 17188         | Samarog        |
 | ?????         | BotP 4         |
 
 ### File Association ###
@@ -93,7 +93,7 @@ The program has the following options:
     * Graphs the damage
     * Can be used to identify mechanical portions of the fight (e.g. flat lines for Matthias sacrifices)
 5. Miscellaneous Combat Statistics
-    * Healing, Toughness and Condition damage of each player
+    * Healing, Toughness and Condition damage of each player on a scale of 1-10
     * Fight rates such as Scholar uptime, seaweed salad movement, and critical rates
 6. Final Boons
     * Show relevant boon uptime
@@ -111,8 +111,6 @@ The program has the following options:
 
 ### Known Problems ###
 
-  -Players that disconnect or join a fight late will be ignored
-  
   -Phase related statistics if you don't reach the final phase of the boss
   
   -This program has only been tested on Windows 10
