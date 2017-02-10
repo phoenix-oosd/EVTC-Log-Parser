@@ -6,32 +6,32 @@ import java.util.List;
 public enum Boon {
 
 	// Constants
-	MIGHT(25, "intensity", "Might", "MGHT"),
-	QUICKNESS(5, "duration", "Quickness", "QCKN"),
-	FURY(9, "duration", "Fury", "FURY"),
-	PROTECTION(5, "duration", "Protection", "PROT"),
-	ALACRITY(9, "duration", "Alacrity", "ALAC"),
-	SPOTTER(1, "duration", "Spotter", "SPOT"),
-	SPIRIT_OF_FROST(1, "duration", "Spirit of Frost", "FRST"),
-	SUN_SPIRIT(1, "duration", "Sun Spirit", "SUNS"),
-	GLYPH_OF_EMPOWERMENT(1, "duration", "Glyph of Empowerment", "GoE"),
-	GRACE_OF_THE_LAND(5, "intensity", "Grace of the Land", "GoTL"),
-	EMPOWER_ALLIES(1, "duration", "Empower Allies", "EA"),
-	BANNER_OF_STRENGTH(1, "duration", "Banner of Strength", "BoS"),
-	BANNER_OF_DISCIPLINE(1, "duration", "Banner of Discipline", "BoD");
+	MIGHT("Might", "MGHT", "intensity", 25),
+	QUICKNESS("Quickness", "QCKN", "duration", 5),
+	FURY("Fury", "FURY", "duration", 9),
+	PROTECTION("Protection", "PROT", "duration", 5),
+	ALACRITY("Alacrity", "ALAC", "duration", 9),
+	SPOTTER("Spotter", "SPOT", "duration", 1),
+	SPIRIT_OF_FROST("Spirit of Frost", "FRST", "duration", 1),
+	SUN_SPIRIT("Sun Spirit", "SUNS", "duration", 1),
+	GLYPH_OF_EMPOWERMENT("Glyph of Empowerment", "GoE", "duration", 1),
+	GRACE_OF_THE_LAND("Grace of the Land", "GoTL", "intensity", 5),
+	EMPOWER_ALLIES("Empower Allies", "EA", "duration", 1),
+	BANNER_OF_STRENGTH("Banner of Strength", "BoS", "duration", 1),
+	BANNER_OF_DISCIPLINE("Banner of Discipline", "BoD", "duration", 1);
 
 	// Fields
-	private int stack;
-	private String type;
 	private String name;
 	private String abrv;
+	private String type;
+	private int capacity;
 
 	// Constructor
-	Boon(int stack, String type, String name, String abrv) {
-		this.stack = stack;
-		this.type = type;
+	private Boon(String name, String abrv, String type, int capacity) {
 		this.name = name;
 		this.abrv = abrv;
+		this.type = type;
+		this.capacity = capacity;
 	}
 
 	// Public Methods
@@ -62,14 +62,6 @@ public enum Boon {
 	}
 
 	// Getters
-	public int getStack() {
-		return this.stack;
-	}
-
-	public String getType() {
-		return this.type;
-	}
-
 	public String getName() {
 		return this.name;
 	}
@@ -77,4 +69,13 @@ public enum Boon {
 	public String getAbrv() {
 		return this.abrv;
 	}
+
+	public String getType() {
+		return this.type;
+	}
+
+	public int getCapacity() {
+		return this.capacity;
+	}
+
 }
