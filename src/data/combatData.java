@@ -14,7 +14,7 @@ public class combatData {
 	private int src_master_cid;
 	private boolean iff;
 	private boolean is_buff;
-	private boolean is_crit;
+	private int result;
 	private int is_activation;
 	private boolean is_buffremove;
 	private boolean is_ninety;
@@ -24,7 +24,7 @@ public class combatData {
 
 	// Constructor
 	public combatData(long time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, boolean is_crit,
+			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, int result,
 			int is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
 			int is_statechange) {
 		this.time = time;
@@ -39,7 +39,7 @@ public class combatData {
 		this.src_master_cid = src_master_cid;
 		this.iff = iff;
 		this.is_buff = is_buff;
-		this.is_crit = is_crit;
+		this.result = result;
 		this.is_activation = is_activation;
 		this.is_buffremove = is_buffremove;
 		this.is_ninety = is_ninety;
@@ -63,7 +63,7 @@ public class combatData {
 		array[9] = String.valueOf(src_master_cid);
 		array[10] = String.valueOf(iff);
 		array[11] = String.valueOf(is_buff);
-		array[12] = String.valueOf(is_crit);
+		array[12] = String.valueOf(result);
 		array[13] = String.valueOf(is_activation);
 		array[14] = String.valueOf(is_buffremove);
 		array[15] = String.valueOf(is_ninety);
@@ -122,8 +122,8 @@ public class combatData {
 		return is_buff;
 	}
 
-	public boolean is_crit() {
-		return is_crit;
+	public int get_result() {
+		return result;
 	}
 
 	public int is_activation() {
