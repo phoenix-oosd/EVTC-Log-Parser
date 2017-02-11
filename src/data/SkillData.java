@@ -1,32 +1,26 @@
 package data;
 
-public class skillData {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SkillData {
 
 	// Fields
-	private int ID;
-	private String name;
+	private List<SkillItem> skillData;
 
-	// Constructor
-	public skillData(int ID, String name) {
-		this.ID = ID;
-		this.name = name;
+	// Constructors
+	public SkillData() {
+		this.skillData = new ArrayList<SkillItem>();
 	}
 
 	// Public Methods
-	public String[] toStringArray() {
-		String[] array = new String[2];
-		array[0] = String.valueOf(ID);
-		array[1] = String.valueOf(name);
-		return array;
+	public void addItem(SkillItem item) {
+		skillData.add(item);
 	}
 
 	// Getters
-	public int getID() {
-		return ID;
-	}
-
-	public String getName() {
-		return name;
+	public List<SkillItem> getSkillData() {
+		return skillData;
 	}
 
 }

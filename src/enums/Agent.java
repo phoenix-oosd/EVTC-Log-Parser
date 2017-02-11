@@ -1,6 +1,6 @@
 package enums;
 
-public enum Profession {
+public enum Agent {
 
 	// Constants
 	NPC("NPC", -1),
@@ -29,14 +29,14 @@ public enum Profession {
 	private int ID;
 
 	// Constructor
-	Profession(String name, int ID) {
+	Agent(String name, int ID) {
 		this.name = name;
 		this.ID = ID;
 	}
 
 	// Public Methods
-	public static Profession getProfession(int ID, int is_elite) {
-		for (Profession p : values()) {
+	public static Agent getEnum(int ID, int is_elite) {
+		for (Agent p : values()) {
 			if (is_elite == 0) {
 				if (p.getID() == ID) {
 					return p;
@@ -47,9 +47,9 @@ public enum Profession {
 				}
 			} else if (is_elite == -1) {
 				if (p.getID() == -1) {
-					return Profession.GADGET;
+					return Agent.GADGET;
 				} else {
-					return Profession.NPC;
+					return Agent.NPC;
 				}
 			}
 		}

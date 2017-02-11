@@ -1,169 +1,101 @@
 package data;
 
-public class combatData {
-	// Fields
-	private long time;
-	private long src_agent;
-	private long dst_agent;
-	private int value;
-	private int buff_dmg;
-	private int overstack_value;
-	private int skill_id;
-	private int src_cid;
-	private int dst_cid;
-	private int src_master_cid;
-	private boolean iff;
-	private boolean is_buff;
-	private int result;
-	private int is_activation;
-	private boolean is_buffremove;
-	private boolean is_ninety;
-	private boolean is_fifty;
-	private boolean is_moving;
-	private int is_statechange;
+import java.util.ArrayList;
+import java.util.List;
 
-	// Constructor
-	public combatData(long time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, int result,
-			int is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
-			int is_statechange) {
-		this.time = time;
-		this.src_agent = src_agent;
-		this.dst_agent = dst_agent;
-		this.value = value;
-		this.buff_dmg = buff_dmg;
-		this.overstack_value = overstack_value;
-		this.skill_id = skill_id;
-		this.src_cid = src_cid;
-		this.dst_cid = dst_cid;
-		this.src_master_cid = src_master_cid;
-		this.iff = iff;
-		this.is_buff = is_buff;
-		this.result = result;
-		this.is_activation = is_activation;
-		this.is_buffremove = is_buffremove;
-		this.is_ninety = is_ninety;
-		this.is_fifty = is_fifty;
-		this.is_moving = is_moving;
-		this.is_statechange = is_statechange;
+public class CombatData {
+
+	// Fields
+	private List<CombatItem> combatData;
+
+	// Constructors
+	public CombatData() {
+		this.combatData = new ArrayList<CombatItem>();
 	}
 
 	// Public Methods
-	public String[] toStringArray() {
-		String[] array = new String[19];
-		array[0] = String.valueOf(time);
-		array[1] = String.valueOf(src_agent);
-		array[2] = String.valueOf(dst_agent);
-		array[3] = String.valueOf(value);
-		array[4] = String.valueOf(buff_dmg);
-		array[5] = String.valueOf(overstack_value);
-		array[6] = String.valueOf(skill_id);
-		array[7] = String.valueOf(src_cid);
-		array[8] = String.valueOf(dst_cid);
-		array[9] = String.valueOf(src_master_cid);
-		array[10] = String.valueOf(iff);
-		array[11] = String.valueOf(is_buff);
-		array[12] = String.valueOf(result);
-		array[13] = String.valueOf(is_activation);
-		array[14] = String.valueOf(is_buffremove);
-		array[15] = String.valueOf(is_ninety);
-		array[16] = String.valueOf(is_fifty);
-		array[17] = String.valueOf(is_moving);
-		array[18] = String.valueOf(is_statechange);
-		return array;
+	public void addItem(CombatItem item) {
+		combatData.add(item);
 	}
 
 	// Getters
-	public long get_time() {
-		return time;
+	public List<CombatItem> getCombatData() {
+		return combatData;
 	}
 
-	public long get_src_agent() {
-		return src_agent;
-	}
+	// // Public Methods
+	// public void get_damage_logs(AgentData agentData) {
+	//
+	// // Start time of the fight
+	// long t_start = combatData.get(0).get_time();
+	//
+	// // Add damage logs for each player
+	// for (AgentItem a : agentData.getPlayerAgents()) {
+	//
+	// // Check all combat logs
+	// for (CombatItem c : combatData) {
+	// // The player or their pets is the source
+	// if ((a.getCID() == c.get_src_cid()) || (a.getCID() ==
+	// c.get_src_master_cid())) {
+	// // The target is the boss and the player is an enemy
+	// if ((c.get_dst_cid() == b_data.getCID()) && c.iff()) {
+	// // Physical or condition damage
+	// if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() &&
+	// (c.get_buff_dmg() > 0))) {
+	// int time = (int) (c.get_time() - t_start);
+	// int damage;
+	// if (c.is_buff()) {
+	// damage = c.get_buff_dmg();
+	// } else {
+	// damage = c.get_value();
+	// }
+	// a.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(),
+	// c.is_buff(),
+	// c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
+	// }
+	// } else if (a.getCID() == c.get_src_cid() && c.get_value() == 0 &&
+	// c.is_statechange() > 0) {
+	// int time = (int) (c.get_time() - t_start);
+	// a.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(),
+	// c.is_buff(), c.get_result(),
+	// c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+	// }
+	// }
+	// }
+	// }
+	// }
+	//
+	// public void get_boon_logs(AgentData agentData) {
+	//
+	// // Start time of the fight
+	// long t_start = combatData.get(0).get_time();
+	// List<String> boon_list = Boon.getList();
+	//
+	// // Add boon logs for each player
+	// for (AgentItem a : agentData) {
+	// // Initialize boon list
+	// a.setBoons(boon_list);
+	// // Check all combat logs
+	// for (CombatItem c : combatData) {
+	// // The player is the target
+	// if (a.getCID() == c.get_dst_cid()) {
+	// // If the skill is a buff and in the boon list
+	// String skill_name = get_skill_name(c.get_skill_id());
+	// if ((c.is_buff() && (c.get_value() > 0)) &&
+	// (boon_list.contains(skill_name))) {
+	// int time = (int) (c.get_time() - t_start);
+	// int src_cid;
+	// if (c.get_src_cid() > 0) {
+	// src_cid = c.get_src_cid();
+	// } else {
+	// src_cid = c.get_src_master_cid();
+	// }
+	// a.get_boon_logs().get(skill_name).add(new boonLog(time, c.get_value(),
+	// src_cid));
+	// }
+	// }
+	// }
+	// }
+	// }
 
-	public long get_dst_agent() {
-		return dst_agent;
-	}
-
-	public int get_value() {
-		return value;
-	}
-
-	public int get_buff_dmg() {
-		return buff_dmg;
-	}
-
-	public int get_overstack_value() {
-		return overstack_value;
-	}
-
-	public int get_skill_id() {
-		return skill_id;
-	}
-
-	public int get_src_cid() {
-		return src_cid;
-	}
-
-	public int get_dst_cid() {
-		return dst_cid;
-	}
-
-	public int get_src_master_cid() {
-		return src_master_cid;
-	}
-
-	public boolean iff() {
-		return iff;
-	}
-
-	public boolean is_buff() {
-		return is_buff;
-	}
-
-	public int get_result() {
-		return result;
-	}
-
-	public int is_activation() {
-		return is_activation;
-	}
-
-	public boolean is_buffremove() {
-		return is_buffremove;
-	}
-
-	public boolean is_ninety() {
-		return is_ninety;
-	}
-
-	public boolean is_fifty() {
-		return is_fifty;
-	}
-
-	public boolean is_moving() {
-		return is_moving;
-	}
-
-	public int is_statechange() {
-		return is_statechange;
-	}
-
-	// Setters
-	public void set_src_agent(long src_agent) {
-		this.src_agent = src_agent;
-	}
-
-	public void set_dst_agent(long dst_agent) {
-		this.dst_agent = dst_agent;
-	}
-
-	public void set_src_cid(int src_cid) {
-		this.src_cid = src_cid;
-	}
-
-	public void set_dst_cid(int dst_cid) {
-		this.dst_cid = dst_cid;
-	}
 }

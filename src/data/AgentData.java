@@ -1,96 +1,53 @@
 package data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import log.boonLog;
-import log.damageLog;
+import enums.Agent;
 
-public class playerData {
+public class AgentData {
 
 	// Fields
-	private long agent = 0;
-	private int CID = 0;
-	private String name = null;
-	private String prof = null;
-	private int toughness = 0;
-	private int healing = 0;
-	private int condition = 0;
-	private List<damageLog> damage_logs = new ArrayList<damageLog>();
-	private Map<String, List<boonLog>> boon_logs = new HashMap<>();
+	private List<AgentItem> allAgents;
+	private List<AgentItem> NPCAgents;
+	private List<AgentItem> gadgetAgents;
+	private List<AgentItem> playerAgents;
 
-	// Constructor
-	public playerData(long agent, int CID, String name, String prof, int toughness, int healing, int condition) {
-		this.agent = agent;
-		this.CID = CID;
-		this.name = name;
-		this.prof = prof;
-		this.toughness = toughness;
-		this.healing = healing;
-		this.condition = condition;
+	// Constructors
+	public AgentData() {
+		this.allAgents = new ArrayList<AgentItem>();
+		this.NPCAgents = new ArrayList<AgentItem>();
+		this.gadgetAgents = new ArrayList<AgentItem>();
+		this.playerAgents = new ArrayList<AgentItem>();
 	}
 
 	// Public Methods
-	public String[] toStringArray() {
-		String[] array = new String[7];
-		array[0] = String.valueOf(agent);
-		array[1] = String.valueOf(CID);
-		array[2] = String.valueOf(name);
-		array[3] = String.valueOf(prof);
-		array[4] = String.valueOf(toughness);
-		array[5] = String.valueOf(healing);
-		array[6] = String.valueOf(condition);
-		return array;
+	public void addItem(Agent agent, AgentItem item) {
+		allAgents.add(item);
+		if (agent.equals(Agent.NPC)) {
+			NPCAgents.add(item);
+		} else if (agent.equals(Agent.GADGET)) {
+			gadgetAgents.add(item);
+		} else {
+			playerAgents.add(item);
+		}
 	}
 
 	// Getters
-	public long getAgent() {
-		return agent;
+	public List<AgentItem> getAllAgents() {
+		return allAgents;
 	}
 
-	public int getCID() {
-		return CID;
+	public List<AgentItem> getNPCAgents() {
+		return NPCAgents;
 	}
 
-	public String getName() {
-		return name;
+	public List<AgentItem> getGadgetAgents() {
+		return gadgetAgents;
 	}
 
-	public String getProf() {
-		return prof;
-	}
-
-	public int getToughness() {
-		return toughness;
-	}
-
-	public int getHealing() {
-		return healing;
-	}
-
-	public int getCondition() {
-		return condition;
-	}
-
-	public List<damageLog> get_damage_logs() {
-		return damage_logs;
-	}
-
-	public Map<String, List<boonLog>> get_boon_logs() {
-		return boon_logs;
-	}
-
-	// Setters
-	public void setCID(int CID) {
-		this.CID = CID;
-	}
-
-	public void setBoons(List<String> boon_list) {
-		for (String boon : boon_list) {
-			boon_logs.put(boon, new ArrayList<boonLog>());
-		}
+	public List<AgentItem> getPlayerAgents() {
+		return playerAgents;
 	}
 
 }
