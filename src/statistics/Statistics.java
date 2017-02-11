@@ -144,7 +144,7 @@ public class Statistics {
 		table.addTitle("Final DPS - " + b_data.getName());
 
 		// Header
-		table.addRow("Name", "Profession", "Final DPS", "Damage");
+		table.addRow("NAME", "PROF", "DPS", "DAMAGE");
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
@@ -168,7 +168,8 @@ public class Statistics {
 		for (int i = 0; i < p_data.size(); i++) {
 
 			playerData p = p_data.get(i);
-			String[] phase_dps = new String[fight_intervals.size()];
+			String[] phase_dps = new String[fight_intervals.size() + 1];
+			double average_dps = 0;
 
 			for (int j = 0; j < fight_intervals.size(); j++) {
 
@@ -182,8 +183,12 @@ public class Statistics {
 						phase_damage = phase_damage + log.getDamage();
 					}
 				}
-				phase_dps[j] = String.format("%.2f", (phase_damage / (interval.getY() - interval.getX()) * 1000));
+				double dps = phase_damage / (interval.getY() - interval.getX()) * 1000;
+				average_dps = (((average_dps * j) + dps) / (j + 1));
+				phase_dps[j] = String.format("%.2f", dps);
 			}
+
+			phase_dps[fight_intervals.size()] = String.format("%.2f", average_dps);
 			all_phase_dps.add(phase_dps);
 		}
 
@@ -192,12 +197,13 @@ public class Statistics {
 		table.addTitle("Phase DPS - " + b_data.getName());
 
 		// Header
-		String[] header = new String[2 + fight_intervals.size()];
-		header[0] = "Name";
-		header[1] = "Profession";
+		String[] header = new String[fight_intervals.size() + 3];
+		header[0] = "NAME";
+		header[1] = "PROF";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
-			header[i] = "Phase " + String.valueOf(i - 1);
+			header[i] = "PHASE " + String.valueOf(i - 1);
 		}
+		header[header.length - 1] = "BOSS AVG";
 		table.addRow(header);
 
 		// Body
@@ -207,16 +213,20 @@ public class Statistics {
 		}
 
 		// Footer
-		String[] durations = new String[fight_intervals.size() + 2];
+		String[] durations = new String[fight_intervals.size() + 3];
+		double total_time = 0.0;
 		durations[0] = "-";
 		durations[1] = "-";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
 			Point p = fight_intervals.get(i - 2);
-			durations[i] = String.format("%.2f", (p.getY() - p.getX()) / 1000.0);
+			double time = (p.getY() - p.getX()) / 1000.0;
+			total_time += time;
+			durations[i] = String.format("%.2f", time);
 		}
+		durations[durations.length - 1] = String.format("%.2f", total_time);
 		table.addRow(durations);
 
-		String[] intervals = new String[fight_intervals.size() + 2];
+		String[] intervals = new String[fight_intervals.size() + 3];
 		intervals[0] = "-";
 		intervals[1] = "-";
 		for (int i = 2; i < fight_intervals.size() + 2; i++) {
@@ -224,6 +234,7 @@ public class Statistics {
 			intervals[i] = "(" + String.format("%.2f", p.getX() / 1000.0) + ", "
 					+ String.format("%.2f", p.getY() / 1000.0) + ")";
 		}
+		intervals[intervals.length - 1] = "-";
 		table.addRow(intervals);
 
 		return table.toString();
@@ -257,7 +268,7 @@ public class Statistics {
 			// Table
 			table.clear();
 			table.addTitle(p.getName() + " - " + p.getProf());
-			table.addRow("Skill Name", "Damage", "%");
+			table.addRow("SKILL", "DAMAGE", "%");
 			skill_damage = Utility.sortByValue(skill_damage);
 			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet()) {
 				String skill_name = get_skill_name(entry.getKey());
@@ -410,7 +421,7 @@ public class Statistics {
 
 		// Header
 		String[] boon_array = Boon.getArray();
-		table.addRow(Utility.concat(new String[] { "Name", "Profession" }, boon_array));
+		table.addRow(Utility.concat(new String[] { "NAME", "PROF" }, boon_array));
 
 		// Body
 		for (int i = 0; i < p_data.size(); i++) {
@@ -471,7 +482,7 @@ public class Statistics {
 
 			table.clear();
 			table.addTitle("Phase " + (i + 1));
-			table.addRow(Utility.concat(new String[] { "Name", "Profession" }, boon_array));
+			table.addRow(Utility.concat(new String[] { "NAME", "PROF" }, boon_array));
 			for (int j = 0; j < p_data.size(); j++) {
 				playerData p = p_data.get(j);
 

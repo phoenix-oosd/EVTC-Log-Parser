@@ -204,8 +204,7 @@ public class Parse {
 			int buff_dmg = f.getInt();
 
 			// 2 bytes: overstack_value
-			// int overstack_value = f.getShort();
-			int overstack_value = Short.toUnsignedInt(f.getShort());
+			int overstack_value = f.getShort();
 
 			// 2 bytes: skill_id
 			int skill_id = Short.toUnsignedInt(f.getShort());
@@ -260,8 +259,6 @@ public class Parse {
 	}
 
 	private void fillMissingData() {
-
-		// TODO: overstack_value into uint16 for build dates >= 20170210
 
 		// Update boss agent
 		for (combatData c : c_data) {
