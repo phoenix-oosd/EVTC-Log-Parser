@@ -1,6 +1,6 @@
 package enums;
 
-public enum Choice {
+public enum MenuChoice {
 
 	// Constants
 	DUMP_EVTC(0, "text", false),
@@ -12,24 +12,24 @@ public enum Choice {
 	FINAL_BOONS(6, "boons", true),
 	PHASE_BOONS(7, "boons", true),
 	DUMP_TABLES(8, "text", false),
-	QUIT(9, "", false);
+	QUIT(9, "none", false);
 
 	// Fields
-	private int value;
+	private int ID;
 	private String type;
-	private boolean can_be_associated;
+	private boolean canBeAssociated;
 
 	// Constructor
-	Choice(int value, String type, boolean can_be_associated) {
-		this.value = value;
+	MenuChoice(int ID, String type, boolean canBeAssociated) {
+		this.ID = ID;
 		this.type = type;
-		this.can_be_associated = can_be_associated;
+		this.canBeAssociated = canBeAssociated;
 	}
 
 	// Public Methods
-	public static Choice getChoice(int value) {
-		for (Choice c : values()) {
-			if (c.getValue() == value) {
+	public static MenuChoice getEnum(int ID) {
+		for (MenuChoice c : values()) {
+			if (c.getID() == ID) {
 				return c;
 			}
 		}
@@ -37,8 +37,8 @@ public enum Choice {
 	}
 
 	// Getters
-	public int getValue() {
-		return value;
+	public int getID() {
+		return ID;
 	}
 
 	public String getType() {
@@ -46,7 +46,7 @@ public enum Choice {
 	}
 
 	public boolean canBeAssociated() {
-		return can_be_associated;
+		return canBeAssociated;
 	}
 
 }

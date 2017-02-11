@@ -14,9 +14,9 @@ public enum Boss {
 	KEEP_CONSTRUCT("Keep Construct", 16235, 55053600),
 	XERA("Xera", 16246, 22611300),
 	CAIRN_THE_INDOMITABLE("Cairn the Indomitable", 17194, 20000000),
-	MURSAAT_OVERSEER("Mursaat Overseer", -1, -1),
+	MURSAAT_OVERSEER("Mursaat Overseer", 17172, 20000000),
 	SAMAROG("Samarog", 17188, 30000000),
-	DEIMOS("Deimos", 17154, -1);
+	DEIMOS("Deimos", 17154, 36000000);
 
 	// Fields
 	private String name;

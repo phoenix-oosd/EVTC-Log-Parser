@@ -1,28 +1,28 @@
 package enums;
 
-public enum State {
+public enum StateChange {
 
 	// Constants
 	NORMAL(0),
-	ENTER(1),
-	EXIT(2),
-	UP(3),
-	DIED(4),
-	DOWNED(5),
-	SPAWNED(6),
-	DESPAWNED(7);
+	ENTER_COMBAT(1),
+	EXIT_COMBAT(2),
+	CHANGE_UP(3),
+	CHANGE_DEAD(4),
+	CHANGE_DOWN(5),
+	SPAWN(6),
+	DESPAWN(7);
 
 	// Fields
 	private int ID;
 
 	// Constructors
-	State(int ID) {
+	StateChange(int ID) {
 		this.ID = ID;
 	}
 
 	// Public Methods
-	public static State getEnum(int ID) {
-		for (State s : values()) {
+	public static StateChange getEnum(int ID) {
+		for (StateChange s : values()) {
 			if (s.getID() == ID) {
 				return s;
 			}

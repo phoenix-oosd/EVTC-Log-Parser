@@ -35,7 +35,7 @@ public enum Boon {
 	}
 
 	// Public Methods
-	public static Boon getBoon(String name) {
+	public static Boon getEnum(String name) {
 		for (Boon b : values()) {
 			if (b.getName() == name) {
 				return b;
@@ -45,20 +45,11 @@ public enum Boon {
 	}
 
 	public static String[] getArray() {
-		List<String> boon_list = new ArrayList<String>();
+		List<String> boonList = new ArrayList<String>();
 		for (Boon b : values()) {
-			boon_list.add(b.getAbrv());
+			boonList.add(b.getAbrv());
 		}
-		String[] boon_array = boon_list.toArray(new String[boon_list.size()]);
-		return boon_array;
-	}
-
-	public static List<String> getList() {
-		List<String> boon_list = new ArrayList<String>();
-		for (Boon b : values()) {
-			boon_list.add(b.getName());
-		}
-		return boon_list;
+		return boonList.toArray(new String[boonList.size()]);
 	}
 
 	// Getters
