@@ -52,6 +52,14 @@ public enum Boon {
 		return boonList.toArray(new String[boonList.size()]);
 	}
 
+	public static List<String> getList() {
+		List<String> boonList = new ArrayList<String>();
+		for (Boon b : values()) {
+			boonList.add(b.getName());
+		}
+		return boonList;
+	}
+
 	// Getters
 	public String getName() {
 		return this.name;

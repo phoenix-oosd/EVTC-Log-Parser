@@ -8,15 +8,11 @@ import java.util.Map;
 import data.AgentItem;
 import data.BossData;
 import data.CombatItem;
+import data.SkillData;
 import enums.Boon;
 import enums.StateChange;
 
 public class Player {
-
-	// public List<DamageLog> get_damage_logs() {
-	// return damage_logs;
-	// }
-	//
 
 	// Fields
 	private AgentItem agent;
@@ -36,14 +32,16 @@ public class Player {
 	}
 
 	public List<DamageLog> getOutBossDamage(BossData bossData, List<CombatItem> combatList) {
-
 		if (outDamageLogs.isEmpty()) {
 			setOutDamageLogs(bossData, combatList);
 		}
 		return outDamageLogs;
 	}
 
-	public Map<String, List<BoonLog>> getBoonMap() {
+	public Map<String, List<BoonLog>> getBoonMap(BossData bossData, SkillData skillData, List<CombatItem> combatList) {
+		if (boonMap.isEmpty()) {
+			setBoonMap(bossData, skillData, combatList);
+		}
 		return boonMap;
 	}
 
@@ -79,10 +77,25 @@ public class Player {
 		}
 	}
 
-	public void setBoonMap(List<CombatItem> combatData) {
-		String[] boonArray = Boon.getArray();
-		for (String boon : boonArray) {
+	public void setBoonMap(BossData bossData, SkillData skillData, List<CombatItem> combatList) {
+
+		List<String> boonList = Boon.getList();
+		for (String boon : boonList) {
 			boonMap.put(boon, new ArrayList<BoonLog>());
+		}
+
+		int timeStart = bossData.getFightStart();
+
+		for (CombatItem c : combatList) {
+			if (agent.getCID() == c.get_dst_cid()) {
+				String skill_name = skillData.getName(c.get_skill_id());
+				if (c.is_buff() && (c.get_value() > 0)) {
+					if (boonList.contains(skill_name)) {
+						int time = c.get_time() - timeStart;
+						boonMap.get(skill_name).add(new BoonLog(time, c.get_value()));
+					}
+				}
+			}
 		}
 	}
 

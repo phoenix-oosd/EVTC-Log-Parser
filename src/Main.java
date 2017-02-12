@@ -165,13 +165,9 @@ public class Main {
 		if (choice.getType().equals("damage")) {
 			if (choice.equals(MenuChoice.FINAL_DPS)) {
 				return stats.get_final_dps();
-			}
-			//
-			// else if (choice.equals(MenuChoice.PHASE_DPS)) {
-			// return stats.get_phase_dps();
-			// }
-			//
-			else if (choice.equals(MenuChoice.DMG_DIST)) {
+			} else if (choice.equals(MenuChoice.PHASE_DPS)) {
+				return stats.get_phase_dps();
+			} else if (choice.equals(MenuChoice.DMG_DIST)) {
 				return stats.get_damage_distribution();
 			} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
 				return "Output file:\t" + stats.get_total_damage_graph(base);
@@ -182,12 +178,11 @@ public class Main {
 
 		// Boon related options
 		else if (choice.getType().equals("boons")) {
-			// if (choice.equals(MenuChoice.FINAL_BOONS)) {
-			// return stats.get_final_boons();
-			// } else if (choice.equals(MenuChoice.PHASE_BOONS)) {
-			// stats.get_damage_logs();
-			// return stats.get_phase_boons();
-			// }
+			if (choice.equals(MenuChoice.FINAL_BOONS)) {
+				return stats.get_final_boons();
+			} else if (choice.equals(MenuChoice.PHASE_BOONS)) {
+				return stats.get_phase_boons();
+			}
 
 		}
 
@@ -201,26 +196,19 @@ public class Main {
 					e.printStackTrace();
 				}
 				return "Output file:\t" + evtc_dump.getName();
+			} else if (choice.equals(MenuChoice.DUMP_TABLES)) {
+				File text_dump = new File(
+						"./tables/" + base + "_" + parsed.getBossData().getName() + "_all-tables.txt");
+				try {
+					Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
+							+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()
+							+ stats.get_final_boons() + System.lineSeparator() + stats.get_phase_boons()
+							+ System.lineSeparator() + stats.get_damage_distribution(), text_dump);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return "Output file:\t" + text_dump.getName();
 			}
-			// else if (choice.equals(MenuChoice.DUMP_TABLES)) {
-			// stats.get_damage_logs();
-			// stats.get_boon_logs();
-			// File text_dump = new File("./tables/" + base + "_" +
-			// parsed.getB().getName() + "_all-tables.txt");
-			// try {
-			// Utility.writeToFile(stats.get_final_dps() +
-			// System.lineSeparator() + stats.get_phase_dps()
-			// + System.lineSeparator() + stats.get_combat_stats() +
-			// System.lineSeparator()
-			// + stats.get_final_boons() + System.lineSeparator() +
-			// stats.get_phase_boons()
-			// + System.lineSeparator() + stats.get_damage_distribution(),
-			// text_dump);
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// return "Output file:\t" + text_dump.getName();
-			// }
 		}
 		return "";
 	}
