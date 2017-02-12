@@ -172,9 +172,9 @@ public class Main {
 			// return stats.get_phase_dps();
 			// }
 			//
-			// else if (choice.equals(MenuChoice.DMG_DIST)) {
-			// return stats.get_damage_distribution();
-			// }
+			else if (choice.equals(MenuChoice.DMG_DIST)) {
+				return stats.get_damage_distribution();
+			}
 			//
 			// else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
 			// return "Output file:\t" + stats.get_total_damage_graph(base);
