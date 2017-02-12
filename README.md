@@ -37,9 +37,9 @@ Consult the table below to find the logs you need want to analyze.
 | 16235         | Keep Construct |
 | 16246         | Xera           |
 | 17194         | Cairn          |
-| ?????         | BotP 2         |
+| 17172         | Overseer       |
 | 17188         | Samarog        |
-| ?????         | BotP 4         |
+| 17154         | Deimos         |
 
 ### File Association ###
 
