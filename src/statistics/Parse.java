@@ -52,6 +52,7 @@ public class Parse {
 			getAgentData(f);
 			getSkillData(f);
 			getCombatList(f);
+			combatData.fillMissingData(bossData.getName());
 			List<CombatItem> combatList = combatData.getCombatList();
 			agentData.fillMissingData(combatList);
 			List<AgentItem> NPCAgentList = agentData.getNPCAgents();
