@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import enums.MenuChoice;
 import statistics.Parse;
+import statistics.Statistics;
 import utility.Utility;
 
 public class Main {
@@ -149,13 +150,13 @@ public class Main {
 		// Parse the log
 		String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
 		Parse parsed = null;
-		// Statistics stats = null;
+		Statistics stats = null;
 		try {
 			parsed = new Parse(log, willHidePlayers);
 			if (willDisplayVersions) {
 				System.out.println("Log version:\t" + parsed.getBossData().getBuildVersion());
 			}
-			// stats = new Statistics(parsed);
+			stats = new Statistics(parsed);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -163,9 +164,9 @@ public class Main {
 		// Damage related options
 		if (choice.getType().equals("damage")) {
 			// stats.get_damage_logs();
-			// if (choice.equals(MenuChoice.FINAL_DPS)) {
-			// return stats.get_final_dps();
-			// }
+			if (choice.equals(MenuChoice.FINAL_DPS)) {
+				return stats.get_final_dps();
+			}
 			//
 			// else if (choice.equals(MenuChoice.PHASE_DPS)) {
 			// return stats.get_phase_dps();

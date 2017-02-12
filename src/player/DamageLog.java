@@ -1,5 +1,9 @@
 package player;
 
+import enums.Activation;
+import enums.Result;
+import enums.StateChange;
+
 public class DamageLog {
 
 	// Fields
@@ -7,15 +11,15 @@ public class DamageLog {
 	private int damage;
 	private int skill_id;
 	private boolean is_condi;
-	private int result;
+	private Result result;
 	private boolean is_ninety;
 	private boolean is_moving;
-	private int is_statechange;
-	private int is_activation;
+	private StateChange is_statechange;
+	private Activation is_activation;
 
 	// Constructor
-	public DamageLog(int time, int damage, int skill_id, boolean is_condi, int result, boolean is_ninety,
-			boolean is_moving, int is_statechange, int is_activation) {
+	public DamageLog(int time, int damage, int skill_id, boolean is_condi, Result result, boolean is_ninety,
+			boolean is_moving, StateChange is_statechange, Activation activation) {
 		this.time = time;
 		this.damage = damage;
 		this.skill_id = skill_id;
@@ -24,7 +28,7 @@ public class DamageLog {
 		this.is_ninety = is_ninety;
 		this.is_moving = is_moving;
 		this.is_statechange = is_statechange;
-		this.is_activation = is_activation;
+		this.is_activation = activation;
 	}
 
 	// Getters
@@ -44,7 +48,7 @@ public class DamageLog {
 		return is_condi;
 	}
 
-	public int get_result() {
+	public Result get_result() {
 		return result;
 	}
 
@@ -56,11 +60,11 @@ public class DamageLog {
 		return is_moving;
 	}
 
-	public int is_statechange() {
+	public StateChange is_statechange() {
 		return is_statechange;
 	}
 
-	public int is_activation() {
+	public Activation is_activation() {
 		return is_activation;
 	}
 

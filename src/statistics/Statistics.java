@@ -1,9 +1,16 @@
 package statistics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import data.AgentData;
+import data.AgentItem;
 import data.BossData;
 import data.CombatData;
 import data.SkillData;
+import player.DamageLog;
+import player.Player;
+import utility.TableBuilder;
 
 public class Statistics {
 
@@ -12,6 +19,7 @@ public class Statistics {
 	AgentData agentData;
 	SkillData skillData;
 	CombatData combatData;
+	List<Player> playerList;
 
 	// Constructor
 	public Statistics(Parse parsed) {
@@ -19,51 +27,63 @@ public class Statistics {
 		this.agentData = parsed.getAgentData();
 		this.skillData = parsed.getSkillData();
 		this.combatData = parsed.getCombatData();
+
+		playerList = new ArrayList<Player>();
+		List<AgentItem> playerAgentList = agentData.getPlayerAgents();
+		for (AgentItem playerAgent : playerAgentList) {
+			this.playerList.add(new Player(playerAgent));
+		}
 	}
+
+	public String get_final_dps() {
+
+		// Final DPS
+		List<String> dps = new ArrayList<String>();
+		List<String> dmg = new ArrayList<String>();
+
+		int total_damage = 0;
+		double total_dps = 0.0;
+		double fight_duration = (bossData.getFightEnd() - bossData.getFightStart()) / 1000;
+
+		for (Player p : playerList) {
+			double player_damage = 0.0;
+			p.setOutDamageLogs(bossData, combatData.getCombatData());
+			List<DamageLog> damage_logs = p.getOutBossDamage();
+			for (DamageLog log : damage_logs) {
+				player_damage = player_damage + log.getDamage();
+			}
+
+			dps.add(String.format("%.2f", (player_damage / fight_duration)));
+			dmg.add(String.valueOf((int) player_damage));
+
+			total_dps = total_dps + (player_damage / fight_duration);
+			total_damage = (int) (total_damage + player_damage);
+		}
+
+		// Table
+		TableBuilder table = new TableBuilder();
+		table.addTitle("Final DPS - " + bossData.getName());
+
+		// Header
+		table.addRow("Name", "Profession", "DPS", "Damage");
+
+		// Body
+		for (int i = 0; i < playerList.size(); i++) {
+			AgentItem p = playerList.get(i).getAgent();
+			table.addRow(p.getName(), p.getProf(), dps.get(i), dmg.get(i));
+		}
+
+		// Footer
+		table.addRow("-", "-", String.format("%.2f", total_dps), String.valueOf(total_damage));
+		table.addRow("-", "-", "-", String.valueOf(bossData.getHP()));
+
+		return table.toString();
+	}
+
 	//
 	// public String get_final_dps() {
 	//
-	// // Final DPS
-	// List<String> dps = new ArrayList<String>();
-	// List<String> dmg = new ArrayList<String>();
-	//
-	// double total_dps = 0.0;
-	// int total_damage = 0;
-	//
-	// double fight_duration = b_data.getFightDuration() / 1000.0;
-	//
-	// for (AgentItem p : p_data) {
-	// double player_damage = 0.0;
-	//
-	// List<damageLog> damage_logs = p.get_damage_logs();
-	// for (damageLog log : damage_logs) {
-	// player_damage = player_damage + log.getDamage();
-	// }
-	//
-	// dps.add(String.format("%.2f", (player_damage / fight_duration)));
-	// dmg.add(String.valueOf((int) player_damage));
-	//
-	// total_dps = total_dps + (player_damage / fight_duration);
-	// total_damage = (int) (total_damage + player_damage);
-	// }
-	//
-	// // Table
-	// TableBuilder table = new TableBuilder();
-	// table.addTitle("Final DPS - " + b_data.getName());
-	//
-	// // Header
-	// table.addRow("Name", "Profession", "DPS", "Damage");
-	//
-	// // Body
-	// for (int i = 0; i < p_data.size(); i++) {
-	// AgentItem p = p_data.get(i);
-	// table.addRow(p.getName(), p.getProf(), dps.get(i), dmg.get(i));
-	// }
-	//
-	// // Footer
-	// table.addRow("-", "-", String.format("%.2f", total_dps),
-	// String.valueOf(total_damage));
-	// table.addRow("-", "-", "-", String.valueOf(b_data.getHP()));
+
 	//
 	// return table.toString();
 	// }
