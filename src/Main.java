@@ -163,7 +163,6 @@ public class Main {
 
 		// Damage related options
 		if (choice.getType().equals("damage")) {
-			// stats.get_damage_logs();
 			if (choice.equals(MenuChoice.FINAL_DPS)) {
 				return stats.get_final_dps();
 			}
@@ -176,16 +175,13 @@ public class Main {
 				return stats.get_damage_distribution();
 			} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
 				return "Output file:\t" + stats.get_total_damage_graph(base);
+			} else if (choice.equals(MenuChoice.MISC_STATS)) {
+				return stats.get_combat_stats();
 			}
-			//
-			// else if (choice.equals(MenuChoice.MISC_STATS)) {
-			// return stats.get_combat_stats();
-			// }
 		}
 
 		// Boon related options
 		else if (choice.getType().equals("boons")) {
-			// stats.get_boon_logs();
 			// if (choice.equals(MenuChoice.FINAL_BOONS)) {
 			// return stats.get_final_boons();
 			// } else if (choice.equals(MenuChoice.PHASE_BOONS)) {

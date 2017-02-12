@@ -18,6 +18,8 @@ import data.AgentItem;
 import data.BossData;
 import data.CombatData;
 import data.SkillData;
+import enums.Result;
+import enums.StateChange;
 import player.DamageLog;
 import player.Player;
 import utility.TableBuilder;
@@ -175,6 +177,62 @@ public class Statistics {
 		return base + "_" + bossData.getName() + ".png";
 	}
 
+	// Combat Statistics
+	public String get_combat_stats() {
+
+		// Table
+		List<String[]> all_combat_stats = new ArrayList<String[]>();
+		TableBuilder table = new TableBuilder();
+		table.addTitle("Combat Statistics - " + bossData.getName());
+
+		// Header
+		table.addRow("Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "DIED");
+
+		// Body
+		for (Player p : playerList) {
+
+			double power_loops = 0.0, crit = 0.0, schl = 0.0, move = 0.0;
+			int down = 0, died = 0;
+			boolean is_dead = false;
+
+			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatData());
+			for (DamageLog log : damage_logs) {
+				if (!log.is_condi()) {
+					if (log.get_result().equals(Result.CRIT)) {
+						crit++;
+					}
+					if (log.is_ninety()) {
+						schl++;
+					}
+					if (log.is_moving()) {
+						move++;
+					}
+					power_loops++;
+				}
+				if (log.is_statechange().equals(StateChange.CHANGE_DOWN)) {
+					down++;
+				} else if (!is_dead && log.is_statechange().equals(StateChange.CHANGE_DEAD)) {
+					died = log.getTime();
+					is_dead = true;
+				}
+			}
+
+			String[] combat_stats = new String[] { String.format("%.2f", crit / power_loops),
+					String.format("%.2f", schl / power_loops), String.format("%.2f", move / power_loops),
+					String.valueOf(p.getAgent().getToughness()), String.valueOf(p.getAgent().getHealing()),
+					String.valueOf(p.getAgent().getCondition()), String.valueOf(down),
+					String.valueOf((double) died / 1000) };
+			all_combat_stats.add(combat_stats);
+		}
+
+		for (int i = 0; i < playerList.size(); i++) {
+			Player p = playerList.get(i);
+			table.addRow(Utility.concatStringArray(new String[] { p.getAgent().getName(), p.getAgent().getProf() },
+					all_combat_stats.get(i)));
+		}
+		return table.toString();
+	}
+
 	// public String get_phase_dps() {
 	//
 	// // Phase DPS
@@ -190,7 +248,8 @@ public class Statistics {
 	// for (int j = 0; j < fight_intervals.size(); j++) {
 	//
 	// Point interval = fight_intervals.get(j);
-	// List<DamageLog> damage_logs = p.get_damage_logs();
+	// List<DamageLog> damage_logs = p.getOutBossDamage(bossData,
+	// combatData.getCombatData());
 	//
 	// double phase_damage = 0;
 	//
@@ -261,67 +320,7 @@ public class Statistics {
 	//
 
 	//
-	// public String get_combat_stats() {
-	//
-	// // Combat Statistics
-	// List<String[]> all_combat_stats = new ArrayList<String[]>();
-	//
-	// for (Player p : playerList) {
-	// List<DamageLog> damage_logs = p.get_damage_logs();
-	// double i = 0.0, crit = 0.0, schl = 0.0, move = 0.0;
-	// int down = 0, died = 0;
-	// boolean is_dead = false;
-	//
-	// for (DamageLog log : damage_logs) {
-	//
-	// if (!log.is_condi()) {
-	// if (Result.getEnum(log.get_result()).equals(Result.CRIT)) {
-	// crit++;
-	// }
-	// if (log.is_ninety()) {
-	// schl++;
-	// }
-	// if (log.is_moving()) {
-	// move++;
-	// }
-	// i++;
-	// }
-	// if (log.is_statechange() == 5) {
-	// down++;
-	// } else if (!is_dead && log.is_statechange() == 4) {
-	// died = log.getTime();
-	// is_dead = true;
-	// }
-	// }
-	//
-	// String[] combat_stats = new String[] { String.format("%.2f", crit / i),
-	// String.format("%.2f", schl / i),
-	// String.format("%.2f", move / i), String.valueOf(p.getToughness()),
-	// String.valueOf(p.getHealing()),
-	// String.valueOf(p.getCondition()), String.valueOf(down),
-	// String.valueOf((double) died / 1000) };
-	//
-	// all_combat_stats.add(combat_stats);
-	// }
-	//
-	// // Table
-	// TableBuilder table = new TableBuilder();
-	// table.addTitle("Combat Statistics - " + bossData.getName());
-	//
-	// // Header
-	// table.addRow("Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN",
-	// "HEAL", "COND", "DOWN", "DIED");
-	//
-	// // Body
-	// for (int i = 0; i < playerList.size(); i++) {
-	// Player p = playerList.get(i);
-	// table.addRow(Utility.concatStringArray(new String[] { p.getName(),
-	// p.getProf() }, all_combat_stats.get(i)));
-	// }
-	//
-	// return table.toString();
-	//
-	// }
+
 	//
 	// public String get_final_boons() {
 	//
@@ -486,7 +485,8 @@ public class Statistics {
 	// List<List<Point>> i_intervals = new ArrayList<List<Point>>();
 	//
 	// for (Player p : playerList) {
-	// List<DamageLog> damage_logs = p.get_damage_logs();
+	// List<DamageLog> damage_logs = p.getOutBossDamage(bossData,
+	// combatData.getCombatData());
 	// int t_curr = 0;
 	// int t_prev = 0;
 	// List<Point> player_intervals = new ArrayList<Point>();

@@ -60,7 +60,7 @@ public class Player {
 					if (state.equals(StateChange.NORMAL)) {
 						if (c.is_buff() && c.get_buff_dmg() != 0) {
 							outDamageLogs
-									.add(new DamageLog(time, c.get_buff_dmg(), c.get_skill_id(), false, c.get_result(),
+									.add(new DamageLog(time, c.get_buff_dmg(), c.get_skill_id(), true, c.get_result(),
 											c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 						} else if (!c.is_buff() && c.get_value() != 0) {
 							outDamageLogs
@@ -71,8 +71,9 @@ public class Player {
 				} else if (agent.getCID() == c.get_src_cid() && state.equals(StateChange.CHANGE_DOWN)) {
 					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
 							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
-				} else if (agent.getCID() == c.get_src_cid() && state.equals(StateChange.EXIT_COMBAT)) {
-					break;
+				} else if (agent.getCID() == c.get_src_cid() && state.equals(StateChange.CHANGE_DEAD)) {
+					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
+							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 				}
 			}
 		}
