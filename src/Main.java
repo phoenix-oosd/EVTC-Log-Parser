@@ -174,11 +174,9 @@ public class Main {
 			//
 			else if (choice.equals(MenuChoice.DMG_DIST)) {
 				return stats.get_damage_distribution();
+			} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
+				return "Output file:\t" + stats.get_total_damage_graph(base);
 			}
-			//
-			// else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
-			// return "Output file:\t" + stats.get_total_damage_graph(base);
-			// }
 			//
 			// else if (choice.equals(MenuChoice.MISC_STATS)) {
 			// return stats.get_combat_stats();

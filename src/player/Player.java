@@ -8,6 +8,7 @@ import java.util.Map;
 import data.AgentItem;
 import data.BossData;
 import data.CombatItem;
+import enums.Boon;
 import enums.StateChange;
 
 public class Player {
@@ -17,11 +18,6 @@ public class Player {
 	// }
 	//
 
-	// public void setBoons(String[] boonArray) {
-	// for (String boon : boonArray) {
-	// boon_logs.put(boon, new ArrayList<boonLog>());
-	// }
-	// }
 	// Fields
 	private AgentItem agent;
 	private List<DamageLog> outDamageLogs;
@@ -57,38 +53,36 @@ public class Player {
 		int timeStart = bossData.getFightStart();
 
 		for (CombatItem c : combatList) {
-			// Player or pet is the source
 			if (agent.getCID() == c.get_src_cid() || agent.getCID() == c.get_src_master_cid()) {
 				StateChange state = c.is_statechange();
-				// Boss is the target
+				int time = c.get_time() - timeStart;
 				if (bossData.getCID() == c.get_dst_cid() && c.iff()) {
-					// Valid logs have NORMAL state;
 					if (state.equals(StateChange.NORMAL)) {
-						int time = c.get_time() - timeStart;
-						// Condition
 						if (c.is_buff() && c.get_buff_dmg() != 0) {
 							outDamageLogs
 									.add(new DamageLog(time, c.get_buff_dmg(), c.get_skill_id(), false, c.get_result(),
 											c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
-						}
-						// Physical
-						else if (!c.is_buff() && c.get_value() != 0) {
-							outDamageLogs.add(
-									new DamageLog(c.get_time(), c.get_value(), c.get_skill_id(), false, c.get_result(),
+						} else if (!c.is_buff() && c.get_value() != 0) {
+							outDamageLogs
+									.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
 											c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 						}
 					}
-				}
-				// Add relevant states
-				if (state.equals(StateChange.CHANGE_DOWN)) {
-					outDamageLogs.add(new DamageLog(c.get_time(), c.get_value(), c.get_skill_id(), false,
-							c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+				} else if (agent.getCID() == c.get_src_cid() && state.equals(StateChange.CHANGE_DOWN)) {
+					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
+							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+				} else if (agent.getCID() == c.get_src_cid() && state.equals(StateChange.EXIT_COMBAT)) {
+					break;
 				}
 			}
 		}
 	}
 
 	public void setBoonMap(List<CombatItem> combatData) {
+		String[] boonArray = Boon.getArray();
+		for (String boon : boonArray) {
+			boonMap.put(boon, new ArrayList<BoonLog>());
+		}
 	}
 
 }

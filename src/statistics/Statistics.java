@@ -1,9 +1,17 @@
 package statistics;
 
+import java.awt.Font;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.BitmapEncoder.BitmapFormat;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.style.Styler.LegendPosition;
 
 import data.AgentData;
 import data.AgentItem;
@@ -38,9 +46,9 @@ public class Statistics {
 		}
 	}
 
+	// Final DPS
 	public String get_final_dps() {
 
-		// Final DPS
 		List<String> dps = new ArrayList<String>();
 		List<String> dmg = new ArrayList<String>();
 
@@ -124,7 +132,47 @@ public class Statistics {
 		}
 
 		return output.toString();
+	}
 
+	// Generate a graph
+	public String get_total_damage_graph(String base) {
+
+		// Build chart
+		XYChartBuilder chartBuilder = new XYChartBuilder().width(1600).height(900);
+		chartBuilder.title("Total Damage - " + bossData.getName());
+		chartBuilder.xAxisTitle("Time (seconds)").yAxisTitle("Damage (K)").build();
+		XYChart chart = chartBuilder.build();
+
+		// Add style to chart
+		chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
+		chart.getStyler().setMarkerSize(1);
+		chart.getStyler().setXAxisMin(0.0);
+		chart.getStyler().setYAxisMin(0.0);
+		chart.getStyler().setLegendFont(new Font("Dialog", Font.PLAIN, 16));
+
+		// Add series to chart
+		for (Player p : playerList) {
+			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatData());
+			double[] x = new double[damage_logs.size()];
+			double[] y = new double[damage_logs.size()];
+			double total_damage = 0.0;
+			for (int i = 0; i < damage_logs.size(); i++) {
+				total_damage = total_damage + damage_logs.get(i).getDamage();
+				x[i] = damage_logs.get(i).getTime() / 1000.0;
+				y[i] = total_damage / 1000;
+			}
+			chart.addSeries(p.getAgent().getName() + " - " + p.getAgent().getProf(), x, y);
+		}
+
+		// Write chart to .png
+		try {
+			String file_name = "./graphs/" + base + "_" + bossData.getName() + "TDG.png";
+			BitmapEncoder.saveBitmapWithDPI(chart, file_name, BitmapFormat.PNG, 300);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return base + "_" + bossData.getName() + ".png";
 	}
 
 	// public String get_phase_dps() {
@@ -211,47 +259,7 @@ public class Statistics {
 	//
 
 	//
-	// public String get_total_damage_graph(String base) {
-	//
-	// // Generate a graph
-	// final XYChart chart = new
-	// XYChartBuilder().width(1600).height(900).title("Total Damage - " +
-	// bossData.getName())
-	// .xAxisTitle("Time (s)").yAxisTitle("Damage (k)").build();
-	// chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
-	// chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
-	// chart.getStyler().setMarkerSize(1);
-	// chart.getStyler().setXAxisMin(0.0);
-	// chart.getStyler().setYAxisMin(0.0);
-	// chart.getStyler().setLegendFont(new Font("Dialog", Font.PLAIN, 16));
-	//
-	// for (Player p : playerList) {
-	// List<DamageLog> logs = p.get_damage_logs();
-	// if (!logs.isEmpty()) {
-	// double[] x = new double[logs.size()];
-	// double[] y = new double[logs.size()];
-	// double total_damage = 0;
-	//
-	// for (int i = 0; i < logs.size(); i++) {
-	// total_damage = total_damage + logs.get(i).getDamage();
-	// x[i] = logs.get(i).getTime() / 1000.0;
-	// y[i] = total_damage / 1000.0;
-	// }
-	// chart.addSeries(p.getName() + " - " + p.getProf(), x, y);
-	// }
-	// }
-	//
-	// try {
-	// BitmapEncoder.saveBitmapWithDPI(chart, "./graphs/" + base + "_" +
-	// bossData.getName() + ".png",
-	// BitmapFormat.PNG, 300);
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// return base + "_" + bossData.getName() + ".png";
-	//
-	// }
+
 	//
 	// public String get_combat_stats() {
 	//
