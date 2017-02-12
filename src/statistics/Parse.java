@@ -157,7 +157,6 @@ public class Parse {
 			} else if (a != null) {
 				agentData.addItem(a, new AgentItem(agent, 0, Utility.getString(name_buffer), a.getName(), toughness,
 						healing, condition));
-				System.out.println(Utility.getString(name_buffer));
 			} else {
 				agentData.addItem(a, new AgentItem(agent, 0, Utility.getString(name_buffer), String.valueOf(prof_id),
 						toughness, healing, condition));
