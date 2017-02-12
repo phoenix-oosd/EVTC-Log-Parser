@@ -34,30 +34,42 @@ public class AgentData {
 		for (CombatItem c : combatList) {
 			if (c.get_src_cid() != 0 || c.get_dst_cid() != 0) {
 				for (AgentItem player : playerAgents) {
-					if (player.getAgent() == c.get_src_agent()) {
-						player.setCID(c.get_src_cid());
-						continue;
-					} else if (player.getAgent() == c.get_dst_agent()) {
-						player.setCID(c.get_dst_cid());
-						continue;
+					if (!player.isSet()) {
+						if (player.getAgent() == c.get_src_agent()) {
+							player.setFirstAppeared(c.get_time());
+							player.setCID(c.get_src_cid());
+							continue;
+						} else if (player.getAgent() == c.get_dst_agent()) {
+							player.setFirstAppeared(c.get_time());
+							player.setCID(c.get_dst_cid());
+							continue;
+						}
 					}
 				}
 				for (AgentItem npc : NPCAgents) {
-					if (npc.getAgent() == c.get_src_agent()) {
-						npc.setCID(c.get_src_cid());
-						continue;
-					} else if (npc.getAgent() == c.get_dst_agent()) {
-						npc.setCID(c.get_dst_cid());
-						continue;
+					if (!npc.isSet()) {
+						if (npc.getAgent() == c.get_src_agent()) {
+							npc.setFirstAppeared(c.get_time());
+							npc.setCID(c.get_src_cid());
+							continue;
+						} else if (npc.getAgent() == c.get_dst_agent()) {
+							npc.setFirstAppeared(c.get_time());
+							npc.setCID(c.get_dst_cid());
+							continue;
+						}
 					}
 				}
 				for (AgentItem gadget : gadgetAgents) {
-					if (gadget.getAgent() == c.get_src_agent()) {
-						gadget.setCID(c.get_src_cid());
-						continue;
-					} else if (gadget.getAgent() == c.get_dst_agent()) {
-						gadget.setCID(c.get_dst_cid());
-						continue;
+					if (!gadget.isSet()) {
+						if (gadget.getAgent() == c.get_src_agent()) {
+							gadget.setFirstAppeared(c.get_time());
+							gadget.setCID(c.get_src_cid());
+							continue;
+						} else if (gadget.getAgent() == c.get_dst_agent()) {
+							gadget.setFirstAppeared(c.get_time());
+							gadget.setCID(c.get_dst_cid());
+							continue;
+						}
 					}
 				}
 			}

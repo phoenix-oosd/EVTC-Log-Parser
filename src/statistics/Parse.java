@@ -286,7 +286,7 @@ public class Parse {
 		List<AgentItem> NPCAgents = agentData.getNPCAgents();
 		List<AgentItem> gadgetAgents = agentData.getGadgetAgents();
 		table.addTitle("AGENT DATA");
-		table.addRow("agent", "CID", "name", "prof", "toughness", "healing", "condition");
+		table.addRow("first_appeared", "agent", "CID", "name", "prof", "toughness", "healing", "condition");
 		for (AgentItem player : playerAgents) {
 			table.addRow(player.toStringArray());
 		}
