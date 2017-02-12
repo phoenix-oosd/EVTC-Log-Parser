@@ -10,8 +10,6 @@ public class AgentItem {
 	private int toughness;
 	private int healing;
 	private int condition;
-	// private List<damageLog> damage_logs = new ArrayList<damageLog>();
-	// private Map<String, List<boonLog>> boon_logs = new HashMap<>();
 
 	// Constructor
 	public AgentItem(long agent, int CID, String name, String prof, int toughness, int healing, int condition) {
@@ -66,23 +64,9 @@ public class AgentItem {
 		return condition;
 	}
 
-	// public List<damageLog> get_damage_logs() {
-	// return damage_logs;
-	// }
-	//
-	// public Map<String, List<boonLog>> get_boon_logs() {
-	// return boon_logs;
-	// }
-
 	// Setters
 	public void setCID(int CID) {
 		this.CID = CID;
 	}
-
-	// public void setBoons(String[] boonArray) {
-	// for (String boon : boonArray) {
-	// boon_logs.put(boon, new ArrayList<boonLog>());
-	// }
-	// }
 
 }

@@ -15,7 +15,7 @@ public enum Boss {
 	XERA("Xera", 16246, 22611300),
 	CAIRN_THE_INDOMITABLE("Cairn the Indomitable", 17194, 20000000),
 	MURSAAT_OVERSEER("Mursaat Overseer", 17172, 20000000),
-	SAMAROG("Samarog", 17188, 30000000),
+	SAMAROG("Samarog", 17188, 29640000),
 	DEIMOS("Deimos", 17154, 36000000);
 
 	// Fields

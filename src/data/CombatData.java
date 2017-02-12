@@ -24,47 +24,7 @@ public class CombatData {
 	}
 
 	// // Public Methods
-	// public void get_damage_logs(AgentData agentData) {
-	//
-	// // Start time of the fight
-	// long t_start = combatData.get(0).get_time();
-	//
-	// // Add damage logs for each player
-	// for (AgentItem a : agentData.getPlayerAgents()) {
-	//
-	// // Check all combat logs
-	// for (CombatItem c : combatData) {
-	// // The player or their pets is the source
-	// if ((a.getCID() == c.get_src_cid()) || (a.getCID() ==
-	// c.get_src_master_cid())) {
-	// // The target is the boss and the player is an enemy
-	// if ((c.get_dst_cid() == b_data.getCID()) && c.iff()) {
-	// // Physical or condition damage
-	// if ((!c.is_buff() && (c.get_value() > 0)) || (c.is_buff() &&
-	// (c.get_buff_dmg() > 0))) {
-	// int time = (int) (c.get_time() - t_start);
-	// int damage;
-	// if (c.is_buff()) {
-	// damage = c.get_buff_dmg();
-	// } else {
-	// damage = c.get_value();
-	// }
-	// a.get_damage_logs().add(new damageLog(time, damage, c.get_skill_id(),
-	// c.is_buff(),
-	// c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), 0));
-	// }
-	// } else if (a.getCID() == c.get_src_cid() && c.get_value() == 0 &&
-	// c.is_statechange() > 0) {
-	// int time = (int) (c.get_time() - t_start);
-	// a.get_damage_logs().add(new damageLog(time, 0, c.get_skill_id(),
-	// c.is_buff(), c.get_result(),
-	// c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
-	// }
-	// }
-	// }
-	// }
-	// }
-	//
+
 	// public void get_boon_logs(AgentData agentData) {
 	//
 	// // Start time of the fight

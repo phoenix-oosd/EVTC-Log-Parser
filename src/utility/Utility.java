@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public final class Utility {
 
-	public static String get_String(byte[] bytes) {
+	public static String getString(byte[] bytes) {
 		String string;
 		try {
 			string = new String(bytes, "UTF-8");
@@ -29,7 +29,7 @@ public final class Utility {
 		return "UNKNOWN";
 	}
 
-	public static boolean get_bool(int i) {
+	public static boolean getBool(int i) {
 		return (i != 0);
 	}
 
@@ -58,13 +58,13 @@ public final class Utility {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 	}
 
-	public static String center(String text, int len) {
+	public static String centerString(String text, int len) {
 		String output = String.format("%" + len + "s%s%" + len + "s", "", text, "");
 		float start = (output.length() / 2) - (len / 2);
 		return output.substring((int) start, (int) (start + len));
 	}
 
-	public static String fill(int len, char c) {
+	public static String fillWithChar(int len, char c) {
 		if (len > 0) {
 			char[] array = new char[len];
 			Arrays.fill(array, c);
@@ -73,7 +73,7 @@ public final class Utility {
 		return "";
 	}
 
-	public static List<Point> merge_intervals(List<Point> intervals) {
+	public static List<Point> mergeIntervals(List<Point> intervals) {
 
 		if (intervals.size() == 1) {
 			return intervals;
@@ -99,7 +99,7 @@ public final class Utility {
 		return merged;
 	}
 
-	public static String[] concat(String[] a, String[] b) {
+	public static String[] concatStringArray(String[] a, String[] b) {
 		int i = a.length;
 		int j = b.length;
 		String[] output = new String[i + j];

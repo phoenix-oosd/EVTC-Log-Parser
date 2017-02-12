@@ -1,6 +1,6 @@
-package log;
+package player;
 
-public class damageLog {
+public class DamageLog {
 
 	// Fields
 	private int time;
@@ -14,7 +14,7 @@ public class damageLog {
 	private int is_activation;
 
 	// Constructor
-	public damageLog(int time, int damage, int skill_id, boolean is_condi, int result, boolean is_ninety,
+	public DamageLog(int time, int damage, int skill_id, boolean is_condi, int result, boolean is_ninety,
 			boolean is_moving, int is_statechange, int is_activation) {
 		this.time = time;
 		this.damage = damage;

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
+import java.util.List;
 
 import data.AgentData;
 import data.AgentItem;
@@ -15,8 +16,11 @@ import data.CombatData;
 import data.CombatItem;
 import data.SkillData;
 import data.SkillItem;
+import enums.Activation;
 import enums.Agent;
 import enums.Boss;
+import enums.Result;
+import enums.StateChange;
 import utility.TableBuilder;
 import utility.Utility;
 
@@ -48,6 +52,10 @@ public class Parse {
 			getAgentData(f);
 			getSkillData(f);
 			getCombatData(f);
+			List<CombatItem> combatList = combatData.getCombatData();
+			agentData.fillMissingData(combatList);
+			List<AgentItem> NPCAgentList = agentData.getNPCAgents();
+			bossData.fillMissingData(NPCAgentList, combatList);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -64,19 +72,19 @@ public class Parse {
 	}
 
 	// Public Methods
-	public BossData getB() {
+	public BossData getBossData() {
 		return bossData;
 	}
 
-	public AgentData getA() {
+	public AgentData getAgentData() {
 		return agentData;
 	}
 
-	public SkillData getS() {
+	public SkillData getSkillData() {
 		return skillData;
 	}
 
-	public CombatData getC() {
+	public CombatData getCombatData() {
 		return combatData;
 	}
 
@@ -203,7 +211,7 @@ public class Parse {
 			int buff_dmg = f.getInt();
 
 			// 2 bytes: overstack_value
-			int overstack_value = f.getShort();
+			int overstack_value = Short.toUnsignedInt(f.getShort());
 
 			// 2 bytes: skill_id
 			int skill_id = Short.toUnsignedInt(f.getShort());
@@ -223,14 +231,14 @@ public class Parse {
 			// 1 byte: iff
 			boolean iff = Utility.getBool(f.get());
 
-			// 1 byte: is_buff
-			boolean is_buff = Utility.getBool(f.get());
+			// 1 byte: buff
+			boolean buff = Utility.getBool(f.get());
 
 			// 1 byte: result
-			int result = f.get();
+			Result result = Result.getEnum(f.get());
 
 			// 1 byte: is_activation
-			int is_activation = f.get();
+			Activation is_activation = Activation.getEnum(f.get());
 
 			// 1 byte: is_buffremove
 			boolean is_buffremove = Utility.getBool(f.get());
@@ -245,14 +253,14 @@ public class Parse {
 			boolean is_moving = Utility.getBool(f.get());
 
 			// 1 byte: is_statechange
-			int is_statechange = f.get();
+			StateChange is_statechange = StateChange.getEnum(f.get());
 
 			// 4 bytes: garbage
 			f.position(f.position() + 4);
 
 			// Add combat
 			combatData.addItem(new CombatItem(time, src_agent, dst_agent, value, buff_dmg, overstack_value, skill_id,
-					src_cid, dst_cid, src_master_cid, iff, is_buff, result, is_activation, is_buffremove, is_ninety,
+					src_cid, dst_cid, src_master_cid, iff, buff, result, is_activation, is_buffremove, is_ninety,
 					is_fifty, is_moving, is_statechange));
 		}
 	}
@@ -267,7 +275,7 @@ public class Parse {
 
 		// Boss Data Table
 		table.addTitle("BOSS DATA");
-		table.addRow("agent", "CID", "name", "HP", "fight_start", "fight_end", "build_version");
+		table.addRow("agent", "CID", "name", "HP", "fight_start", "fight_end", "is_kill", "build_version");
 		table.addRow(bossData.toStringArray());
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();
@@ -275,8 +283,17 @@ public class Parse {
 		// Player Data
 		table.addTitle("AGENT DATA");
 		table.addRow("agent", "CID", "name", "prof", "toughness", "healing", "condition");
-		for (AgentItem p : agentData.getAllAgents()) {
-			table.addRow(p.toStringArray());
+		List<AgentItem> playerAgents = agentData.getPlayerAgents();
+		List<AgentItem> NPCAgents = agentData.getNPCAgents();
+		List<AgentItem> gadgetAgents = agentData.getGadgetAgents();
+		for (AgentItem player : playerAgents) {
+			table.addRow(player.toStringArray());
+		}
+		for (AgentItem npc : NPCAgents) {
+			table.addRow(npc.toStringArray());
+		}
+		for (AgentItem gadget : gadgetAgents) {
+			table.addRow(gadget.toStringArray());
 		}
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();
@@ -293,7 +310,7 @@ public class Parse {
 		// Combat Data Table
 		table.addTitle("COMBAT DATA");
 		table.addRow("time", "src_agent", "dst_agent", "value", "buff_dmg", "overstack_value", "skill_id", "src_cid",
-				"dst_cid", "src_master_cid", "iff", "is_buff", "is_crit", "is_activation", "is_buffremove",
+				"dst_cid", "src_master_cid", "iff", "buff", "is_crit", "is_activation", "is_buffremove",
 				"boolean is_ninety", "is_fifty", "is_moving", "is_statechange");
 		for (CombatItem c : combatData.getCombatData()) {
 			table.addRow(c.toStringArray());

@@ -37,19 +37,19 @@ public enum Agent {
 	// Public Methods
 	public static Agent getEnum(int ID, int is_elite) {
 		for (Agent p : values()) {
-			if (is_elite == 0) {
+			if (is_elite == -1) {
+				if (ID == -1) {
+					return Agent.GADGET;
+				} else {
+					return Agent.NPC;
+				}
+			} else if (is_elite == 0) {
 				if (p.getID() == ID) {
 					return p;
 				}
 			} else if (is_elite == 1) {
 				if (p.getID() == ID + 9) {
 					return p;
-				}
-			} else if (is_elite == -1) {
-				if (p.getID() == -1) {
-					return Agent.GADGET;
-				} else {
-					return Agent.NPC;
 				}
 			}
 		}

@@ -1,6 +1,6 @@
-package log;
+package player;
 
-public class boonLog {
+public class BoonLog {
 
 	// Fields
 	private int time = 0;
@@ -8,7 +8,7 @@ public class boonLog {
 	private int src_cid = 0;
 
 	// Constructor
-	public boonLog(int time, int value, int src_cid) {
+	public BoonLog(int time, int value, int src_cid) {
 		this.time = time;
 		this.value = value;
 		this.src_cid = src_cid;

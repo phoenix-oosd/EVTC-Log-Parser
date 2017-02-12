@@ -1,5 +1,9 @@
 package data;
 
+import enums.Activation;
+import enums.Result;
+import enums.StateChange;
+
 public class CombatItem {
 
 	// Fields
@@ -15,19 +19,19 @@ public class CombatItem {
 	private int src_master_cid;
 	private boolean iff;
 	private boolean is_buff;
-	private int result;
-	private int is_activation;
+	private Result result;
+	private Activation is_activation;
 	private boolean is_buffremove;
 	private boolean is_ninety;
 	private boolean is_fifty;
 	private boolean is_moving;
-	private int is_statechange;
+	private StateChange is_statechange;
 
 	// Constructor
 	public CombatItem(int time, int src_agent, int dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean is_buff, int result,
-			int is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
-			int is_statechange) {
+			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean buff, Result result,
+			Activation is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
+			StateChange is_statechange) {
 		this.time = time;
 		this.src_agent = src_agent;
 		this.dst_agent = dst_agent;
@@ -39,7 +43,7 @@ public class CombatItem {
 		this.dst_cid = dst_cid;
 		this.src_master_cid = src_master_cid;
 		this.iff = iff;
-		this.is_buff = is_buff;
+		this.is_buff = buff;
 		this.result = result;
 		this.is_activation = is_activation;
 		this.is_buffremove = is_buffremove;
@@ -123,11 +127,11 @@ public class CombatItem {
 		return is_buff;
 	}
 
-	public int get_result() {
+	public Result get_result() {
 		return result;
 	}
 
-	public int is_activation() {
+	public Activation is_activation() {
 		return is_activation;
 	}
 
@@ -147,7 +151,7 @@ public class CombatItem {
 		return is_moving;
 	}
 
-	public int is_statechange() {
+	public StateChange is_statechange() {
 		return is_statechange;
 	}
 

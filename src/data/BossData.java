@@ -1,55 +1,10 @@
 package data;
 
-public class BossData {
+import java.util.List;
 
-	// // Update boss agent
-	// for (CombatItem c : combatData.getCombatData()) {
-	// if (c.get_src_cid() == bossData.getCID()) {
-	// bossData.setAgent(c.get_src_agent());
-	// break;
-	// }
-	// }
-	//
-	// // Update boss fight duration
-	// bossData.setFightDuration(combatData.get(combatData.size() -
-	// 1).get_time() - combatData.get(0).get_time());
-	//
-	// // Update player CIDs
-	// for (AgentItem p : agentData) {
-	// for (CombatItem c : combatData) {
-	// if (p.getAgent() == c.get_src_agent()) {
-	// if (c.get_src_master_cid() == 0) {
-	// p.setCID(c.get_src_cid());
-	// } else {
-	// p.setCID(c.get_src_master_cid());
-	// }
-	// break;
-	// }
-	// }
-	// }
-	//
-	// // Delete players with no CID
-	// Iterator<AgentItem> iter = agentData.iterator();
-	// while (iter.hasNext()) {
-	// AgentItem p = iter.next();
-	// if (p.getCID() == 0) {
-	// iter.remove();
-	// }
-	// }
-	//
-	// // Update combat for Xera logs
-	// if (bossData.getName().equals("Xera")) {
-	// long xera_50 = 16286;
-	// for (CombatItem c : combatData) {
-	// if (c.get_src_cid() == xera_50) {
-	// c.set_src_agent(bossData.getAgent());
-	// c.set_src_cid(bossData.getCID());
-	// } else if (c.get_dst_cid() == xera_50) {
-	// c.set_dst_agent(bossData.getAgent());
-	// c.set_dst_cid(bossData.getCID());
-	// }
-	// }
-	// }
+import enums.StateChange;
+
+public class BossData {
 
 	// Fields
 	private int agent;
@@ -58,6 +13,7 @@ public class BossData {
 	private int HP;
 	private int fightStart;
 	private int fightEnd;
+	private boolean isKill;
 	private String buildVersion;
 
 	// Constructor
@@ -72,15 +28,48 @@ public class BossData {
 	}
 
 	// Public Methods
+	public void fillMissingData(List<AgentItem> NPCAgentList, List<CombatItem> combatList) {
+
+		for (AgentItem agent : NPCAgentList) {
+			if (this.name.equals(agent.getName())) {
+				this.CID = agent.getCID();
+				break;
+			}
+		}
+
+		boolean haveStartTime = false;
+		for (CombatItem c : combatList) {
+			if (c.get_src_cid() == CID) {
+				if (c.is_statechange().equals(StateChange.ENTER_COMBAT)) {
+					agent = c.get_src_agent();
+				} else if (c.is_statechange().equals(StateChange.CHANGE_DEAD)) {
+					fightEnd = c.get_time();
+					isKill = true;
+				}
+			} else if (!haveStartTime) {
+				if (c.is_statechange().equals(StateChange.ENTER_COMBAT)) {
+					fightStart = c.get_time();
+					haveStartTime = true;
+				}
+			}
+		}
+
+		if (fightEnd == 0) {
+			fightEnd = combatList.get(combatList.size() - 1).get_time();
+			isKill = false;
+		}
+	}
+
 	public String[] toStringArray() {
-		String[] array = new String[7];
+		String[] array = new String[8];
 		array[0] = String.valueOf(agent);
 		array[1] = String.valueOf(CID);
 		array[2] = String.valueOf(name);
 		array[3] = String.valueOf(HP);
 		array[4] = String.valueOf(fightStart);
 		array[5] = String.valueOf(fightEnd);
-		array[6] = String.valueOf(buildVersion);
+		array[6] = String.valueOf(isKill);
+		array[7] = String.valueOf(buildVersion);
 		return array;
 	}
 
@@ -107,6 +96,10 @@ public class BossData {
 
 	public int getFightEnd() {
 		return fightEnd;
+	}
+
+	public boolean isKill() {
+		return isKill;
 	}
 
 	public String getBuildVersion() {

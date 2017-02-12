@@ -7,17 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import enums.Choice;
+import enums.MenuChoice;
 import statistics.Parse;
-import statistics.Statistics;
 import utility.Utility;
 
 public class Main {
 
 	// Fields
-	private static boolean quitting = false;
-	private static boolean displaying_version = true;
-	private static boolean players_are_hidden = false;
+	private static boolean willQuit = false;
+	private static boolean willDisplayVersions = true;
+	private static boolean willHidePlayers = false;
 	private static Map<String, String> arguments = new HashMap<>();;
 
 	// Main
@@ -40,17 +39,17 @@ public class Main {
 
 			// Data anonymization
 			if (is_anon != null) {
-				players_are_hidden = Utility.get_bool(Integer.valueOf(is_anon));
+				willHidePlayers = Utility.getBool(Integer.valueOf(is_anon));
 			}
 
 			// File Association
 			if (file_path != null && !file_path.isEmpty() && options != null) {
-				displaying_version = false;
+				willDisplayVersions = false;
 				int[] choices = options.chars().map(x -> x - '0').toArray();
 
 				StringBuilder output = new StringBuilder("<START>");
 				for (int i : choices) {
-					Choice c = Choice.getChoice(i);
+					MenuChoice c = MenuChoice.getEnum(i);
 					if (c != null && c.canBeAssociated()) {
 						output.append(System.lineSeparator() + parsing(c, new File(file_path)));
 					}
@@ -84,7 +83,7 @@ public class Main {
 
 				// Display menu
 				else {
-					while (!quitting) {
+					while (!willQuit) {
 						System.out.println("_______________" + System.lineSeparator());
 						System.out.println("EVTC Log Parser");
 						System.out.println("_______________" + System.lineSeparator());
@@ -102,9 +101,9 @@ public class Main {
 						System.out.println("Enter an option by number below:");
 
 						// Read user input
-						Choice choice = null;
+						MenuChoice choice = null;
 						try {
-							choice = Choice.getChoice(scan.nextInt());
+							choice = MenuChoice.getEnum(scan.nextInt());
 
 						} catch (InputMismatchException e) {
 							e.printStackTrace();
@@ -117,8 +116,8 @@ public class Main {
 						}
 
 						// Quitting
-						else if (choice.equals(Choice.QUIT)) {
-							quitting = true;
+						else if (choice.equals(MenuChoice.QUIT)) {
+							willQuit = true;
 						}
 
 						// Valid choice
@@ -145,82 +144,88 @@ public class Main {
 		return;
 	}
 
-	private static String parsing(Choice choice, File log) {
+	private static String parsing(MenuChoice choice, File log) {
 
 		// Parse the log
 		String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
 		Parse parsed = null;
-		Statistics stats = null;
+		// Statistics stats = null;
 		try {
-			parsed = new Parse(log, players_are_hidden);
-			if (displaying_version) {
-				System.out.println("Log version:\t" + parsed.getB().getVersion());
+			parsed = new Parse(log, willHidePlayers);
+			if (willDisplayVersions) {
+				System.out.println("Log version:\t" + parsed.getBossData().getBuildVersion());
 			}
-			stats = new Statistics(parsed);
+			// stats = new Statistics(parsed);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Damage related options
 		if (choice.getType().equals("damage")) {
-			stats.get_damage_logs();
-			if (choice.equals(Choice.FINAL_DPS)) {
-				return stats.get_final_dps();
-			}
-
-			else if (choice.equals(Choice.PHASE_DPS)) {
-				return stats.get_phase_dps();
-			}
-
-			else if (choice.equals(Choice.DMG_DIST)) {
-				return stats.get_damage_distribution();
-			}
-
-			else if (choice.equals(Choice.G_TOTAL_DMG)) {
-				return "Output file:\t" + stats.get_total_damage_graph(base);
-			}
-
-			else if (choice.equals(Choice.MISC_STATS)) {
-				return stats.get_combat_stats();
-			}
+			// stats.get_damage_logs();
+			// if (choice.equals(MenuChoice.FINAL_DPS)) {
+			// return stats.get_final_dps();
+			// }
+			//
+			// else if (choice.equals(MenuChoice.PHASE_DPS)) {
+			// return stats.get_phase_dps();
+			// }
+			//
+			// else if (choice.equals(MenuChoice.DMG_DIST)) {
+			// return stats.get_damage_distribution();
+			// }
+			//
+			// else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
+			// return "Output file:\t" + stats.get_total_damage_graph(base);
+			// }
+			//
+			// else if (choice.equals(MenuChoice.MISC_STATS)) {
+			// return stats.get_combat_stats();
+			// }
 		}
 
 		// Boon related options
 		else if (choice.getType().equals("boons")) {
-			stats.get_boon_logs();
-			if (choice.equals(Choice.FINAL_BOONS)) {
-				return stats.get_final_boons();
-			} else if (choice.equals(Choice.PHASE_BOONS)) {
-				stats.get_damage_logs();
-				return stats.get_phase_boons();
-			}
+			// stats.get_boon_logs();
+			// if (choice.equals(MenuChoice.FINAL_BOONS)) {
+			// return stats.get_final_boons();
+			// } else if (choice.equals(MenuChoice.PHASE_BOONS)) {
+			// stats.get_damage_logs();
+			// return stats.get_phase_boons();
+			// }
 
 		}
 
 		// Text Dumps
 		else if (choice.getType().equals("text")) {
-			if (choice.equals(Choice.DUMP_EVTC)) {
-				File evtc_dump = new File("./tables/" + base + "_" + parsed.getB().getName() + "_evtc-dump.txt");
+			if (choice.equals(MenuChoice.DUMP_EVTC)) {
+				File evtc_dump = new File("./tables/" + base + "_" + parsed.getBossData().getName() + "_evtc-dump.txt");
 				try {
 					Utility.writeToFile(parsed.toString(), evtc_dump);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				return "Output file:\t" + evtc_dump.getName();
-			} else if (choice.equals(Choice.DUMP_TABLES)) {
-				stats.get_damage_logs();
-				stats.get_boon_logs();
-				File text_dump = new File("./tables/" + base + "_" + parsed.getB().getName() + "_all-tables.txt");
-				try {
-					Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
-							+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()
-							+ stats.get_final_boons() + System.lineSeparator() + stats.get_phase_boons()
-							+ System.lineSeparator() + stats.get_damage_distribution(), text_dump);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return "Output file:\t" + text_dump.getName();
 			}
+			// else if (choice.equals(MenuChoice.DUMP_TABLES)) {
+			// stats.get_damage_logs();
+			// stats.get_boon_logs();
+			// File text_dump = new File("./tables/" + base + "_" +
+			// parsed.getB().getName() + "_all-tables.txt");
+			// try {
+			// Utility.writeToFile(stats.get_final_dps() +
+			// System.lineSeparator() + stats.get_phase_dps()
+			// + System.lineSeparator() + stats.get_combat_stats() +
+			// System.lineSeparator()
+			// + stats.get_final_boons() + System.lineSeparator() +
+			// stats.get_phase_boons()
+			// + System.lineSeparator() + stats.get_damage_distribution(),
+			// text_dump);
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// return "Output file:\t" + text_dump.getName();
+			// }
 		}
 		return "";
 	}

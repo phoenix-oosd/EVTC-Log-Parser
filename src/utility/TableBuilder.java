@@ -30,18 +30,18 @@ public class TableBuilder {
 		int[] colWidths = getWidths();
 		// Title
 		if (!title.equals("")) {
-			output.append(Utility.fill(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
+			output.append(Utility.fillWithChar(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
 			output.append(title + System.lineSeparator());
-			output.append(Utility.fill(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
+			output.append(Utility.fillWithChar(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
 		}
 		// Header
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			output.append(Utility.center(rows.get(0)[colNum], colWidths[colNum]));
+			output.append(Utility.centerString(rows.get(0)[colNum], colWidths[colNum]));
 			output.append("   ");
 		}
 		output.append(System.lineSeparator());
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			output.append(Utility.center(Utility.fill(colWidths[colNum], '_'), colWidths[colNum]));
+			output.append(Utility.centerString(Utility.fillWithChar(colWidths[colNum], '_'), colWidths[colNum]));
 			output.append("   ");
 		}
 		output.append(System.lineSeparator() + System.lineSeparator());
@@ -49,7 +49,7 @@ public class TableBuilder {
 		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
 			String[] row = iter.next();
 			for (int colNum = 0; colNum < row.length; colNum++) {
-				output.append(Utility.center(row[colNum], colWidths[colNum]));
+				output.append(Utility.centerString(row[colNum], colWidths[colNum]));
 				output.append("   ");
 			}
 			output.append(System.lineSeparator());
