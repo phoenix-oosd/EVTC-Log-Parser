@@ -17,21 +17,23 @@ public class Duration extends AbstractBoon {
 
 	@Override
 	public void update(int time_passed) {
-		// Lose all stacks
-		if (time_passed >= get_stack_value()) {
-			stacks.clear();
-			return;
-		}
-		// Remove from the highest stack
-		else {
-			stacks.set(0, stacks.get(0) - time_passed);
-			if (stacks.get(0) <= 0) {
-				// Spend leftover time
-				time_passed = Math.abs(stacks.get(0));
-				stacks.remove(0);
-				this.update(time_passed);
-			} else {
+		if (!stacks.isEmpty()) {
+			// Lose all stacks
+			if (time_passed >= get_stack_value()) {
+				stacks.clear();
 				return;
+			}
+			// Remove from the highest stack
+			else {
+				stacks.set(0, stacks.get(0) - time_passed);
+				if (stacks.get(0) <= 0) {
+					// Spend leftover time
+					time_passed = Math.abs(stacks.get(0));
+					stacks.remove(0);
+					this.update(time_passed);
+				} else {
+					return;
+				}
 			}
 		}
 	}

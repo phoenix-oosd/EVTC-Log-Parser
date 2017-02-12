@@ -6,20 +6,20 @@ import java.util.List;
 public class SkillData {
 
 	// Fields
-	private List<SkillItem> skillData;
+	private List<SkillItem> skillList;
 
 	// Constructors
 	public SkillData() {
-		this.skillData = new ArrayList<SkillItem>();
+		this.skillList = new ArrayList<SkillItem>();
 	}
 
 	// Public Methods
 	public void addItem(SkillItem item) {
-		skillData.add(item);
+		skillList.add(item);
 	}
 
 	public String getName(int ID) {
-		for (SkillItem s : skillData) {
+		for (SkillItem s : skillList) {
 			if (s.getID() == ID) {
 				return s.getName();
 			}
@@ -28,8 +28,8 @@ public class SkillData {
 	}
 
 	// Getters
-	public List<SkillItem> getSkillData() {
-		return skillData;
+	public List<SkillItem> getSkillList() {
+		return skillList;
 	}
 
 }

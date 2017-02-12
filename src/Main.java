@@ -160,55 +160,39 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// Damage related options
-		if (choice.getType().equals("damage")) {
-			if (choice.equals(MenuChoice.FINAL_DPS)) {
-				return stats.get_final_dps();
-			} else if (choice.equals(MenuChoice.PHASE_DPS)) {
-				return stats.get_phase_dps();
-			} else if (choice.equals(MenuChoice.DMG_DIST)) {
-				return stats.get_damage_distribution();
-			} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
-				return "Output file:\t" + stats.get_total_damage_graph(base);
-			} else if (choice.equals(MenuChoice.MISC_STATS)) {
-				return stats.get_combat_stats();
+		if (choice.equals(MenuChoice.FINAL_DPS)) {
+			return stats.get_final_dps();
+		} else if (choice.equals(MenuChoice.PHASE_DPS)) {
+			return stats.get_phase_dps();
+		} else if (choice.equals(MenuChoice.DMG_DIST)) {
+			return stats.get_damage_distribution();
+		} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
+			return "Output file:\t" + stats.get_total_damage_graph(base);
+		} else if (choice.equals(MenuChoice.MISC_STATS)) {
+			return stats.get_combat_stats();
+		} else if (choice.equals(MenuChoice.FINAL_BOONS)) {
+			return stats.get_final_boons();
+		} else if (choice.equals(MenuChoice.PHASE_BOONS)) {
+			return stats.get_phase_boons();
+		} else if (choice.equals(MenuChoice.DUMP_EVTC)) {
+			File evtc_dump = new File("./tables/" + base + "_" + parsed.getBossData().getName() + "_evtc-dump.txt");
+			try {
+				Utility.writeToFile(parsed.toString(), evtc_dump);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		}
-
-		// Boon related options
-		else if (choice.getType().equals("boons")) {
-			if (choice.equals(MenuChoice.FINAL_BOONS)) {
-				return stats.get_final_boons();
-			} else if (choice.equals(MenuChoice.PHASE_BOONS)) {
-				return stats.get_phase_boons();
+			return "Output file:\t" + evtc_dump.getName();
+		} else if (choice.equals(MenuChoice.DUMP_TABLES)) {
+			File text_dump = new File("./tables/" + base + "_" + parsed.getBossData().getName() + "_all-tables.txt");
+			try {
+				Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
+						+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()
+						+ stats.get_final_boons() + System.lineSeparator() + stats.get_phase_boons()
+						+ System.lineSeparator() + stats.get_damage_distribution(), text_dump);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-
-		}
-
-		// Text Dumps
-		else if (choice.getType().equals("text")) {
-			if (choice.equals(MenuChoice.DUMP_EVTC)) {
-				File evtc_dump = new File("./tables/" + base + "_" + parsed.getBossData().getName() + "_evtc-dump.txt");
-				try {
-					Utility.writeToFile(parsed.toString(), evtc_dump);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return "Output file:\t" + evtc_dump.getName();
-			} else if (choice.equals(MenuChoice.DUMP_TABLES)) {
-				File text_dump = new File(
-						"./tables/" + base + "_" + parsed.getBossData().getName() + "_all-tables.txt");
-				try {
-					Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
-							+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()
-							+ stats.get_final_boons() + System.lineSeparator() + stats.get_phase_boons()
-							+ System.lineSeparator() + stats.get_damage_distribution(), text_dump);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				return "Output file:\t" + text_dump.getName();
-			}
+			return "Output file:\t" + text_dump.getName();
 		}
 		return "";
 	}

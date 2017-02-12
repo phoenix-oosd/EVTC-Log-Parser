@@ -3,26 +3,24 @@ package enums;
 public enum MenuChoice {
 
 	// Constants
-	DUMP_EVTC(0, "text", false),
-	FINAL_DPS(1, "damage", true),
-	PHASE_DPS(2, "damage", true),
-	DMG_DIST(3, "damage", true),
-	G_TOTAL_DMG(4, "damage", false),
-	MISC_STATS(5, "damage", true),
-	FINAL_BOONS(6, "boons", true),
-	PHASE_BOONS(7, "boons", true),
-	DUMP_TABLES(8, "text", false),
-	QUIT(9, "none", false);
+	DUMP_EVTC(0, false),
+	FINAL_DPS(1, true),
+	PHASE_DPS(2, true),
+	DMG_DIST(3, true),
+	G_TOTAL_DMG(4, false),
+	MISC_STATS(5, true),
+	FINAL_BOONS(6, true),
+	PHASE_BOONS(7, true),
+	DUMP_TABLES(8, false),
+	QUIT(9, false);
 
 	// Fields
 	private int ID;
-	private String type;
 	private boolean canBeAssociated;
 
 	// Constructor
-	MenuChoice(int ID, String type, boolean canBeAssociated) {
+	MenuChoice(int ID, boolean canBeAssociated) {
 		this.ID = ID;
-		this.type = type;
 		this.canBeAssociated = canBeAssociated;
 	}
 
@@ -39,10 +37,6 @@ public enum MenuChoice {
 	// Getters
 	public int getID() {
 		return ID;
-	}
-
-	public String getType() {
-		return type;
 	}
 
 	public boolean canBeAssociated() {

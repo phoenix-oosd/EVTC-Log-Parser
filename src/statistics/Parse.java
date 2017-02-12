@@ -51,8 +51,8 @@ public class Parse {
 			getBossData(f);
 			getAgentData(f);
 			getSkillData(f);
-			getCombatData(f);
-			List<CombatItem> combatList = combatData.getCombatData();
+			getCombatList(f);
+			List<CombatItem> combatList = combatData.getCombatList();
 			agentData.fillMissingData(combatList);
 			List<AgentItem> NPCAgentList = agentData.getNPCAgents();
 			bossData.fillMissingData(NPCAgentList, combatList);
@@ -157,6 +157,7 @@ public class Parse {
 			} else if (a != null) {
 				agentData.addItem(a, new AgentItem(agent, 0, Utility.getString(name_buffer), a.getName(), toughness,
 						healing, condition));
+				System.out.println(Utility.getString(name_buffer));
 			} else {
 				agentData.addItem(a, new AgentItem(agent, 0, Utility.getString(name_buffer), String.valueOf(prof_id),
 						toughness, healing, condition));
@@ -187,7 +188,7 @@ public class Parse {
 		}
 	}
 
-	private void getCombatData(MappedByteBuffer f) {
+	private void getCombatList(MappedByteBuffer f) {
 
 		// CombatData
 		this.combatData = new CombatData();
@@ -281,11 +282,11 @@ public class Parse {
 		table.clear();
 
 		// Player Data
-		table.addTitle("AGENT DATA");
-		table.addRow("agent", "CID", "name", "prof", "toughness", "healing", "condition");
 		List<AgentItem> playerAgents = agentData.getPlayerAgents();
 		List<AgentItem> NPCAgents = agentData.getNPCAgents();
 		List<AgentItem> gadgetAgents = agentData.getGadgetAgents();
+		table.addTitle("AGENT DATA");
+		table.addRow("agent", "CID", "name", "prof", "toughness", "healing", "condition");
 		for (AgentItem player : playerAgents) {
 			table.addRow(player.toStringArray());
 		}
@@ -299,20 +300,22 @@ public class Parse {
 		table.clear();
 
 		// Skill Data
+		List<SkillItem> skillList = skillData.getSkillList();
 		table.addTitle("SKILL DATA");
 		table.addRow("ID", "name");
-		for (SkillItem s : skillData.getSkillData()) {
+		for (SkillItem s : skillList) {
 			table.addRow(s.toStringArray());
 		}
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();
 
 		// Combat Data Table
+		List<CombatItem> combatList = combatData.getCombatList();
 		table.addTitle("COMBAT DATA");
 		table.addRow("time", "src_agent", "dst_agent", "value", "buff_dmg", "overstack_value", "skill_id", "src_cid",
 				"dst_cid", "src_master_cid", "iff", "buff", "is_crit", "is_activation", "is_buffremove",
 				"boolean is_ninety", "is_fifty", "is_moving", "is_statechange");
-		for (CombatItem c : combatData.getCombatData()) {
+		for (CombatItem c : combatList) {
 			table.addRow(c.toStringArray());
 		}
 		output.append(table.toString() + System.lineSeparator());
