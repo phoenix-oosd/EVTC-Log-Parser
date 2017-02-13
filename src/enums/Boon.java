@@ -18,7 +18,8 @@ public enum Boon {
 	GRACE_OF_THE_LAND("Grace of the Land", "GoTL", "intensity", 5),
 	EMPOWER_ALLIES("Empower Allies", "EA", "duration", 1),
 	BANNER_OF_STRENGTH("Banner of Strength", "BoS", "duration", 1),
-	BANNER_OF_DISCIPLINE("Banner of Discipline", "BoD", "duration", 1);
+	BANNER_OF_DISCIPLINE("Banner of Discipline", "BoD", "duration", 1),
+	SOOTHING_MIST("Soothing Mist", "MIST", "duration", 1);
 
 	// Fields
 	private String name;
