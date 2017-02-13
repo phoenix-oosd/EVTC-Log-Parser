@@ -30,12 +30,7 @@ public class BossData {
 	// Public Methods
 	public void fillMissingData(List<AgentItem> NPCAgentList, List<CombatItem> combatList) {
 
-		for (AgentItem agent : NPCAgentList) {
-			if (this.name.equals(agent.getName())) {
-				this.CID = agent.getCID();
-				break;
-			}
-		}
+		this.CID = NPCAgentList.get(0).getCID();
 
 		boolean haveStartTime = false;
 		for (CombatItem c : combatList) {

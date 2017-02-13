@@ -155,7 +155,10 @@ public class Parse {
 			if (willHidePlayers) {
 				agentData.addItem(a, new AgentItem(agent, 0, "Player " + String.valueOf(i), a.getName(), toughness,
 						healing, condition));
-			} else if (a != null) {
+			} else if (a.equals(Agent.NPC)) {
+				agentData.addItem(a, new AgentItem(agent, 0, Utility.getString(name_buffer),
+						a.getName() + ": " + String.format("%05d", prof_id), toughness, healing, condition));
+			} else if (!a.equals(null)) {
 				agentData.addItem(a, new AgentItem(agent, 0, Utility.getString(name_buffer), a.getName(), toughness,
 						healing, condition));
 			} else {
