@@ -149,9 +149,8 @@ public class Main {
 
 	private static String parsing(MenuChoice choice, File log) {
 
-		String this_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
 		// Parse the log
-		if (current_file == null || !current_file.equals(this_file)) {
+		if (current_file == null || !current_file.equals(log.getName().split("\\.(?=[^\\.]+$)")[0])) {
 			try {
 				parsed_file = new Parse(log);
 				stats = new Statistics(parsed_file);
@@ -162,8 +161,6 @@ public class Main {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else {
-			System.out.println("Hi");
 		}
 
 		// Choice
