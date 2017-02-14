@@ -17,8 +17,9 @@ public class Main {
 	// Fields
 	private static boolean willQuit = false;
 	private static boolean willDisplayVersions = true;
-	private static boolean willHidePlayers = false;
-	private static Map<String, String> arguments = new HashMap<>();;
+	private static Map<String, String> arguments = new HashMap<>();
+	private static String current_file;
+	private static Parse parsed_file;
 
 	// Main
 	public static void main(String[] args) {
@@ -40,7 +41,7 @@ public class Main {
 
 			// Data anonymization
 			if (is_anon != null) {
-				willHidePlayers = Utility.getBool(Integer.valueOf(is_anon));
+				Parse.willHidePlayers = Utility.getBool(Integer.valueOf(is_anon));
 			}
 
 			// File Association
@@ -148,18 +149,20 @@ public class Main {
 	private static String parsing(MenuChoice choice, File log) {
 
 		// Parse the log
-		String base = log.getName().split("\\.(?=[^\\.]+$)")[0];
-		Parse parsed = null;
-		Statistics stats = null;
-		try {
-			parsed = new Parse(log, willHidePlayers);
-			if (willDisplayVersions) {
-				System.out.println("Log version:\t" + parsed.getBossData().getBuildVersion());
+		if (current_file == null || current_file.equals(log.getName().split("\\.(?=[^\\.]+$)")[0])) {
+			try {
+				parsed_file = new Parse(log);
+				if (willDisplayVersions) {
+					System.out.println("Log version:\t" + parsed_file.getBossData().getBuildVersion());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			stats = new Statistics(parsed);
-		} catch (IOException e) {
-			e.printStackTrace();
+			current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
 		}
+		Statistics stats = new Statistics(parsed_file);
+
+		// Choice
 		if (choice.equals(MenuChoice.FINAL_DPS)) {
 			return stats.get_final_dps();
 		} else if (choice.equals(MenuChoice.PHASE_DPS)) {
@@ -167,7 +170,7 @@ public class Main {
 		} else if (choice.equals(MenuChoice.DMG_DIST)) {
 			return stats.get_damage_distribution();
 		} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
-			return "Output file:\t" + stats.get_total_damage_graph(base);
+			return "Output file:\t" + stats.get_total_damage_graph(current_file);
 		} else if (choice.equals(MenuChoice.MISC_STATS)) {
 			return stats.get_combat_stats();
 		} else if (choice.equals(MenuChoice.FINAL_BOONS)) {
@@ -175,15 +178,17 @@ public class Main {
 		} else if (choice.equals(MenuChoice.PHASE_BOONS)) {
 			return stats.get_phase_boons();
 		} else if (choice.equals(MenuChoice.DUMP_EVTC)) {
-			File evtc_dump = new File("./tables/" + base + "_" + parsed.getBossData().getName() + "_evtc-dump.txt");
+			File evtc_dump = new File(
+					"./tables/" + current_file + "_" + parsed_file.getBossData().getName() + "_evtc-dump.txt");
 			try {
-				Utility.writeToFile(parsed.toString(), evtc_dump);
+				Utility.writeToFile(parsed_file.toString(), evtc_dump);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return "Output file:\t" + evtc_dump.getName();
 		} else if (choice.equals(MenuChoice.DUMP_TABLES)) {
-			File text_dump = new File("./tables/" + base + "_" + parsed.getBossData().getName() + "_all-tables.txt");
+			File text_dump = new File(
+					"./tables/" + current_file + "_" + parsed_file.getBossData().getName() + "_all-tables.txt");
 			try {
 				Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
 						+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()

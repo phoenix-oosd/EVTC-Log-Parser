@@ -27,16 +27,15 @@ import utility.Utility;
 public class Parse {
 
 	// Fields
-	private boolean willHidePlayers;
+	public static boolean willHidePlayers;;
 	private BossData bossData;
 	private AgentData agentData;
 	private SkillData skillData;
 	private CombatData combatData;
 
 	// Constructor
-	public Parse(File file, boolean willHidePlayers) throws IOException {
+	public Parse(File file) throws IOException {
 
-		this.willHidePlayers = willHidePlayers;
 		FileInputStream stream = null;
 		MappedByteBuffer f = null;
 
@@ -52,11 +51,17 @@ public class Parse {
 			getAgentData(f);
 			getSkillData(f);
 			getCombatList(f);
-			combatData.fillMissingData(bossData.getName());
+
+			// Update Agents IDs
 			List<CombatItem> combatList = combatData.getCombatList();
 			agentData.fillMissingData(combatList);
+
+			// Update Boss IDs
 			List<AgentItem> NPCAgentList = agentData.getNPCAgents();
 			bossData.fillMissingData(NPCAgentList, combatList);
+
+			// Update Combat IDs
+			combatData.fillMissingData(bossData, NPCAgentList);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -109,7 +114,6 @@ public class Parse {
 		Boss b = Boss.getEnum(cid);
 		if (b != null) {
 			this.bossData = new BossData(0, cid, b.getName(), b.getHP(), 0, 0, Utility.getString(version_buffer));
-
 		} else {
 			this.bossData = new BossData(0, cid, String.valueOf(cid), -1, 0, 0, Utility.getString(version_buffer));
 		}
