@@ -34,6 +34,8 @@ public class Player {
 	public List<DamageLog> getOutBossDamage(BossData bossData, List<CombatItem> combatList) {
 		if (outDamageLogs.isEmpty()) {
 			setOutDamageLogs(bossData, combatList);
+		} else {
+			System.out.println("Hey");
 		}
 		return outDamageLogs;
 	}

@@ -20,6 +20,7 @@ public class Main {
 	private static Map<String, String> arguments = new HashMap<>();
 	private static String current_file;
 	private static Parse parsed_file;
+	private static Statistics stats;
 
 	// Main
 	public static void main(String[] args) {
@@ -148,19 +149,22 @@ public class Main {
 
 	private static String parsing(MenuChoice choice, File log) {
 
+		String this_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
 		// Parse the log
-		if (current_file == null || current_file.equals(log.getName().split("\\.(?=[^\\.]+$)")[0])) {
+		if (current_file == null || !current_file.equals(this_file)) {
 			try {
 				parsed_file = new Parse(log);
+				stats = new Statistics(parsed_file);
 				if (willDisplayVersions) {
 					System.out.println("Log version:\t" + parsed_file.getBossData().getBuildVersion());
 				}
+				current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
+		} else {
+			System.out.println("Hi");
 		}
-		Statistics stats = new Statistics(parsed_file);
 
 		// Choice
 		if (choice.equals(MenuChoice.FINAL_DPS)) {
