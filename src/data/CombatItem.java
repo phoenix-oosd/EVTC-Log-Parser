@@ -14,9 +14,9 @@ public class CombatItem {
 	private int buff_dmg;
 	private int overstack_value;
 	private int skill_id;
-	private int src_cid;
-	private int dst_cid;
-	private int src_master_cid;
+	private int src_instid;
+	private int dst_instid;
+	private int src_master_instid;
 	private boolean iff;
 	private boolean is_buff;
 	private Result result;
@@ -29,7 +29,7 @@ public class CombatItem {
 
 	// Constructor
 	public CombatItem(int time, int src_agent, int dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_cid, int dst_cid, int src_master_cid, boolean iff, boolean buff, Result result,
+			int skill_id, int src_instid, int dst_instid, int src_master_instid, boolean iff, boolean buff, Result result,
 			Activation is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
 			StateChange is_statechange) {
 		this.time = time;
@@ -39,9 +39,9 @@ public class CombatItem {
 		this.buff_dmg = buff_dmg;
 		this.overstack_value = overstack_value;
 		this.skill_id = skill_id;
-		this.src_cid = src_cid;
-		this.dst_cid = dst_cid;
-		this.src_master_cid = src_master_cid;
+		this.src_instid = src_instid;
+		this.dst_instid = dst_instid;
+		this.src_master_instid = src_master_instid;
 		this.iff = iff;
 		this.is_buff = buff;
 		this.result = result;
@@ -63,9 +63,9 @@ public class CombatItem {
 		array[4] = String.valueOf(buff_dmg);
 		array[5] = String.valueOf(overstack_value);
 		array[6] = String.valueOf(skill_id);
-		array[7] = String.valueOf(src_cid);
-		array[8] = String.valueOf(dst_cid);
-		array[9] = String.valueOf(src_master_cid);
+		array[7] = String.valueOf(src_instid);
+		array[8] = String.valueOf(dst_instid);
+		array[9] = String.valueOf(src_master_instid);
 		array[10] = String.valueOf(iff);
 		array[11] = String.valueOf(is_buff);
 		array[12] = String.valueOf(result);
@@ -107,16 +107,16 @@ public class CombatItem {
 		return skill_id;
 	}
 
-	public int get_src_cid() {
-		return src_cid;
+	public int get_src_instid() {
+		return src_instid;
 	}
 
-	public int get_dst_cid() {
-		return dst_cid;
+	public int get_dst_instid() {
+		return dst_instid;
 	}
 
-	public int get_src_master_cid() {
-		return src_master_cid;
+	public int get_src_master_instid() {
+		return src_master_instid;
 	}
 
 	public boolean iff() {
@@ -164,11 +164,11 @@ public class CombatItem {
 		this.dst_agent = dst_agent;
 	}
 
-	public void set_src_cid(int src_cid) {
-		this.src_cid = src_cid;
+	public void set_src_instid(int src_instid) {
+		this.src_instid = src_instid;
 	}
 
-	public void set_dst_cid(int dst_cid) {
-		this.dst_cid = dst_cid;
+	public void set_dst_instid(int dst_instid) {
+		this.dst_instid = dst_instid;
 	}
 }

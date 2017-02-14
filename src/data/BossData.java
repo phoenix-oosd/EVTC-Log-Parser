@@ -8,7 +8,7 @@ public class BossData {
 
 	// Fields
 	private int agent;
-	private int CID;
+	private int instid;
 	private String name;
 	private int HP;
 	private int fightStart;
@@ -17,9 +17,9 @@ public class BossData {
 	private String buildVersion;
 
 	// Constructor
-	public BossData(int agent, int CID, String name, int HP, int fightStart, int fightEnd, String buildVersion) {
+	public BossData(int agent, int instid, String name, int HP, int fightStart, int fightEnd, String buildVersion) {
 		this.agent = agent;
-		this.CID = CID;
+		this.instid = instid;
 		this.name = name;
 		this.HP = HP;
 		this.fightStart = fightStart;
@@ -31,16 +31,16 @@ public class BossData {
 	public void fillMissingData(List<AgentItem> NPCAgentList, List<CombatItem> combatList) {
 
 		for (AgentItem agent : NPCAgentList) {
-			this.CID = NPCAgentList.get(0).getCID();
+			this.instid = NPCAgentList.get(0).get_instid();
 			if (this.name.equals(agent.getName())) {
-				this.CID = agent.getCID();
+				this.instid = agent.get_instid();
 				break;
 			}
 		}
 
 		boolean haveStartTime = false;
 		for (CombatItem c : combatList) {
-			if (c.get_src_cid() == CID) {
+			if (c.get_src_instid() == instid) {
 				if (c.is_statechange().equals(StateChange.ENTER_COMBAT)) {
 					agent = c.get_src_agent();
 				} else if (c.is_statechange().equals(StateChange.CHANGE_DEAD)) {
@@ -64,7 +64,7 @@ public class BossData {
 	public String[] toStringArray() {
 		String[] array = new String[8];
 		array[0] = String.valueOf(agent);
-		array[1] = String.valueOf(CID);
+		array[1] = String.valueOf(instid);
 		array[2] = String.valueOf(name);
 		array[3] = String.valueOf(HP);
 		array[4] = String.valueOf(fightStart);
@@ -79,8 +79,8 @@ public class BossData {
 		return agent;
 	}
 
-	public int getCID() {
-		return CID;
+	public int get_instid() {
+		return instid;
 	}
 
 	public String getName() {

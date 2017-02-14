@@ -32,16 +32,16 @@ public class AgentData {
 
 	public void fillMissingData(List<CombatItem> combatList) {
 		for (CombatItem c : combatList) {
-			if (c.get_src_cid() != 0 || c.get_dst_cid() != 0) {
+			if (c.get_src_instid() != 0 || c.get_dst_instid() != 0) {
 				for (AgentItem player : playerAgents) {
 					if (!player.isSet()) {
 						if (player.getAgent() == c.get_src_agent()) {
 							player.setFirstAppeared(c.get_time());
-							player.setCID(c.get_src_cid());
+							player.setinstid(c.get_src_instid());
 							continue;
 						} else if (player.getAgent() == c.get_dst_agent()) {
 							player.setFirstAppeared(c.get_time());
-							player.setCID(c.get_dst_cid());
+							player.setinstid(c.get_dst_instid());
 							continue;
 						}
 					}
@@ -50,11 +50,11 @@ public class AgentData {
 					if (!npc.isSet()) {
 						if (npc.getAgent() == c.get_src_agent()) {
 							npc.setFirstAppeared(c.get_time());
-							npc.setCID(c.get_src_cid());
+							npc.setinstid(c.get_src_instid());
 							continue;
 						} else if (npc.getAgent() == c.get_dst_agent()) {
 							npc.setFirstAppeared(c.get_time());
-							npc.setCID(c.get_dst_cid());
+							npc.setinstid(c.get_dst_instid());
 							continue;
 						}
 					}
@@ -63,11 +63,11 @@ public class AgentData {
 					if (!gadget.isSet()) {
 						if (gadget.getAgent() == c.get_src_agent()) {
 							gadget.setFirstAppeared(c.get_time());
-							gadget.setCID(c.get_src_cid());
+							gadget.setinstid(c.get_src_instid());
 							continue;
 						} else if (gadget.getAgent() == c.get_dst_agent()) {
 							gadget.setFirstAppeared(c.get_time());
-							gadget.setCID(c.get_dst_cid());
+							gadget.setinstid(c.get_dst_instid());
 							continue;
 						}
 					}

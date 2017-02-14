@@ -5,7 +5,7 @@ public class AgentItem {
 	// Fields
 	private int firstAppeared;
 	private int agent;
-	private int CID;
+	private int instid;
 	private String name;
 	private String prof;
 	private int toughness;
@@ -14,9 +14,9 @@ public class AgentItem {
 	private boolean isSet;
 
 	// Constructor
-	public AgentItem(int agent, int CID, String name, String prof, int toughness, int healing, int condition) {
+	public AgentItem(int agent, int instid, String name, String prof, int toughness, int healing, int condition) {
 		this.agent = agent;
-		this.CID = CID;
+		this.instid = instid;
 		this.name = name;
 		this.prof = prof;
 		this.toughness = toughness;
@@ -29,7 +29,7 @@ public class AgentItem {
 		String[] array = new String[8];
 		array[0] = String.valueOf(firstAppeared);
 		array[1] = String.valueOf(agent);
-		array[2] = String.valueOf(CID);
+		array[2] = String.valueOf(instid);
 		array[3] = String.valueOf(name);
 		array[4] = String.valueOf(prof);
 		array[5] = String.valueOf(toughness);
@@ -43,8 +43,8 @@ public class AgentItem {
 		return agent;
 	}
 
-	public int getCID() {
-		return CID;
+	public int get_instid() {
+		return instid;
 	}
 
 	public String getName() {
@@ -76,9 +76,9 @@ public class AgentItem {
 		this.firstAppeared = firstAppeared;
 	}
 
-	public void setCID(int CID) {
+	public void setinstid(int instid) {
 		this.isSet = true;
-		this.CID = CID;
+		this.instid = instid;
 	}
 
 }

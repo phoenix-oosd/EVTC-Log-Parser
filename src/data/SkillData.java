@@ -24,6 +24,9 @@ public class SkillData {
 				return s.getName();
 			}
 		}
+		if (ID == 65001) {
+			return "Dodge";
+		}
 		return "id: " + String.valueOf(ID);
 	}
 

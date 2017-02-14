@@ -27,7 +27,7 @@ import utility.Utility;
 public class Parse {
 
 	// Fields
-	public static boolean willHidePlayers;;
+	public static boolean willHidePlayers;
 	private BossData bossData;
 	private AgentData agentData;
 	private SkillData skillData;
@@ -104,18 +104,19 @@ public class Parse {
 		// 1 byte: skip
 		f.position(f.position() + 1);
 
-		// 2 bytes: Boss CID
-		int cid = Short.toUnsignedInt(f.getShort());
+		// 2 bytes: Boss instid
+		int instid = Short.toUnsignedInt(f.getShort());
 
 		// 1 byte: position
 		f.position(f.position() + 1);
 
 		// BossData
-		Boss b = Boss.getEnum(cid);
+		Boss b = Boss.getEnum(instid);
 		if (b != null) {
-			this.bossData = new BossData(0, cid, b.getName(), b.getHP(), 0, 0, Utility.getString(version_buffer));
+			this.bossData = new BossData(0, instid, b.getName(), b.getHP(), 0, 0, Utility.getString(version_buffer));
 		} else {
-			this.bossData = new BossData(0, cid, String.valueOf(cid), -1, 0, 0, Utility.getString(version_buffer));
+			this.bossData = new BossData(0, instid, String.valueOf(instid), -1, 0, 0,
+					Utility.getString(version_buffer));
 		}
 	}
 
@@ -224,14 +225,14 @@ public class Parse {
 			// 2 bytes: skill_id
 			int skill_id = Short.toUnsignedInt(f.getShort());
 
-			// 2 bytes: src_cid
-			int src_cid = Short.toUnsignedInt(f.getShort());
+			// 2 bytes: src_instid
+			int src_instid = Short.toUnsignedInt(f.getShort());
 
-			// 2 bytes: dst_cid
-			int dst_cid = Short.toUnsignedInt(f.getShort());
+			// 2 bytes: dst_instid
+			int dst_instid = Short.toUnsignedInt(f.getShort());
 
-			// 2 bytes: src_master_cid
-			int src_master_cid = Short.toUnsignedInt(f.getShort());
+			// 2 bytes: src_master_instid
+			int src_master_instid = Short.toUnsignedInt(f.getShort());
 
 			// 9 bytes: garbage
 			f.position(f.position() + 9);
@@ -268,8 +269,8 @@ public class Parse {
 
 			// Add combat
 			combatData.addItem(new CombatItem(time, src_agent, dst_agent, value, buff_dmg, overstack_value, skill_id,
-					src_cid, dst_cid, src_master_cid, iff, buff, result, is_activation, is_buffremove, is_ninety,
-					is_fifty, is_moving, is_statechange));
+					src_instid, dst_instid, src_master_instid, iff, buff, result, is_activation, is_buffremove,
+					is_ninety, is_fifty, is_moving, is_statechange));
 		}
 	}
 
@@ -283,7 +284,7 @@ public class Parse {
 
 		// Boss Data Table
 		table.addTitle("BOSS DATA");
-		table.addRow("agent", "CID", "name", "HP", "fight_start", "fight_end", "is_kill", "build_version");
+		table.addRow("agent", "instid", "name", "HP", "fight_start", "fight_end", "is_kill", "build_version");
 		table.addRow(bossData.toStringArray());
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();
@@ -293,7 +294,7 @@ public class Parse {
 		List<AgentItem> NPCAgents = agentData.getNPCAgents();
 		List<AgentItem> gadgetAgents = agentData.getGadgetAgents();
 		table.addTitle("AGENT DATA");
-		table.addRow("first_appeared", "agent", "CID", "name", "prof", "toughness", "healing", "condition");
+		table.addRow("first_appeared", "agent", "instid", "name", "prof", "toughness", "healing", "condition");
 		for (AgentItem player : playerAgents) {
 			table.addRow(player.toStringArray());
 		}
@@ -319,9 +320,9 @@ public class Parse {
 		// Combat Data Table
 		List<CombatItem> combatList = combatData.getCombatList();
 		table.addTitle("COMBAT DATA");
-		table.addRow("time", "src_agent", "dst_agent", "value", "buff_dmg", "overstack_value", "skill_id", "src_cid",
-				"dst_cid", "src_master_cid", "iff", "buff", "is_crit", "is_activation", "is_buffremove",
-				"boolean is_ninety", "is_fifty", "is_moving", "is_statechange");
+		table.addRow("time", "src_agent", "dst_agent", "value", "buff_dmg", "overstack_value", "skill_id", "src_instid",
+				"dst_instid", "src_master_instid", "iff", "buff", "is_crit", "is_activation", "is_buffremove",
+				"is_ninety", "is_fifty", "is_moving", "is_statechange");
 		for (CombatItem c : combatList) {
 			table.addRow(c.toStringArray());
 		}
