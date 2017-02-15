@@ -119,7 +119,7 @@ public class Parse {
 		for (int i = 0; i < player_count; i++) {
 
 			// 8 bytes: agent
-			int agent = (int) f.getLong();
+			long agent = f.getLong();
 
 			// 4 bytes: profession
 			int prof = f.getInt();
@@ -190,10 +190,10 @@ public class Parse {
 			int time = (int) f.getLong();
 
 			// 8 bytes: src_agent
-			int src_agent = (int) f.getLong();
+			long src_agent = f.getLong();
 
 			// 8 bytes: dst_agent
-			int dst_agent = (int) f.getLong();
+			long dst_agent = f.getLong();
 
 			// 4 bytes: value
 			int value = f.getInt();
@@ -275,30 +275,30 @@ public class Parse {
 			}
 		}
 
-		// // Set Agent master_agent
-		//
-		// List<AgentItem> playerList = agentData.getPlayerAgents();
-		// for (CombatItem c : combatList) {
-		// // Has a master
-		// if (c.get_src_master_instid() != 0) {
-		// for (AgentItem NPC : agentList) {
-		// // NPC not set master
-		// if (NPC.get_master_agent() == 0) {
-		// for (AgentItem player : agentList) {
-		// // NPC is the source
-		// if (NPC.get_instid() == c.get_src_instid()) {
-		// // NPC's master is a player
-		// if (c.get_src_master_instid() == player.get_instid()) {
-		// NPC.setMasterAgent(player.get_agent());
-		// NPC.setMasterInstid(player.get_instid());
-		// continue;
-		// }
-		// }
-		// }
-		// }
-		// }
-		// }
-		// }
+		// Set Agent master_agent
+
+		List<AgentItem> playerList = agentData.getPlayerAgents();
+		for (CombatItem c : combatList) {
+			// Has a master
+			if (c.get_src_master_instid() != 0) {
+				for (AgentItem NPC : agentList) {
+					// NPC not set master
+					if (NPC.get_master_agent() == 0) {
+						for (AgentItem player : agentList) {
+							// NPC is the source
+							if (NPC.get_instid() == c.get_src_instid()) {
+								// NPC's master is a player
+								if (c.get_src_master_instid() == player.get_instid()) {
+									NPC.setMasterAgent(player.get_agent());
+									NPC.setMasterInstid(player.get_instid());
+									continue;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
 		// Set Boss data agent, instid, first_aware and last_aware
 		List<AgentItem> NPCList = agentData.getNPCAgents();

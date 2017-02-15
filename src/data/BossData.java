@@ -5,7 +5,7 @@ import enums.Boss;
 public class BossData {
 
 	// Fields
-	private int agent = 0;
+	private long agent = 0;
 	private int instid;
 	private int fight_aware = 0;
 	private int last_aware = Integer.MAX_VALUE;
@@ -42,7 +42,7 @@ public class BossData {
 	}
 
 	// Getters
-	public int get_agent() {
+	public long get_agent() {
 		return agent;
 	}
 
@@ -71,7 +71,7 @@ public class BossData {
 	}
 
 	// Setters
-	public void set_agent(int agent) {
+	public void set_agent(long agent) {
 		this.agent = agent;
 	}
 

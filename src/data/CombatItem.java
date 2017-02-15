@@ -9,8 +9,8 @@ public class CombatItem {
 
 	// Fields
 	private int time;
-	private int src_agent;
-	private int dst_agent;
+	private long src_agent;
+	private long dst_agent;
 	private int value;
 	private int buff_dmg;
 	private int overstack_value;
@@ -29,7 +29,7 @@ public class CombatItem {
 	private StateChange is_statechange;
 
 	// Constructor
-	public CombatItem(int time, int src_agent, int dst_agent, int value, int buff_dmg, int overstack_value,
+	public CombatItem(int time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
 			int skill_id, int src_instid, int dst_instid, int src_master_instid, IFF iff, boolean buff, Result result,
 			Activation is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
 			StateChange is_statechange) {
@@ -84,11 +84,11 @@ public class CombatItem {
 		return time;
 	}
 
-	public int get_src_agent() {
+	public long get_src_agent() {
 		return src_agent;
 	}
 
-	public int get_dst_agent() {
+	public long get_dst_agent() {
 		return dst_agent;
 	}
 
@@ -157,11 +157,11 @@ public class CombatItem {
 	}
 
 	// Setters
-	public void set_src_agent(int src_agent) {
+	public void set_src_agent(long src_agent) {
 		this.src_agent = src_agent;
 	}
 
-	public void set_dst_agent(int dst_agent) {
+	public void set_dst_agent(long dst_agent) {
 		this.dst_agent = dst_agent;
 	}
 

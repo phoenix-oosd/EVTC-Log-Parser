@@ -3,9 +3,9 @@ package data;
 public class AgentItem {
 
 	// Fields
-	private int agent;
+	private long agent;
 	private int instid = 0;
-	private int master_agent = 0;
+	private long master_agent = 0;
 	private int master_instid = 0;
 	private int first_aware = 0;
 	private int last_aware = Integer.MAX_VALUE;
@@ -16,13 +16,13 @@ public class AgentItem {
 	private int condition = 0;
 
 	// Constructors
-	public AgentItem(int agent, String name, String prof) {
+	public AgentItem(long agent, String name, String prof) {
 		this.agent = agent;
 		this.name = name;
 		this.prof = prof;
 	}
 
-	public AgentItem(int agent, String name, String prof, int toughness, int healing, int condition) {
+	public AgentItem(long agent, String name, String prof, int toughness, int healing, int condition) {
 		this.agent = agent;
 		this.name = name;
 		this.prof = prof;
@@ -49,7 +49,7 @@ public class AgentItem {
 	}
 
 	// Getters
-	public int get_agent() {
+	public long get_agent() {
 		return agent;
 	}
 
@@ -57,7 +57,7 @@ public class AgentItem {
 		return instid;
 	}
 
-	public int get_master_agent() {
+	public long get_master_agent() {
 		return master_agent;
 	}
 
@@ -98,7 +98,7 @@ public class AgentItem {
 		this.instid = instid;
 	}
 
-	public void setMasterAgent(int agent) {
+	public void setMasterAgent(long agent) {
 		this.master_agent = agent;
 	}
 

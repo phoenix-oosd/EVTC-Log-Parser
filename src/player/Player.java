@@ -16,7 +16,7 @@ import enums.StateChange;
 public class Player {
 
 	// Fields
-	private int agent;
+	private long agent;
 	private int instid;
 	private String account;
 	private String character;
