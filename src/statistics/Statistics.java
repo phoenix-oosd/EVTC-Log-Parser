@@ -149,7 +149,8 @@ public class Statistics {
 		// Body
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_phase_dps.get(i)));
+			table.addRow(
+					Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_phase_dps.get(i)));
 		}
 
 		// Footer
@@ -278,7 +279,7 @@ public class Statistics {
 		table.addTitle("Combat Statistics - " + bossData.get_name());
 
 		// Header
-		table.addRow("Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "DIED");
+		table.addRow("Account", "Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "DIED");
 
 		// Body
 		for (Player p : playerList) {
@@ -318,15 +319,15 @@ public class Statistics {
 
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(
-					Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_combat_stats.get(i)));
+			table.addRow(Utility.concatStringArray(new String[] { p.get_account(), p.get_character(), p.get_prof() },
+					all_combat_stats.get(i)));
 		}
 		return table.toString();
 	}
 
+	// Final Boons
 	public String get_final_boons() {
 
-		// Final boons
 		List<String> boon_list = Boon.getList();
 		BoonFactory boonFactory = new BoonFactory();
 		List<String[]> all_rates = new ArrayList<String[]>();
