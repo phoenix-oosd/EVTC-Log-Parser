@@ -11,12 +11,14 @@ public class AgentData {
 	private List<AgentItem> playerAgents;
 	private List<AgentItem> NPCAgents;
 	private List<AgentItem> gadgetAgents;
+	private List<AgentItem> allAgents;
 
 	// Constructors
 	public AgentData() {
 		this.playerAgents = new ArrayList<AgentItem>();
 		this.NPCAgents = new ArrayList<AgentItem>();
 		this.gadgetAgents = new ArrayList<AgentItem>();
+		this.allAgents = new ArrayList<AgentItem>();
 	}
 
 	// Public Methods
@@ -28,52 +30,7 @@ public class AgentData {
 		} else {
 			playerAgents.add(item);
 		}
-	}
-
-	public void fillMissingData(List<CombatItem> combatList) {
-		for (CombatItem c : combatList) {
-			if (c.get_src_instid() != 0 || c.get_dst_instid() != 0) {
-				for (AgentItem player : playerAgents) {
-					if (!player.isSet()) {
-						if (player.getAgent() == c.get_src_agent()) {
-							player.setFirstAppeared(c.get_time());
-							player.setinstid(c.get_src_instid());
-							continue;
-						} else if (player.getAgent() == c.get_dst_agent()) {
-							player.setFirstAppeared(c.get_time());
-							player.setinstid(c.get_dst_instid());
-							continue;
-						}
-					}
-				}
-				for (AgentItem npc : NPCAgents) {
-					if (!npc.isSet()) {
-						if (npc.getAgent() == c.get_src_agent()) {
-							npc.setFirstAppeared(c.get_time());
-							npc.setinstid(c.get_src_instid());
-							continue;
-						} else if (npc.getAgent() == c.get_dst_agent()) {
-							npc.setFirstAppeared(c.get_time());
-							npc.setinstid(c.get_dst_instid());
-							continue;
-						}
-					}
-				}
-				for (AgentItem gadget : gadgetAgents) {
-					if (!gadget.isSet()) {
-						if (gadget.getAgent() == c.get_src_agent()) {
-							gadget.setFirstAppeared(c.get_time());
-							gadget.setinstid(c.get_src_instid());
-							continue;
-						} else if (gadget.getAgent() == c.get_dst_agent()) {
-							gadget.setFirstAppeared(c.get_time());
-							gadget.setinstid(c.get_dst_instid());
-							continue;
-						}
-					}
-				}
-			}
-		}
+		allAgents.add(item);
 	}
 
 	// Getters
@@ -87,6 +44,10 @@ public class AgentData {
 
 	public List<AgentItem> getGadgetAgents() {
 		return gadgetAgents;
+	}
+
+	public List<AgentItem> getAllAgents() {
+		return allAgents;
 	}
 
 }

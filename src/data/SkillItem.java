@@ -3,29 +3,29 @@ package data;
 public class SkillItem {
 
 	// Fields
-	private int ID;
+	private int id;
 	private String name;
 
 	// Constructor
-	public SkillItem(int ID, String name) {
-		this.ID = ID;
+	public SkillItem(int id, String name) {
+		this.id = id;
 		this.name = name;
 	}
 
 	// Public Methods
 	public String[] toStringArray() {
 		String[] array = new String[2];
-		array[0] = String.valueOf(ID);
+		array[0] = String.valueOf(id);
 		array[1] = String.valueOf(name);
 		return array;
 	}
 
 	// Getters
-	public int getID() {
-		return ID;
+	public int get_id() {
+		return id;
 	}
 
-	public String getName() {
+	public String get_name() {
 		return name;
 	}
 

@@ -1,81 +1,48 @@
 package data;
 
-import java.util.List;
-
-import enums.StateChange;
+import enums.Boss;
 
 public class BossData {
 
 	// Fields
-	private int agent;
+	private int agent = 0;
 	private int instid;
+	private int fight_aware = 0;
+	private int last_aware = Integer.MAX_VALUE;
 	private String name;
-	private int HP;
-	private int fightStart;
-	private int fightEnd;
-	private boolean isKill;
-	private String buildVersion;
+	private int health;
+	private String build_version;
 
-	// Constructor
-	public BossData(int agent, int instid, String name, int HP, int fightStart, int fightEnd, String buildVersion) {
-		this.agent = agent;
+	// Constructors
+	public BossData(Boss boss, String build_version) {
+		this.instid = boss.getInstid();
+		this.name = boss.getName();
+		this.health = boss.getHealth();
+		this.build_version = build_version;
+	}
+
+	public BossData(int instid, String build_version) {
 		this.instid = instid;
-		this.name = name;
-		this.HP = HP;
-		this.fightStart = fightStart;
-		this.fightEnd = fightEnd;
-		this.buildVersion = buildVersion;
+		this.name = "UNKNOWN";
+		this.health = -1;
+		this.build_version = build_version;
 	}
 
 	// Public Methods
-	public void fillMissingData(List<AgentItem> NPCAgentList, List<CombatItem> combatList) {
-
-		for (AgentItem agent : NPCAgentList) {
-			this.instid = NPCAgentList.get(0).get_instid();
-			if (this.name.equals(agent.getName())) {
-				this.instid = agent.get_instid();
-				break;
-			}
-		}
-
-		boolean haveStartTime = false;
-		for (CombatItem c : combatList) {
-			if (c.get_src_instid() == instid) {
-				if (c.is_statechange().equals(StateChange.ENTER_COMBAT)) {
-					agent = c.get_src_agent();
-				} else if (c.is_statechange().equals(StateChange.CHANGE_DEAD)) {
-					fightEnd = c.get_time();
-					isKill = true;
-				}
-			} else if (!haveStartTime) {
-				if (c.is_statechange().equals(StateChange.ENTER_COMBAT)) {
-					fightStart = c.get_time();
-					haveStartTime = true;
-				}
-			}
-		}
-
-		if (fightEnd == 0) {
-			fightEnd = combatList.get(combatList.size() - 1).get_time();
-			isKill = false;
-		}
-	}
-
 	public String[] toStringArray() {
-		String[] array = new String[8];
+		String[] array = new String[7];
 		array[0] = String.valueOf(agent);
 		array[1] = String.valueOf(instid);
-		array[2] = String.valueOf(name);
-		array[3] = String.valueOf(HP);
-		array[4] = String.valueOf(fightStart);
-		array[5] = String.valueOf(fightEnd);
-		array[6] = String.valueOf(isKill);
-		array[7] = String.valueOf(buildVersion);
+		array[2] = String.valueOf(fight_aware);
+		array[3] = String.valueOf(last_aware);
+		array[4] = String.valueOf(name);
+		array[5] = String.valueOf(health);
+		array[6] = String.valueOf(build_version);
 		return array;
 	}
 
 	// Getters
-	public long getAgent() {
+	public int get_agent() {
 		return agent;
 	}
 
@@ -83,41 +50,41 @@ public class BossData {
 		return instid;
 	}
 
-	public String getName() {
+	public int get_first_aware() {
+		return fight_aware;
+	}
+
+	public int get_last_aware() {
+		return last_aware;
+	}
+
+	public String get_name() {
 		return name;
 	}
 
-	public int getHP() {
-		return HP;
+	public int get_health() {
+		return health;
 	}
 
-	public int getFightStart() {
-		return fightStart;
-	}
-
-	public int getFightEnd() {
-		return fightEnd;
-	}
-
-	public boolean isKill() {
-		return isKill;
-	}
-
-	public String getBuildVersion() {
-		return buildVersion;
+	public String get_build_version() {
+		return build_version;
 	}
 
 	// Setters
-	public void setAgent(int agent) {
+	public void set_agent(int agent) {
 		this.agent = agent;
 	}
 
-	public void setFightStart(int fightStart) {
-		this.fightStart = fightStart;
+	public void set_instid(int instid) {
+		this.instid = instid;
 	}
 
-	public void setFightEnd(int fightEnd) {
-		this.fightEnd = fightEnd;
+	public void set_first_aware(int time) {
+		this.fight_aware = time;
+	}
+
+	public void set_last_aware(int time) {
+		this.last_aware = time;
 	}
 
 }

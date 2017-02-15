@@ -155,7 +155,7 @@ public class Main {
 				parsed_file = new Parse(log);
 				stats = new Statistics(parsed_file);
 				if (willDisplayVersions) {
-					System.out.println("Log version:\t" + parsed_file.getBossData().getBuildVersion());
+					System.out.println("Log version:\t" + parsed_file.getBossData().get_build_version());
 				}
 				current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
 			} catch (IOException e) {
@@ -180,7 +180,7 @@ public class Main {
 			return stats.get_phase_boons();
 		} else if (choice.equals(MenuChoice.DUMP_EVTC)) {
 			File evtc_dump = new File(
-					"./tables/" + current_file + "_" + parsed_file.getBossData().getName() + "_evtc-dump.txt");
+					"./tables/" + current_file + "_" + parsed_file.getBossData().get_name() + "_evtc-dump.txt");
 			try {
 				Utility.writeToFile(parsed_file.toString(), evtc_dump);
 			} catch (IOException e) {
@@ -189,7 +189,7 @@ public class Main {
 			return "Output file:\t" + evtc_dump.getName();
 		} else if (choice.equals(MenuChoice.DUMP_TABLES)) {
 			File text_dump = new File(
-					"./tables/" + current_file + "_" + parsed_file.getBossData().getName() + "_all-tables.txt");
+					"./tables/" + current_file + "_" + parsed_file.getBossData().get_name() + "_all-tables.txt");
 			try {
 				Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
 						+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()

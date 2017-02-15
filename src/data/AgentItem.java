@@ -3,20 +3,27 @@ package data;
 public class AgentItem {
 
 	// Fields
-	private int firstAppeared;
 	private int agent;
-	private int instid;
+	private int instid = 0;
+	private int master_agent = 0;
+	private int master_instid = 0;
+	private int first_aware = 0;
+	private int last_aware = Integer.MAX_VALUE;
 	private String name;
 	private String prof;
-	private int toughness;
-	private int healing;
-	private int condition;
-	private boolean isSet;
+	private int toughness = 0;
+	private int healing = 0;
+	private int condition = 0;
 
-	// Constructor
-	public AgentItem(int agent, int instid, String name, String prof, int toughness, int healing, int condition) {
+	// Constructors
+	public AgentItem(int agent, String name, String prof) {
 		this.agent = agent;
-		this.instid = instid;
+		this.name = name;
+		this.prof = prof;
+	}
+
+	public AgentItem(int agent, String name, String prof, int toughness, int healing, int condition) {
+		this.agent = agent;
 		this.name = name;
 		this.prof = prof;
 		this.toughness = toughness;
@@ -26,20 +33,23 @@ public class AgentItem {
 
 	// Public Methods
 	public String[] toStringArray() {
-		String[] array = new String[8];
-		array[0] = String.valueOf(firstAppeared);
-		array[1] = String.valueOf(agent);
-		array[2] = String.valueOf(instid);
-		array[3] = String.valueOf(name);
-		array[4] = String.valueOf(prof);
-		array[5] = String.valueOf(toughness);
-		array[6] = String.valueOf(healing);
-		array[7] = String.valueOf(condition);
+		String[] array = new String[11];
+		array[0] = String.valueOf(agent);
+		array[1] = String.valueOf(instid);
+		array[2] = String.valueOf(master_agent);
+		array[3] = String.valueOf(master_instid);
+		array[4] = String.valueOf(first_aware);
+		array[5] = String.valueOf(last_aware);
+		array[6] = String.valueOf(name);
+		array[7] = String.valueOf(prof);
+		array[8] = String.valueOf(toughness);
+		array[9] = String.valueOf(healing);
+		array[10] = String.valueOf(condition);
 		return array;
 	}
 
 	// Getters
-	public long getAgent() {
+	public int get_agent() {
 		return agent;
 	}
 
@@ -47,38 +57,61 @@ public class AgentItem {
 		return instid;
 	}
 
-	public String getName() {
+	public int get_master_agent() {
+		return master_agent;
+	}
+
+	public int get_master_instid() {
+		return master_instid;
+	}
+
+	public int get_first_aware() {
+		return first_aware;
+	}
+
+	public int get_last_aware() {
+		return last_aware;
+	}
+
+	public String get_name() {
 		return name;
 	}
 
-	public String getProf() {
+	public String get_prof() {
 		return prof;
 	}
 
-	public int getToughness() {
+	public int get_toughness() {
 		return toughness;
 	}
 
-	public int getHealing() {
+	public int get_healing() {
 		return healing;
 	}
 
-	public int getCondition() {
+	public int get_condition() {
 		return condition;
 	}
 
-	public boolean isSet() {
-		return isSet;
-	}
-
 	// Setters
-	public void setFirstAppeared(int firstAppeared) {
-		this.firstAppeared = firstAppeared;
+	public void setInstid(int instid) {
+		this.instid = instid;
 	}
 
-	public void setinstid(int instid) {
-		this.isSet = true;
-		this.instid = instid;
+	public void setMasterAgent(int agent) {
+		this.master_agent = agent;
+	}
+
+	public void setMasterInstid(int instid) {
+		this.master_instid = instid;
+	}
+
+	public void setFirstAware(int first_aware) {
+		this.first_aware = first_aware;
+	}
+
+	public void setLastAware(int last_aware) {
+		this.last_aware = last_aware;
 	}
 
 }

@@ -63,7 +63,7 @@ public class Statistics {
 
 		int total_damage = 0;
 		double total_dps = 0.0;
-		double fight_duration = (bossData.getFightEnd() - bossData.getFightStart()) / 1000;
+		double fight_duration = (bossData.get_last_aware() - bossData.get_first_aware()) / 1000;
 
 		for (Player p : playerList) {
 			double player_damage = 0.0;
@@ -81,20 +81,20 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Final DPS - " + bossData.getName());
+		table.addTitle("Final DPS - " + bossData.get_name());
 
 		// Header
 		table.addRow("Name", "Profession", "DPS", "Damage");
 
 		// Body
 		for (int i = 0; i < playerList.size(); i++) {
-			AgentItem p = playerList.get(i).getAgent();
-			table.addRow(p.getName(), p.getProf(), dps.get(i), dmg.get(i));
+			Player p = playerList.get(i);
+			table.addRow(p.get_character(), p.get_prof(), dps.get(i), dmg.get(i));
 		}
 
 		// Footer
 		table.addRow("-", "-", String.format("%.2f", total_dps), String.valueOf(total_damage));
-		table.addRow("-", "-", "-", String.valueOf(bossData.getHP()));
+		table.addRow("-", "-", "-", String.valueOf(bossData.get_health()));
 
 		return table.toString();
 	}
@@ -134,7 +134,7 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Phase DPS - " + bossData.getName());
+		table.addTitle("Phase DPS - " + bossData.get_name());
 
 		// Header
 		String[] header = new String[fight_intervals.size() + 3];
@@ -149,8 +149,7 @@ public class Statistics {
 		// Body
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(Utility.concatStringArray(new String[] { p.getAgent().getName(), p.getAgent().getProf() },
-					all_phase_dps.get(i)));
+			table.addRow(Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_phase_dps.get(i)));
 		}
 
 		// Footer
@@ -188,7 +187,7 @@ public class Statistics {
 		TableBuilder table = new TableBuilder();
 		StringBuilder output = new StringBuilder();
 		output.append("_________________________________________" + System.lineSeparator() + System.lineSeparator());
-		output.append("Damage Distribution - " + bossData.getName() + System.lineSeparator());
+		output.append("Damage Distribution - " + bossData.get_name() + System.lineSeparator());
 		output.append("_________________________________________" + System.lineSeparator());
 
 		// Body
@@ -209,7 +208,7 @@ public class Statistics {
 			double damage_sum = skill_damage.values().stream().reduce(0, Integer::sum);
 
 			table.clear();
-			table.addTitle(p.getAgent().getName() + " - " + p.getAgent().getProf());
+			table.addTitle(p.get_character() + " - " + p.get_prof());
 			table.addRow("SKILL", "DAMAGE", "%");
 
 			// Calculate % of each skill
@@ -234,7 +233,7 @@ public class Statistics {
 
 		// Build chart
 		XYChartBuilder chartBuilder = new XYChartBuilder().width(1600).height(900);
-		chartBuilder.title("Total Damage - " + bossData.getName());
+		chartBuilder.title("Total Damage - " + bossData.get_name());
 		chartBuilder.xAxisTitle("Time (seconds)").yAxisTitle("Damage (K)").build();
 		XYChart chart = chartBuilder.build();
 
@@ -256,18 +255,18 @@ public class Statistics {
 				x[i] = damage_logs.get(i).getTime() / 1000.0;
 				y[i] = total_damage / 1000;
 			}
-			chart.addSeries(p.getAgent().getName() + " - " + p.getAgent().getProf(), x, y);
+			chart.addSeries(p.get_character() + " - " + p.get_prof(), x, y);
 		}
 
 		// Write chart to .png
 		try {
-			String file_name = "./graphs/" + base + "_" + bossData.getName() + "TDG.png";
+			String file_name = "./graphs/" + base + "_" + bossData.get_name() + "TDG.png";
 			BitmapEncoder.saveBitmapWithDPI(chart, file_name, BitmapFormat.PNG, 300);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return base + "_" + bossData.getName() + ".png";
+		return base + "_" + bossData.get_name() + ".png";
 	}
 
 	// Combat Statistics
@@ -276,7 +275,7 @@ public class Statistics {
 		// Table
 		List<String[]> all_combat_stats = new ArrayList<String[]>();
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Combat Statistics - " + bossData.getName());
+		table.addTitle("Combat Statistics - " + bossData.get_name());
 
 		// Header
 		table.addRow("Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "DIED");
@@ -312,16 +311,15 @@ public class Statistics {
 
 			String[] combat_stats = new String[] { String.format("%.2f", crit / power_loops),
 					String.format("%.2f", schl / power_loops), String.format("%.2f", move / power_loops),
-					String.valueOf(p.getAgent().getToughness()), String.valueOf(p.getAgent().getHealing()),
-					String.valueOf(p.getAgent().getCondition()), String.valueOf(down),
-					String.valueOf((double) died / 1000) };
+					String.valueOf(p.get_toughness()), String.valueOf(p.get_healing()),
+					String.valueOf(p.get_condition()), String.valueOf(down), String.valueOf((double) died / 1000) };
 			all_combat_stats.add(combat_stats);
 		}
 
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(Utility.concatStringArray(new String[] { p.getAgent().getName(), p.getAgent().getProf() },
-					all_combat_stats.get(i)));
+			table.addRow(
+					Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_combat_stats.get(i)));
 		}
 		return table.toString();
 	}
@@ -356,7 +354,7 @@ public class Statistics {
 
 		// Table
 		TableBuilder table = new TableBuilder();
-		table.addTitle("Final Boon Rates - " + bossData.getName());
+		table.addTitle("Final Boon Rates - " + bossData.get_name());
 
 		// Header
 		String[] boon_array = Boon.getArray();
@@ -365,8 +363,7 @@ public class Statistics {
 		// Body
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(Utility.concatStringArray(new String[] { p.getAgent().getName(), p.getAgent().getProf() },
-					all_rates.get(i)));
+			table.addRow(Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_rates.get(i)));
 		}
 
 		return table.toString();
@@ -415,7 +412,7 @@ public class Statistics {
 		String[] boon_array = Boon.getArray();
 
 		output.append("_________________________________________" + System.lineSeparator() + System.lineSeparator());
-		output.append("Phase - " + bossData.getName() + System.lineSeparator());
+		output.append("Phase - " + bossData.get_name() + System.lineSeparator());
 		output.append("_________________________________________" + System.lineSeparator());
 
 		for (int i = 0; i < fight_intervals.size(); i++) {
@@ -431,8 +428,7 @@ public class Statistics {
 				for (int k = 0; k < boon_array.length; k++) {
 					row_rates[k] = player_rates[k][i];
 				}
-				table.addRow(Utility.concatStringArray(new String[] { p.getAgent().getName(), p.getAgent().getProf() },
-						row_rates));
+				table.addRow(Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, row_rates));
 			}
 
 			output.append(System.lineSeparator() + table.toString());
@@ -447,31 +443,31 @@ public class Statistics {
 
 		List<Point> fight_intervals = new ArrayList<Point>();
 		List<CombatItem> combatList = combatData.getCombatList();
-		int timeStart = bossData.getFightStart() - combatList.get(0).get_time();
+		int timeStart = bossData.get_first_aware() - combatList.get(0).get_time();
 
 		int i_count;
 		int t_invuln;
 
-		if (bossData.getName().equals("Vale Guardian")) {
+		if (bossData.get_name().equals("Vale Guardian")) {
 			i_count = 2;
 			t_invuln = 20000;
-		} else if (bossData.getName().equals("Gorseval")) {
+		} else if (bossData.get_name().equals("Gorseval")) {
 			i_count = 2;
 			t_invuln = 30000;
-		} else if (bossData.getName().equals("Sabetha")) {
+		} else if (bossData.get_name().equals("Sabetha")) {
 			i_count = 3;
 			t_invuln = 25000;
-		} else if (bossData.getName().equals("Xera")) {
+		} else if (bossData.get_name().equals("Xera")) {
 			i_count = 1;
 			t_invuln = 60000;
-		} else if (bossData.getName().equals("Slothasor")) {
+		} else if (bossData.get_name().equals("Slothasor")) {
 			i_count = 5;
 			t_invuln = 7000;
-		} else if (bossData.getName().equals("Samarog")) {
+		} else if (bossData.get_name().equals("Samarog")) {
 			i_count = 2;
 			t_invuln = 20000;
 		} else {
-			fight_intervals.add(new Point(timeStart, bossData.getFightEnd() - bossData.getFightStart()));
+			fight_intervals.add(new Point(timeStart, bossData.get_last_aware() - bossData.get_first_aware()));
 			return fight_intervals;
 		}
 
@@ -502,10 +498,10 @@ public class Statistics {
 		List<Point> real_fight_intervals = new ArrayList<Point>();
 
 		for (int i = 0; i < i_count; i++) {
-			fight_intervals.add(new Point(timeStart, bossData.getFightEnd() - bossData.getFightStart()));
-			real_fight_intervals.add(new Point(timeStart, bossData.getFightEnd() - bossData.getFightStart()));
+			fight_intervals.add(new Point(timeStart, bossData.get_last_aware() - bossData.get_first_aware()));
+			real_fight_intervals.add(new Point(timeStart, bossData.get_last_aware() - bossData.get_first_aware()));
 		}
-		real_fight_intervals.add(new Point(0, bossData.getFightEnd() - bossData.getFightStart()));
+		real_fight_intervals.add(new Point(0, bossData.get_last_aware() - bossData.get_first_aware()));
 		for (List<Point> player_intervals : i_intervals) {
 			for (int i = 0; i < i_count; i++) {
 				Point new_point = player_intervals.get(i);
@@ -561,8 +557,8 @@ public class Statistics {
 
 		// Trim duration overflow
 		int last = boon_intervals.size() - 1;
-		if (boon_intervals.get(last).getY() > (bossData.getFightEnd() - bossData.getFightStart())) {
-			boon_intervals.get(last).y = bossData.getFightEnd() - bossData.getFightStart();
+		if (boon_intervals.get(last).getY() > (bossData.get_last_aware() - bossData.get_first_aware())) {
+			boon_intervals.get(last).y = bossData.get_last_aware() - bossData.get_first_aware();
 		}
 
 		return boon_intervals;
@@ -576,7 +572,7 @@ public class Statistics {
 			average_duration = (average_duration + (p.getY() - p.getX()));
 		}
 
-		return String.format("%.2f", (average_duration / (bossData.getFightEnd() - bossData.getFightStart())));
+		return String.format("%.2f", (average_duration / (bossData.get_last_aware() - bossData.get_first_aware())));
 	}
 
 	private String[] get_boon_duration(List<Point> boon_intervals, List<Point> fight_intervals) {
@@ -634,7 +630,7 @@ public class Statistics {
 		}
 
 		// Fill in remaining stacks
-		boon.add_stacks_between(boon_stacks, t_prev, bossData.getFightEnd() - bossData.getFightStart());
+		boon.add_stacks_between(boon_stacks, t_prev, bossData.get_last_aware() - bossData.get_first_aware());
 		boon.update(1);
 		boon_stacks.add(boon.get_stack_value());
 

@@ -20,20 +20,20 @@ public enum Boss {
 
 	// Fields
 	private String name;
-	private int ID;
-	private int HP;
+	private int instid;
+	private int health;
 
 	// Constructor
-	Boss(String name, int ID, int HP) {
+	Boss(String name, int instid, int health) {
 		this.name = name;
-		this.ID = ID;
-		this.HP = HP;
+		this.instid = instid;
+		this.health = health;
 	}
 
 	// Public Methods
-	public static Boss getEnum(int ID) {
+	public static Boss getEnum(int instid) {
 		for (Boss b : values()) {
-			if (b.getID() == ID) {
+			if (b.getInstid() == instid) {
 				return b;
 			}
 		}
@@ -45,12 +45,12 @@ public enum Boss {
 		return this.name;
 	}
 
-	public int getID() {
-		return this.ID;
+	public int getInstid() {
+		return this.instid;
 	}
 
-	public int getHP() {
-		return this.HP;
+	public int getHealth() {
+		return this.health;
 	}
 
 }

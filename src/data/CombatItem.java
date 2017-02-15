@@ -1,6 +1,7 @@
 package data;
 
 import enums.Activation;
+import enums.IFF;
 import enums.Result;
 import enums.StateChange;
 
@@ -17,7 +18,7 @@ public class CombatItem {
 	private int src_instid;
 	private int dst_instid;
 	private int src_master_instid;
-	private boolean iff;
+	private IFF iff;
 	private boolean is_buff;
 	private Result result;
 	private Activation is_activation;
@@ -29,7 +30,7 @@ public class CombatItem {
 
 	// Constructor
 	public CombatItem(int time, int src_agent, int dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_instid, int dst_instid, int src_master_instid, boolean iff, boolean buff, Result result,
+			int skill_id, int src_instid, int dst_instid, int src_master_instid, IFF iff, boolean buff, Result result,
 			Activation is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
 			StateChange is_statechange) {
 		this.time = time;
@@ -119,7 +120,7 @@ public class CombatItem {
 		return src_master_instid;
 	}
 
-	public boolean iff() {
+	public IFF get_iff() {
 		return iff;
 	}
 

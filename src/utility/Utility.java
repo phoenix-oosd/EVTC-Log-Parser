@@ -18,11 +18,8 @@ import java.util.stream.Collectors;
 public final class Utility {
 
 	public static String getString(byte[] bytes) {
-		String string;
 		try {
-			string = new String(bytes, "UTF-8");
-			int i = string.indexOf(0);
-			return i == -1 ? string : string.substring(0, i);
+			return new String(bytes, "UTF-8").trim();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
