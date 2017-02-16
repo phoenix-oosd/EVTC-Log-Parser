@@ -27,12 +27,13 @@ public class CombatItem {
 	private boolean is_fifty;
 	private boolean is_moving;
 	private StateChange is_statechange;
+	private boolean is_flanking;
 
 	// Constructor
 	public CombatItem(int time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
 			int skill_id, int src_instid, int dst_instid, int src_master_instid, IFF iff, boolean buff, Result result,
 			Activation is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
-			StateChange is_statechange) {
+			StateChange is_statechange, boolean is_flanking) {
 		this.time = time;
 		this.src_agent = src_agent;
 		this.dst_agent = dst_agent;
@@ -52,11 +53,12 @@ public class CombatItem {
 		this.is_fifty = is_fifty;
 		this.is_moving = is_moving;
 		this.is_statechange = is_statechange;
+		this.is_flanking = is_flanking;
 	}
 
 	// Public Methods
 	public String[] toStringArray() {
-		String[] array = new String[19];
+		String[] array = new String[20];
 		array[0] = String.valueOf(time);
 		array[1] = String.valueOf(src_agent);
 		array[2] = String.valueOf(dst_agent);
@@ -76,6 +78,7 @@ public class CombatItem {
 		array[16] = String.valueOf(is_fifty);
 		array[17] = String.valueOf(is_moving);
 		array[18] = String.valueOf(is_statechange);
+		array[19] = String.valueOf(is_flanking);
 		return array;
 	}
 
@@ -152,6 +155,10 @@ public class CombatItem {
 		return is_moving;
 	}
 
+	public boolean isFlanking() {
+		return is_flanking;
+	}
+
 	public StateChange is_statechange() {
 		return is_statechange;
 	}
@@ -165,11 +172,4 @@ public class CombatItem {
 		this.dst_agent = dst_agent;
 	}
 
-	public void set_src_instid(int src_instid) {
-		this.src_instid = src_instid;
-	}
-
-	public void set_dst_instid(int dst_instid) {
-		this.dst_instid = dst_instid;
-	}
 }
