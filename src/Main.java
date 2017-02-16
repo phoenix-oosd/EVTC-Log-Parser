@@ -54,7 +54,14 @@ public class Main {
 				for (int i : choices) {
 					MenuChoice c = MenuChoice.getEnum(i);
 					if (c != null && c.canBeAssociated()) {
-						output.append(System.lineSeparator() + parsing(c, new File(file_path)));
+						String result = parsing(c, new File(file_path));
+						if (result.startsWith("Warning")) {
+							System.out.println(
+									"Warning:\tThis log is outdated. Make sure the log is created by arcdps build 20170214 onwards.");
+							scan.nextLine();
+						} else {
+							output.append(System.lineSeparator() + result);
+						}
 					}
 				}
 				output.append("<END>");
@@ -154,10 +161,13 @@ public class Main {
 			try {
 				parsed_file = new Parse(log);
 				stats = new Statistics(parsed_file);
+				current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
 				if (willDisplayVersions) {
 					System.out.println("Log version:\t" + parsed_file.getBossData().get_build_version());
 				}
-				current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
+				if (Integer.valueOf(parsed_file.getBossData().get_build_version()) < 20170214) {
+					return "Warning:\t\tThis log is outdated. Make sure the log is created by arcdps build 20170214 onwards.";
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

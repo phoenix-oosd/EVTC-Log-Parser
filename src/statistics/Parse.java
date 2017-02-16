@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
+import java.util.ArrayList;
 import java.util.List;
 
 import data.AgentData;
@@ -89,7 +90,8 @@ public class Parse {
 	private void getBossData(MappedByteBuffer f) {
 
 		// 12 bytes: arc build version
-		byte[] version_buffer = new byte[12];
+		f.position(f.position() + 4);
+		byte[] version_buffer = new byte[8];
 		f.get(version_buffer);
 
 		// 1 byte: skip
@@ -258,7 +260,7 @@ public class Parse {
 
 	private void fillMissingData() {
 
-		// Set Agent src instid, first_aware and last_aware
+		// Set Agent instid, first_aware and last_aware
 		List<AgentItem> agentList = agentData.getAllAgents();
 		List<CombatItem> combatList = combatData.getCombatList();
 		for (AgentItem a : agentList) {
@@ -271,31 +273,13 @@ public class Parse {
 						assigned_first = true;
 					}
 					a.setLastAware(c.get_time());
-				}
-			}
-		}
-
-		// Set Agent master_agent
-
-		List<AgentItem> playerList = agentData.getPlayerAgents();
-		for (CombatItem c : combatList) {
-			// Has a master
-			if (c.get_src_master_instid() != 0) {
-				for (AgentItem NPC : agentList) {
-					// NPC not set master
-					if (NPC.get_master_agent() == 0) {
-						for (AgentItem player : agentList) {
-							// NPC is the source
-							if (NPC.get_instid() == c.get_src_instid()) {
-								// NPC's master is a player
-								if (c.get_src_master_instid() == player.get_instid()) {
-									NPC.setMasterAgent(player.get_agent());
-									NPC.setMasterInstid(player.get_instid());
-									continue;
-								}
-							}
-						}
+				} else if (a.get_agent() == c.get_dst_agent() && c.get_dst_instid() != 0) {
+					if (!assigned_first) {
+						a.setInstid(c.get_dst_instid());
+						a.setFirstAware(c.get_time());
+						assigned_first = true;
 					}
+					a.setLastAware(c.get_time());
 				}
 			}
 		}
@@ -303,12 +287,30 @@ public class Parse {
 		// Set Boss data agent, instid, first_aware and last_aware
 		List<AgentItem> NPCList = agentData.getNPCAgents();
 		for (AgentItem NPC : NPCList) {
-			if (Integer.valueOf(NPC.get_prof().split(":")[1]) == bossData.get_instid()) {
+			if (NPC.get_prof().endsWith(String.valueOf(bossData.get_instid()))) {
 				bossData.set_agent(NPC.get_agent());
-				bossData.set_instid(NPC.get_instid());
+				// bossData.set_instid(NPC.get_instid());
 				bossData.set_first_aware(NPC.get_first_aware());
 				bossData.set_last_aware(NPC.get_last_aware());
 				break;
+			}
+		}
+
+		// Set duplicate Boss agents to species ID
+		List<Long> bossAgents = new ArrayList<Long>();
+		for (AgentItem NPC : NPCList) {
+			if (NPC.get_prof().endsWith(String.valueOf(bossData.get_instid()))) {
+				bossAgents.add(NPC.get_agent());
+			}
+		}
+
+		System.out.println(bossAgents.size());
+
+		for (CombatItem c : combatList) {
+			if (bossAgents.contains(c.get_src_agent())) {
+				c.set_src_agent(bossData.get_instid());
+			} else if (bossAgents.contains(c.get_dst_agent())) {
+				c.set_dst_agent(bossData.get_instid());
 			}
 		}
 
@@ -334,8 +336,8 @@ public class Parse {
 		List<AgentItem> NPCAgents = agentData.getNPCAgents();
 		List<AgentItem> gadgetAgents = agentData.getGadgetAgents();
 		table.addTitle("AGENT DATA");
-		table.addRow("agent", "instid", "master_agent", "master_instid", "first_aware", "last_aware", "name", "prof",
-				"toughness", "healing", "condition");
+		table.addRow("agent", "instid", "first_aware", "last_aware", "name", "prof", "toughness", "healing",
+				"condition");
 		for (AgentItem player : playerAgents) {
 			table.addRow(player.toStringArray());
 		}

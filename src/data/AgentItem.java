@@ -5,8 +5,8 @@ public class AgentItem {
 	// Fields
 	private long agent;
 	private int instid = 0;
-	private long master_agent = 0;
-	private int master_instid = 0;
+	// private long master_agent = 0;
+	// private int master_instid = 0;
 	private int first_aware = 0;
 	private int last_aware = Integer.MAX_VALUE;
 	private String name;
@@ -33,18 +33,18 @@ public class AgentItem {
 
 	// Public Methods
 	public String[] toStringArray() {
-		String[] array = new String[11];
+		String[] array = new String[9];
 		array[0] = String.valueOf(agent);
 		array[1] = String.valueOf(instid);
-		array[2] = String.valueOf(master_agent);
-		array[3] = String.valueOf(master_instid);
-		array[4] = String.valueOf(first_aware);
-		array[5] = String.valueOf(last_aware);
-		array[6] = String.valueOf(name);
-		array[7] = String.valueOf(prof);
-		array[8] = String.valueOf(toughness);
-		array[9] = String.valueOf(healing);
-		array[10] = String.valueOf(condition);
+		// array[2] = String.valueOf(master_agent);
+		// array[3] = String.valueOf(master_instid);
+		array[2] = String.valueOf(first_aware);
+		array[3] = String.valueOf(last_aware);
+		array[4] = String.valueOf(name);
+		array[5] = String.valueOf(prof);
+		array[6] = String.valueOf(toughness);
+		array[7] = String.valueOf(healing);
+		array[8] = String.valueOf(condition);
 		return array;
 	}
 
@@ -57,13 +57,13 @@ public class AgentItem {
 		return instid;
 	}
 
-	public long get_master_agent() {
-		return master_agent;
-	}
-
-	public int get_master_instid() {
-		return master_instid;
-	}
+	// public long get_master_agent() {
+	// return master_agent;
+	// }
+	//
+	// public int get_master_instid() {
+	// return master_instid;
+	// }
 
 	public int get_first_aware() {
 		return first_aware;
@@ -98,13 +98,13 @@ public class AgentItem {
 		this.instid = instid;
 	}
 
-	public void setMasterAgent(long agent) {
-		this.master_agent = agent;
-	}
-
-	public void setMasterInstid(int instid) {
-		this.master_instid = instid;
-	}
+	// public void setMasterAgent(long agent) {
+	// this.master_agent = agent;
+	// }
+	//
+	// public void setMasterInstid(int instid) {
+	// this.master_instid = instid;
+	// }
 
 	public void setFirstAware(int first_aware) {
 		this.first_aware = first_aware;
