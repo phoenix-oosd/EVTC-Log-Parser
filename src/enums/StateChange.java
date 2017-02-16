@@ -10,7 +10,10 @@ public enum StateChange {
 	CHANGE_DEAD(4),
 	CHANGE_DOWN(5),
 	SPAWN(6),
-	DESPAWN(7);
+	DESPAWN(7),
+	HEALTH_UPDATE(8),
+	LOG_START(9),
+	LOG_END(10);
 
 	// Fields
 	private int ID;
