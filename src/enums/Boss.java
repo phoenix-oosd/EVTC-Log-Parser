@@ -16,24 +16,24 @@ public enum Boss {
 	CAIRN_THE_INDOMITABLE("Cairn the Indomitable", 17194, 20000000),
 	MURSAAT_OVERSEER("Mursaat Overseer", 17172, 20000000),
 	SAMAROG("Samarog", 17188, 29840000),
-	DEIMOS("Deimos", 17154, 35980000);
+	DEIMOS("Deimos", 17154, 32382000);
 
 	// Fields
 	private String name;
-	private int instid;
+	private int species_id;
 	private int health;
 
 	// Constructor
 	Boss(String name, int instid, int health) {
 		this.name = name;
-		this.instid = instid;
+		this.species_id = instid;
 		this.health = health;
 	}
 
 	// Public Methods
 	public static Boss getEnum(int instid) {
 		for (Boss b : values()) {
-			if (b.getInstid() == instid) {
+			if (b.getSpeciesID() == instid) {
 				return b;
 			}
 		}
@@ -45,8 +45,8 @@ public enum Boss {
 		return this.name;
 	}
 
-	public int getInstid() {
-		return this.instid;
+	public int getSpeciesID() {
+		return this.species_id;
 	}
 
 	public int getHealth() {

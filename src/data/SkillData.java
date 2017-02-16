@@ -3,6 +3,8 @@ package data;
 import java.util.ArrayList;
 import java.util.List;
 
+import enums.CustomSkill;
+
 public class SkillData {
 
 	// Fields
@@ -19,6 +21,13 @@ public class SkillData {
 	}
 
 	public String getName(int id) {
+		CustomSkill[] custom_skills = CustomSkill.values();
+		for (CustomSkill c : custom_skills) {
+			if (id == c.get_id()) {
+				return c.get_name();
+			}
+		}
+
 		for (SkillItem s : skill_list) {
 			if (s.get_id() == id) {
 				return s.get_name();
