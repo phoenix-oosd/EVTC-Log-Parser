@@ -280,8 +280,8 @@ public class Statistics {
 		table.addTitle("Combat Statistics - " + bossData.get_name());
 
 		// Header
-		table.addRow("Account", "Character", "Profession", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL", "COND",
-				"DOGE", "RESS", "DOWN", "DIED");
+		table.addRow("Account", "Character", "Group", "Profession", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL",
+				"COND", "DOGE", "RESS", "DOWN", "DIED");
 
 		// Body
 		for (Player p : playerList) {
@@ -334,7 +334,8 @@ public class Statistics {
 
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(Utility.concatStringArray(new String[] { p.get_account(), p.get_character(), p.get_prof() },
+			table.addRow(Utility.concatStringArray(
+					new String[] { p.get_account(), p.get_character(), p.get_sub_group(), p.get_prof() },
 					all_combat_stats.get(i)));
 		}
 		return table.toString();

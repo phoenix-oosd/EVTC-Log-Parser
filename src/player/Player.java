@@ -21,6 +21,7 @@ public class Player {
 	private int instid;
 	private String account;
 	private String character;
+	private String sub_group = "N/A";
 	private String prof;
 	private int toughness;
 	private int healing;
@@ -32,10 +33,13 @@ public class Player {
 	public Player(AgentItem agent) {
 		// this.agent = agent.get_agent();
 		this.instid = agent.get_instid();
-		String[] name = agent.get_name().split(":");
-		if (name.length > 1) {
+		String[] name = agent.get_name().split(Character.toString('\0'));
+		if (name.length >= 2) {
 			this.character = name[0];
 			this.account = name[1];
+			if (name.length == 3) {
+				this.sub_group = name[2];
+			}
 		} else {
 			this.character = agent.get_name();
 			this.account = "Account.XXXX";
@@ -53,6 +57,10 @@ public class Player {
 
 	public String get_character() {
 		return character;
+	}
+
+	public String get_sub_group() {
+		return sub_group;
 	}
 
 	public String get_prof() {
