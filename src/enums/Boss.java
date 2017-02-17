@@ -3,20 +3,20 @@ package enums;
 public enum Boss {
 
 	// Constants
-	VALE_GUARDIAN("Vale Guardian", 15438, 22400000),
-	GORSEVAL_THE_MULTIFARIOUS("Gorseval the Multifarious", 15429, 21600000),
-	SABETHA_THE_SABOTEUR("Sabetha the Saboteur", 15375, 34000000),
-	SLOTHASOR("Slothasor", 16123, 19000000),
-	BERG("Berg", 16088, 6900000),
-	ZANE("Zane", 16137, 5900000),
-	NARELLA("Narella", 16125, 4900000),
-	MATTHIAS_GABREL("Matthias Gabrel", 16115, 25900000),
-	KEEP_CONSTRUCT("Keep Construct", 16235, 55053600),
-	XERA("Xera", 16246, 22611300),
-	CAIRN_THE_INDOMITABLE("Cairn the Indomitable", 17194, 20000000),
-	MURSAAT_OVERSEER("Mursaat Overseer", 17172, 20000000),
-	SAMAROG("Samarog", 17188, 29840000),
-	DEIMOS("Deimos", 17154, 32382000);
+	VALE_GUARDIAN(15438, "Vale Guardian", 22400000),
+	GORSEVAL_THE_MULTIFARIOUS(15429, "Gorseval the Multifarious", 21600000),
+	SABETHA_THE_SABOTEUR(15375, "Sabetha the Saboteur", 34000000),
+	SLOTHASOR(16123, "Slothasor", 19000000),
+	BERG(16088, "Berg", 6900000),
+	ZANE(16137, "Zane", 5900000),
+	NARELLA(16125, "Narella", 4900000),
+	MATTHIAS_GABREL(16115, "Matthias Gabrel", 25900000),
+	KEEP_CONSTRUCT(16235, "Keep Construct", 55053600),
+	XERA(16246, "Xera", 22611300),
+	CAIRN_THE_INDOMITABLE(17194, "Cairn the Indomitable", 20000000),
+	MURSAAT_OVERSEER(17172, "Mursaat Overseer", 20000000),
+	SAMAROG(17188, "Samarog", 29840000),
+	DEIMOS(17154, "Deimos", 32382000);
 
 	// Fields
 	private String name;
@@ -24,7 +24,7 @@ public enum Boss {
 	private int health;
 
 	// Constructor
-	Boss(String name, int instid, int health) {
+	Boss(int instid, String name, int health) {
 		this.name = name;
 		this.species_id = instid;
 		this.health = health;

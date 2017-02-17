@@ -83,75 +83,75 @@ public class CombatItem {
 	}
 
 	// Getters
-	public int get_time() {
+	public int getTime() {
 		return time;
 	}
 
-	public long get_src_agent() {
+	public long getSrcAgent() {
 		return src_agent;
 	}
 
-	public long get_dst_agent() {
+	public long getDstAgent() {
 		return dst_agent;
 	}
 
-	public int get_value() {
+	public int getValue() {
 		return value;
 	}
 
-	public int get_buff_dmg() {
+	public int getBuffDmg() {
 		return buff_dmg;
 	}
 
-	public int get_overstack_value() {
+	public int getOverstackValue() {
 		return overstack_value;
 	}
 
-	public int get_skill_id() {
+	public int getSkillID() {
 		return skill_id;
 	}
 
-	public int get_src_instid() {
+	public int getSrcInstid() {
 		return src_instid;
 	}
 
-	public int get_dst_instid() {
+	public int getDstInstid() {
 		return dst_instid;
 	}
 
-	public int get_src_master_instid() {
+	public int getSrcMasterInstid() {
 		return src_master_instid;
 	}
 
-	public IFF get_iff() {
+	public IFF getIFF() {
 		return iff;
 	}
 
-	public boolean is_buff() {
+	public boolean isBuff() {
 		return is_buff;
 	}
 
-	public Result get_result() {
+	public Result getResult() {
 		return result;
 	}
 
-	public Activation is_activation() {
+	public Activation isActivation() {
 		return is_activation;
 	}
 
-	public boolean is_buffremove() {
+	public boolean isBuffremove() {
 		return is_buffremove;
 	}
 
-	public boolean is_ninety() {
+	public boolean isNinety() {
 		return is_ninety;
 	}
 
-	public boolean is_fifty() {
+	public boolean isFifty() {
 		return is_fifty;
 	}
 
-	public boolean is_moving() {
+	public boolean isMoving() {
 		return is_moving;
 	}
 
@@ -159,16 +159,16 @@ public class CombatItem {
 		return is_flanking;
 	}
 
-	public StateChange is_statechange() {
+	public StateChange isStateChange() {
 		return is_statechange;
 	}
 
 	// Setters
-	public void set_src_agent(long src_agent) {
+	public void setSrcAgent(long src_agent) {
 		this.src_agent = src_agent;
 	}
 
-	public void set_dst_agent(long dst_agent) {
+	public void setDstAgent(long dst_agent) {
 		this.dst_agent = dst_agent;
 	}
 

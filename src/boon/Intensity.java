@@ -8,26 +8,25 @@ import java.util.List;
 public class Intensity extends AbstractBoon {
 
 	// Constructor
-	public Intensity(int max_stacks) {
-		super(max_stacks);
+	public Intensity(int capacity) {
+		super(capacity);
 	}
 
 	// Public Methods
 	@Override
-	public int get_stack_value() {
-		return stacks.size();
+	public int getStackValue() {
+		return boon_stack.size();
 	}
 
 	@Override
 	public void update(int time_passed) {
 
 		// Subtract from each
-		for (int i = 0; i < stacks.size(); i++) {
-			stacks.set(i, stacks.get(i) - time_passed);
+		for (int i = 0; i < boon_stack.size(); i++) {
+			boon_stack.set(i, boon_stack.get(i) - time_passed);
 		}
-
 		// Remove negatives
-		for (Iterator<Integer> iter = stacks.listIterator(); iter.hasNext();) {
+		for (Iterator<Integer> iter = boon_stack.listIterator(); iter.hasNext();) {
 			Integer stack = iter.next();
 			if (stack <= 0) {
 				iter.remove();
@@ -36,35 +35,37 @@ public class Intensity extends AbstractBoon {
 	}
 
 	@Override
-	public void add_stacks_between(List<Integer> boon_stacks, int start, int end) {
+	public void addStacksBetween(List<Integer> boon_stacks, int time_between) {
 
-		Intensity boon_copy = new Intensity(this.max_stacks);
-		boon_copy.stacks = new ArrayList<Integer>(this.stacks);
-		List<Integer> stacks = boon_copy.stacks;
+		// Create copy of the boon
+		Intensity boon_copy = new Intensity(this.capacity);
+		boon_copy.boon_stack = new ArrayList<Integer>(this.boon_stack);
+		List<Integer> stacks = boon_copy.boon_stack;
 
-		int loops = end - start;
-
+		// Simulate the boon stack decreasing
 		if (!stacks.isEmpty()) {
-			int t_passed = 0;
-			int minimum = Collections.min(stacks);
 
-			for (int i = 1; i < loops; i++) {
-				if ((i - t_passed) >= minimum) {
-					boon_copy.update(i - t_passed);
+			int time_passed = 0;
+			int min_duration = Collections.min(stacks);
+
+			// Remove minimum duration from stack
+			for (int i = 1; i < time_between; i++) {
+				if ((i - time_passed) >= min_duration) {
+					boon_copy.update(i - time_passed);
 					if (!stacks.isEmpty()) {
-						minimum = Collections.min(stacks);
+						min_duration = Collections.min(stacks);
 					}
-					t_passed = i;
+					time_passed = i;
 				}
-				boon_stacks.add(boon_copy.get_stack_value());
+				boon_stacks.add(boon_copy.getStackValue());
 			}
-		} else {
-			for (int i = 1; i < loops; i++) {
+		}
+		// Fill in remaining time with 0 values
+		else {
+			for (int i = 1; i < time_between; i++) {
 				boon_stacks.add(0);
 			}
-
 		}
-
 	}
 
 }

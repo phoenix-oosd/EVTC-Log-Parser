@@ -16,12 +16,12 @@ public enum MenuChoice {
 
 	// Fields
 	private int ID;
-	private boolean canBeAssociated;
+	private boolean can_be_associated;
 
 	// Constructor
-	MenuChoice(int ID, boolean canBeAssociated) {
+	MenuChoice(int ID, boolean can_be_associated) {
 		this.ID = ID;
-		this.canBeAssociated = canBeAssociated;
+		this.can_be_associated = can_be_associated;
 	}
 
 	// Public Methods
@@ -40,7 +40,7 @@ public enum MenuChoice {
 	}
 
 	public boolean canBeAssociated() {
-		return canBeAssociated;
+		return can_be_associated;
 	}
 
 }

@@ -7,7 +7,7 @@ public class BossData {
 	// Fields
 	private long agent = 0;
 	private int instid = 0;
-	private int fight_aware = 0;
+	private int first_aware = 0;
 	private int last_aware = Integer.MAX_VALUE;
 	private int species_id;
 	private String name;
@@ -34,7 +34,7 @@ public class BossData {
 		String[] array = new String[8];
 		array[0] = String.valueOf(agent);
 		array[1] = String.valueOf(instid);
-		array[2] = String.valueOf(fight_aware);
+		array[2] = String.valueOf(first_aware);
 		array[3] = String.valueOf(last_aware);
 		array[4] = String.valueOf(species_id);
 		array[5] = String.valueOf(name);
@@ -44,19 +44,19 @@ public class BossData {
 	}
 
 	// Getters
-	public long get_agent() {
+	public long getAgent() {
 		return agent;
 	}
 
-	public int get_instid() {
+	public int getInstid() {
 		return instid;
 	}
 
-	public int get_first_aware() {
-		return fight_aware;
+	public int getFirstAware() {
+		return first_aware;
 	}
 
-	public int get_last_aware() {
+	public int getLastAware() {
 		return last_aware;
 	}
 
@@ -64,33 +64,33 @@ public class BossData {
 		return species_id;
 	}
 
-	public String get_name() {
+	public String getName() {
 		return name;
 	}
 
-	public int get_health() {
+	public int getHealth() {
 		return health;
 	}
 
-	public String get_build_version() {
+	public String getBuildVersion() {
 		return build_version;
 	}
 
 	// Setters
-	public void set_agent(long agent) {
+	public void setAgent(long agent) {
 		this.agent = agent;
 	}
 
-	public void set_instid(int instid) {
+	public void setInstid(int instid) {
 		this.instid = instid;
 	}
 
-	public void set_first_aware(int time) {
-		this.fight_aware = time;
+	public void setFirstAware(int first_aware) {
+		this.first_aware = first_aware;
 	}
 
-	public void set_last_aware(int time) {
-		this.last_aware = time;
+	public void setLastAware(int last_aware) {
+		this.last_aware = last_aware;
 	}
 
 }

@@ -26,7 +26,7 @@ public final class Utility {
 		return "UNKNOWN";
 	}
 
-	public static boolean getBool(int i) {
+	public static boolean toBool(int i) {
 		return (i != 0);
 	}
 

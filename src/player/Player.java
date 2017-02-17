@@ -18,41 +18,39 @@ import statistics.Statistics;
 public class Player {
 
 	// Fields
-	// private long agent;
 	private int instid;
 	private String account;
 	private String character;
-	private String sub_group = "N/A";
+	private String group = "N/A";
 	private String prof;
 	private int toughness;
 	private int healing;
 	private int condition;
-	private List<DamageLog> outDamageLogs = new ArrayList<DamageLog>();
-	private Map<String, List<BoonLog>> boonMap = new HashMap<>();
+	private List<DamageLog> out_damage_logs = new ArrayList<DamageLog>();
+	private Map<String, List<BoonLog>> boon_map = new HashMap<>();
 
 	// Constructors
 	public Player(AgentItem agent) {
-		// this.agent = agent.get_agent();
-		this.instid = agent.get_instid();
-		String[] name = agent.get_name().split(Character.toString('\0'));
+		this.instid = agent.getInstid();
+		String[] name = agent.getName().split(Character.toString('\0'));
 		if (name.length >= 2) {
 			this.character = name[0];
 			this.account = name[1];
 			if (name.length == 3) {
-				this.sub_group = name[2];
+				this.group = name[2];
 			}
 		} else {
-			this.character = agent.get_name();
+			this.character = agent.getName();
 			this.account = "Account.XXXX";
 		}
 		if (Statistics.willHidePlayers) {
 			this.character = " P:" + String.format("%04d", instid);
 			this.account = " :A." + String.format("%04d", instid);
 		}
-		this.prof = agent.get_prof();
-		this.toughness = agent.get_toughness();
-		this.healing = agent.get_healing();
-		this.condition = agent.get_condition();
+		this.prof = agent.getProf();
+		this.toughness = agent.getToughness();
+		this.healing = agent.getHealing();
+		this.condition = agent.getCondition();
 	}
 
 	// Getters
@@ -65,7 +63,7 @@ public class Player {
 	}
 
 	public String get_sub_group() {
-		return sub_group;
+		return group;
 	}
 
 	public String get_prof() {
@@ -85,50 +83,48 @@ public class Player {
 	}
 
 	public List<DamageLog> getOutBossDamage(BossData bossData, List<CombatItem> combatList) {
-		if (outDamageLogs.isEmpty()) {
+		if (out_damage_logs.isEmpty()) {
 			setOutDamageLogs(bossData, combatList);
 		}
-		return outDamageLogs;
+		return out_damage_logs;
 	}
 
 	public Map<String, List<BoonLog>> getBoonMap(BossData bossData, SkillData skillData, List<CombatItem> combatList) {
-		if (boonMap.isEmpty()) {
+		if (boon_map.isEmpty()) {
 			setBoonMap(bossData, skillData, combatList);
 		}
-		return boonMap;
+		return boon_map;
 	}
 
 	// Private Methods
 	private void setOutDamageLogs(BossData bossData, List<CombatItem> combatList) {
 
-		int timeStart = bossData.get_first_aware();
+		int timeStart = bossData.getFirstAware();
 
 		for (CombatItem c : combatList) {
-			if (instid == c.get_src_instid() || instid == c.get_src_master_instid()) {
-				StateChange state = c.is_statechange();
-				int time = c.get_time() - timeStart;
-				if (bossData.get_instid() == c.get_dst_instid() && c.get_iff().equals(IFF.FOE)) {
+			if (instid == c.getSrcInstid() || instid == c.getSrcMasterInstid()) {
+				StateChange state = c.isStateChange();
+				int time = c.getTime() - timeStart;
+				if (bossData.getInstid() == c.getDstInstid() && c.getIFF().equals(IFF.FOE)) {
 					if (state.equals(StateChange.NORMAL)) {
-						if (c.is_buff() && c.get_buff_dmg() != 0) {
-							outDamageLogs.add(new DamageLog(time, c.get_buff_dmg(), c.get_skill_id(), true,
-									c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(),
-									c.isFlanking()));
-						} else if (!c.is_buff() && c.get_value() != 0) {
-							outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false,
-									c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(),
-									c.isFlanking()));
+						if (c.isBuff() && c.getBuffDmg() != 0) {
+							out_damage_logs.add(new DamageLog(time, c.getBuffDmg(), c.getSkillID(), true, c.getResult(),
+									c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
+						} else if (!c.isBuff() && c.getValue() != 0) {
+							out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
+									c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
 						}
 					}
-				} else if (instid == c.get_src_instid()) {
+				} else if (instid == c.getSrcInstid()) {
 					if (state.equals(StateChange.CHANGE_DEAD)) {
-						outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
-								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(), c.isFlanking()));
+						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
+								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
 					} else if (state.equals(StateChange.CHANGE_DOWN)) {
-						outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
-								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(), c.isFlanking()));
-					} else if (CustomSkill.getEnum(c.get_skill_id()) != null) {
-						outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
-								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(), c.isFlanking()));
+						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
+								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
+					} else if (CustomSkill.getEnum(c.getSkillID()) != null) {
+						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
+								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
 					}
 
 				}
@@ -141,20 +137,20 @@ public class Player {
 
 		List<String> boonList = Boon.getList();
 		for (String boon : boonList) {
-			boonMap.put(boon, new ArrayList<BoonLog>());
+			boon_map.put(boon, new ArrayList<BoonLog>());
 		}
 
-		int time_start = bossData.get_first_aware();
-		int fight_duration = bossData.get_last_aware() - time_start;
+		int time_start = bossData.getFirstAware();
+		int fight_duration = bossData.getLastAware() - time_start;
 
 		for (CombatItem c : combatList) {
-			if (instid == c.get_dst_instid()) {
-				String skill_name = skillData.getName(c.get_skill_id());
-				if (c.is_buff() && (c.get_value() > 0)) {
+			if (instid == c.getDstInstid()) {
+				String skill_name = skillData.getName(c.getSkillID());
+				if (c.isBuff() && (c.getValue() > 0)) {
 					if (boonList.contains(skill_name)) {
-						int time = c.get_time() - time_start;
+						int time = c.getTime() - time_start;
 						if (time < fight_duration) {
-							boonMap.get(skill_name).add(new BoonLog(time, c.get_value()));
+							boon_map.get(skill_name).add(new BoonLog(time, c.getValue()));
 						} else {
 							break;
 						}

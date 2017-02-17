@@ -7,41 +7,46 @@ import java.util.List;
 public abstract class AbstractBoon {
 
 	// Fields
-	protected List<Integer> stacks = new ArrayList<Integer>();
-	protected int max_stacks;
+	protected int capacity;
+	protected List<Integer> boon_stack = new ArrayList<Integer>();
 
 	// Constructor
-	public AbstractBoon(int max_stacks) {
-		this.max_stacks = max_stacks;
+	public AbstractBoon(int capacity) {
+		this.capacity = capacity;
 	}
 
 	// Abstract Methods
-	public abstract int get_stack_value();
+	public abstract int getStackValue();
 
 	public abstract void update(int time_passed);
 
-	public abstract void add_stacks_between(List<Integer> boon_stacks, int start, int stop);
+	public abstract void addStacksBetween(List<Integer> boon_stacks, int time_between);
 
 	// Public Methods
-	public void add(int duration) {
+	public void add(int boon_duration) {
 
-		// Find an empty slot
-		if (!is_full()) {
-			stacks.add(duration);
+		// Find empty slot
+		if (!isFull()) {
+			boon_stack.add(boon_duration);
+			sort();
+			return;
 		}
+
 		// Replace lowest value
-		else if (stacks.get(stacks.size() - 1) < duration) {
-			stacks.set(stacks.size() - 1, duration);
+		int index = boon_stack.size() - 1;
+		if (boon_stack.get(index) < boon_duration) {
+			boon_stack.set(index, boon_duration);
+			sort();
+			return;
 		}
-		sort();
 	}
 
 	// Protected Methods
-	protected boolean is_full() {
-		return stacks.size() >= max_stacks;
+	protected boolean isFull() {
+		return boon_stack.size() >= capacity;
 	}
 
 	protected void sort() {
-		Collections.sort(stacks, Collections.reverseOrder());
+		Collections.sort(boon_stack, Collections.reverseOrder());
 	}
 }

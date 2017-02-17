@@ -5,41 +5,40 @@ import java.util.List;
 public class Duration extends AbstractBoon {
 
 	// Constructor
-	public Duration(int max_stacks) {
-		super(max_stacks);
+	public Duration(int capacity) {
+		super(capacity);
 	}
 
 	// Public Methods
 	@Override
-	public int get_stack_value() {
-		return stacks.stream().mapToInt(Integer::intValue).sum();
+	public int getStackValue() {
+		return boon_stack.stream().mapToInt(Integer::intValue).sum();
 	}
 
 	@Override
 	public void update(int time_passed) {
-		if (!stacks.isEmpty()) {
-			// Lose all stacks
-			if (time_passed >= get_stack_value()) {
-				stacks.clear();
+
+		if (!boon_stack.isEmpty()) {
+			// Clear stack
+			if (time_passed >= getStackValue()) {
+				boon_stack.clear();
 				return;
 			}
-			// Remove from the highest stack
+			// Remove from the longest duration
 			else {
-				stacks.set(0, stacks.get(0) - time_passed);
-				if (stacks.get(0) <= 0) {
+				boon_stack.set(0, boon_stack.get(0) - time_passed);
+				if (boon_stack.get(0) <= 0) {
 					// Spend leftover time
-					time_passed = Math.abs(stacks.get(0));
-					stacks.remove(0);
-					this.update(time_passed);
-				} else {
-					return;
+					time_passed = Math.abs(boon_stack.get(0));
+					boon_stack.remove(0);
+					update(time_passed);
 				}
 			}
 		}
 	}
 
 	@Override
-	public void add_stacks_between(List<Integer> boon_stacks, int start, int stop) {
+	public void addStacksBetween(List<Integer> boon_stacks, int time_between) {
 	}
 
 }

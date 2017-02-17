@@ -46,31 +46,31 @@ public class DamageLog {
 		return skill_id;
 	}
 
-	public boolean is_condi() {
+	public boolean isCondi() {
 		return is_condi;
 	}
 
-	public Result get_result() {
+	public Result getResult() {
 		return result;
 	}
 
-	public boolean is_ninety() {
+	public boolean isNinety() {
 		return is_ninety;
 	}
 
-	public boolean is_moving() {
+	public boolean isMoving() {
 		return is_moving;
 	}
 
-	public StateChange is_statechange() {
+	public StateChange isStatechange() {
 		return is_statechange;
 	}
 
-	public Activation is_activation() {
+	public Activation isActivation() {
 		return is_activation;
 	}
 
-	public boolean is_flanking() {
+	public boolean isFlanking() {
 		return is_flanking;
 	}
 

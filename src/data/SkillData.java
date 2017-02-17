@@ -20,21 +20,25 @@ public class SkillData {
 		skill_list.add(item);
 	}
 
-	public String getName(int id) {
-		CustomSkill custom_skill = CustomSkill.getEnum(id);
+	public String getName(int ID) {
+
+		// Custom
+		CustomSkill custom_skill = CustomSkill.getEnum(ID);
 		if (custom_skill != null) {
 			return custom_skill.name();
 		}
+
+		// Normal
 		for (SkillItem s : skill_list) {
-			if (s.get_id() == id) {
-				return s.get_name();
+			if (s.getID() == ID) {
+				return s.getName();
 			}
 		}
-		return "id: " + String.valueOf(id);
+		return "uid: " + String.valueOf(ID);
 	}
 
 	// Getters
-	public List<SkillItem> get_skill_list() {
+	public List<SkillItem> getSkillList() {
 		return skill_list;
 	}
 

@@ -8,19 +8,19 @@ public enum CustomSkill {
 	DODGE(65001, "Dodge");
 
 	// Fields
-	private int id;
+	private int ID;
 	private String name;
 
 	// Constructors
-	private CustomSkill(int id, String name) {
-		this.id = id;
+	private CustomSkill(int ID, String name) {
+		this.ID = ID;
 		this.name = name;
 	}
 
 	// Public Methods
-	public static CustomSkill getEnum(int id) {
+	public static CustomSkill getEnum(int ID) {
 		for (CustomSkill c : values()) {
-			if (c.get_id() == id) {
+			if (c.getID() == ID) {
 				return c;
 			}
 		}
@@ -28,11 +28,11 @@ public enum CustomSkill {
 	}
 
 	// Getters
-	public int get_id() {
-		return id;
+	public int getID() {
+		return ID;
 	}
 
-	public String get_name() {
+	public String getName() {
 		return name;
 	}
 

@@ -15,12 +15,12 @@ import utility.Utility;
 public class Main {
 
 	// Fields
-	private static boolean willQuit = false;
-	private static boolean willDisplayVersions = true;
-	private static Map<String, String> arguments = new HashMap<>();
+	private static boolean will_quit = false;
+	private static boolean will_display_versions = true;
+	private static Map<String, String> argument_map = new HashMap<>();
 	private static String current_file;
 	private static Parse parsed_file;
-	private static Statistics stats;
+	private static Statistics statistics;
 
 	// Main
 	public static void main(String[] args) {
@@ -33,28 +33,28 @@ public class Main {
 			// Read arguments
 			for (String arg : args) {
 				if (arg.contains("=")) {
-					arguments.put(arg.substring(0, arg.indexOf('=')), arg.substring(arg.indexOf('=') + 1));
+					argument_map.put(arg.substring(0, arg.indexOf('=')), arg.substring(arg.indexOf('=') + 1));
 				}
 			}
-			String is_anon = arguments.get("is_anon");
-			String file_path = arguments.get("file_path");
-			String options = arguments.get("options");
+			String is_anon = argument_map.get("is_anon");
+			String file_path = argument_map.get("file_path");
+			String options = argument_map.get("options");
 
-			// Data anonymization
+			// Handle arguments
 			if (is_anon != null) {
-				Statistics.willHidePlayers = Utility.getBool(Integer.valueOf(is_anon));
+				Statistics.willHidePlayers = Utility.toBool(Integer.valueOf(is_anon));
 			}
 
 			// File Association
 			if (file_path != null && !file_path.isEmpty() && options != null) {
-				willDisplayVersions = false;
+				will_display_versions = false;
 				int[] choices = options.chars().map(x -> x - '0').toArray();
 
 				StringBuilder output = new StringBuilder("<START>");
 				for (int i : choices) {
 					MenuChoice c = MenuChoice.getEnum(i);
 					if (c != null && c.canBeAssociated()) {
-						String result = parsing(c, new File(file_path));
+						String result = parseFileByChoice(c, new File(file_path));
 						if (result.startsWith("Warning")) {
 							System.out.println(
 									"Warning:\tThis log is outdated. Make sure the log is created by arcdps build 20170214 onwards.");
@@ -67,13 +67,11 @@ public class Main {
 				output.append("<END>");
 				System.out.println(output.toString());
 				scan.nextLine();
-
 				return;
 			}
 
 			// Menu
 			else {
-
 				// Create required directories
 				new File("./logs").mkdir();
 				new File("./graphs").mkdirs();
@@ -93,7 +91,7 @@ public class Main {
 
 				// Display menu
 				else {
-					while (!willQuit) {
+					while (!will_quit) {
 						System.out.println("_______________" + System.lineSeparator());
 						System.out.println("EVTC Log Parser");
 						System.out.println("_______________" + System.lineSeparator());
@@ -127,16 +125,15 @@ public class Main {
 
 						// Quitting
 						else if (choice.equals(MenuChoice.QUIT)) {
-							willQuit = true;
+							will_quit = true;
 						}
 
 						// Valid choice
 						else {
-
 							// Apply option to all .evtc files in /logs/
 							for (File log : logs) {
 								System.out.println(System.lineSeparator() + "Input file:\t" + log.getName());
-								String output = parsing(choice, log);
+								String output = parseFileByChoice(choice, log);
 								System.out.println(output);
 							}
 						}
@@ -154,18 +151,18 @@ public class Main {
 		return;
 	}
 
-	private static String parsing(MenuChoice choice, File log) {
+	private static String parseFileByChoice(MenuChoice choice, File log) {
 
 		// Parse the log
 		if (current_file == null || !current_file.equals(log.getName().split("\\.(?=[^\\.]+$)")[0])) {
 			try {
 				parsed_file = new Parse(log);
-				stats = new Statistics(parsed_file);
+				statistics = new Statistics(parsed_file);
 				current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
-				if (willDisplayVersions) {
-					System.out.println("Log version:\t" + parsed_file.getBossData().get_build_version());
+				if (will_display_versions) {
+					System.out.println("Log version:\t" + parsed_file.getBossData().getBuildVersion());
 				}
-				if (Integer.valueOf(parsed_file.getBossData().get_build_version()) < 20170214) {
+				if (Integer.valueOf(parsed_file.getBossData().getBuildVersion()) < 20170214) {
 					return "Warning:\t\tThis log is outdated. Make sure the log is created by arcdps build 20170214 onwards.";
 				}
 			} catch (IOException e) {
@@ -175,22 +172,22 @@ public class Main {
 
 		// Choice
 		if (choice.equals(MenuChoice.FINAL_DPS)) {
-			return stats.get_final_dps();
+			return statistics.getFinalDPS();
 		} else if (choice.equals(MenuChoice.PHASE_DPS)) {
-			return stats.get_phase_dps();
+			return statistics.getPhaseDPS();
 		} else if (choice.equals(MenuChoice.DMG_DIST)) {
-			return stats.get_damage_distribution();
+			return statistics.getDamageDistribution();
 		} else if (choice.equals(MenuChoice.G_TOTAL_DMG)) {
-			return "Output file:\t" + stats.get_total_damage_graph(current_file);
+			return "Output file:\t" + statistics.getTotalDamageGraph(current_file);
 		} else if (choice.equals(MenuChoice.MISC_STATS)) {
-			return stats.get_combat_stats();
+			return statistics.getCombatStatistics();
 		} else if (choice.equals(MenuChoice.FINAL_BOONS)) {
-			return stats.get_final_boons();
+			return statistics.getFinalBoons();
 		} else if (choice.equals(MenuChoice.PHASE_BOONS)) {
-			return stats.get_phase_boons();
+			return statistics.getPhaseBoons();
 		} else if (choice.equals(MenuChoice.DUMP_EVTC)) {
 			File evtc_dump = new File(
-					"./tables/" + current_file + "_" + parsed_file.getBossData().get_name() + "_evtc-dump.txt");
+					"./tables/" + current_file + "_" + parsed_file.getBossData().getName() + "_evtc-dump.txt");
 			try {
 				Utility.writeToFile(parsed_file.toString(), evtc_dump);
 			} catch (IOException e) {
@@ -199,12 +196,12 @@ public class Main {
 			return "Output file:\t" + evtc_dump.getName();
 		} else if (choice.equals(MenuChoice.DUMP_TABLES)) {
 			File text_dump = new File(
-					"./tables/" + current_file + "_" + parsed_file.getBossData().get_name() + "_all-tables.txt");
+					"./tables/" + current_file + "_" + parsed_file.getBossData().getName() + "_all-tables.txt");
 			try {
-				Utility.writeToFile(stats.get_final_dps() + System.lineSeparator() + stats.get_phase_dps()
-						+ System.lineSeparator() + stats.get_combat_stats() + System.lineSeparator()
-						+ stats.get_final_boons() + System.lineSeparator() + stats.get_phase_boons()
-						+ System.lineSeparator() + stats.get_damage_distribution(), text_dump);
+				Utility.writeToFile(statistics.getFinalDPS() + System.lineSeparator() + statistics.getPhaseDPS()
+						+ System.lineSeparator() + statistics.getCombatStatistics() + System.lineSeparator()
+						+ statistics.getFinalBoons() + System.lineSeparator() + statistics.getPhaseBoons()
+						+ System.lineSeparator() + statistics.getDamageDistribution(), text_dump);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

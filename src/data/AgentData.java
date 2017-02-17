@@ -8,46 +8,42 @@ import enums.Agent;
 public class AgentData {
 
 	// Fields
-	private List<AgentItem> playerAgents;
-	private List<AgentItem> NPCAgents;
-	private List<AgentItem> gadgetAgents;
-	private List<AgentItem> allAgents;
+	private List<AgentItem> player_agent_list = new ArrayList<AgentItem>();
+	private List<AgentItem> NPC_agent_list = new ArrayList<AgentItem>();
+	private List<AgentItem> gadget_agent_list = new ArrayList<AgentItem>();
+	private List<AgentItem> all_agents_list = new ArrayList<AgentItem>();
 
 	// Constructors
 	public AgentData() {
-		this.playerAgents = new ArrayList<AgentItem>();
-		this.NPCAgents = new ArrayList<AgentItem>();
-		this.gadgetAgents = new ArrayList<AgentItem>();
-		this.allAgents = new ArrayList<AgentItem>();
 	}
 
 	// Public Methods
 	public void addItem(Agent agent, AgentItem item) {
 		if (agent.equals(Agent.NPC)) {
-			NPCAgents.add(item);
+			NPC_agent_list.add(item);
 		} else if (agent.equals(Agent.GADGET)) {
-			gadgetAgents.add(item);
+			gadget_agent_list.add(item);
 		} else {
-			playerAgents.add(item);
+			player_agent_list.add(item);
 		}
-		allAgents.add(item);
+		all_agents_list.add(item);
 	}
 
 	// Getters
-	public List<AgentItem> getPlayerAgents() {
-		return playerAgents;
+	public List<AgentItem> getPlayerAgentList() {
+		return player_agent_list;
 	}
 
-	public List<AgentItem> getNPCAgents() {
-		return NPCAgents;
+	public List<AgentItem> getNPCAgentList() {
+		return NPC_agent_list;
 	}
 
-	public List<AgentItem> getGadgetAgents() {
-		return gadgetAgents;
+	public List<AgentItem> getGadgetAgentList() {
+		return gadget_agent_list;
 	}
 
-	public List<AgentItem> getAllAgents() {
-		return allAgents;
+	public List<AgentItem> getAllAgentsList() {
+		return all_agents_list;
 	}
 
 }

@@ -6,21 +6,21 @@ import java.util.List;
 public class CombatData {
 
 	// Fields
-	private List<CombatItem> combatList;
+	private List<CombatItem> combat_list;
 
 	// Constructors
 	public CombatData() {
-		this.combatList = new ArrayList<CombatItem>();
+		this.combat_list = new ArrayList<CombatItem>();
 	}
 
 	// Public Methods
 	public void addItem(CombatItem item) {
-		combatList.add(item);
+		combat_list.add(item);
 	}
 
 	// Getters
 	public List<CombatItem> getCombatList() {
-		return combatList;
+		return combat_list;
 	}
 
 }

@@ -3,33 +3,33 @@ package enums;
 public enum Agent {
 
 	// Constants
-	NPC("NPC", -1),
-	GADGET("Gadget", 0),
-	GUARDIAN("Guardian", 1),
-	WARRIOR("Warrior", 2),
-	ENGINEER("Engineer", 3),
-	RANGER("Ranger", 4),
-	THIEF("Thief", 5),
-	ELEMENTALIST("Elementalist", 6),
-	MESMER("Mesmer", 7),
-	NECROMANCER("Necromancer", 8),
-	REVENANT("Revenant", 9),
-	DRAGONHUNTER("Dragonhunter", 10),
-	BERSERKER("Berserker", 11),
-	SCRAPPER("Scrapper", 12),
-	DRUID("Druid", 13),
-	DAREDEVIL("Daredevil", 14),
-	TEMPEST("Tempest", 15),
-	CHRONOMANCER("Chronomancer", 16),
-	REAPER("Reaper", 17),
-	HERALD("Herald", 18);
+	NPC(-1, "NPC"),
+	GADGET(0, "Gadget"),
+	GUARDIAN(1, "Guardian"),
+	WARRIOR(2, "Warrior"),
+	ENGINEER(3, "Engineer"),
+	RANGER(4, "Ranger"),
+	THIEF(5, "Thief"),
+	ELEMENTALIST(6, "Elementalist"),
+	MESMER(7, "Mesmer"),
+	NECROMANCER(8, "Necromancer"),
+	REVENANT(9, "Revenant"),
+	DRAGONHUNTER(10, "Dragonhunter"),
+	BERSERKER(11, "Berserker"),
+	SCRAPPER(12, "Scrapper"),
+	DRUID(13, "Druid"),
+	DAREDEVIL(14, "Daredevil"),
+	TEMPEST(15, "Tempest"),
+	CHRONOMANCER(16, "Chronomancer"),
+	REAPER(17, "Reaper"),
+	HERALD(18, "Herald");
 
 	// Fields
 	private String name;
 	private int ID;
 
 	// Constructor
-	Agent(String name, int ID) {
+	Agent(int ID, String name) {
 		this.name = name;
 		this.ID = ID;
 	}
