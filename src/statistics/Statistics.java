@@ -24,6 +24,7 @@ import data.CombatData;
 import data.CombatItem;
 import data.SkillData;
 import enums.Boon;
+import enums.CustomSkill;
 import enums.Result;
 import enums.StateChange;
 import player.BoonLog;
@@ -279,17 +280,19 @@ public class Statistics {
 		table.addTitle("Combat Statistics - " + bossData.get_name());
 
 		// Header
-		table.addRow("Account", "Name", "Profession", "CRIT", "SCHL", "MOVE", "TGHN", "HEAL", "COND", "DOWN", "DIED");
+		table.addRow("Account", "Character", "Profession", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL", "COND",
+				"DOGE", "RESS", "DOWN", "DIED");
 
 		// Body
 		for (Player p : playerList) {
 
-			double power_loops = 0.0, crit = 0.0, schl = 0.0, move = 0.0;
-			int down = 0, died = 0;
+			double power_loops = 0.0, crit = 0.0, schl = 0.0, move = 0.0, flank = 0.0;
+			int dodge = 0, ress = 0, down = 0, died = 0;
 			boolean is_dead = false;
 
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
 			for (DamageLog log : damage_logs) {
+
 				if (!log.is_condi()) {
 					if (log.get_result().equals(Result.CRIT)) {
 						crit++;
@@ -300,6 +303,9 @@ public class Statistics {
 					if (log.is_moving()) {
 						move++;
 					}
+					if (log.is_flanking()) {
+						flank++;
+					}
 					power_loops++;
 				}
 				if (log.is_statechange().equals(StateChange.CHANGE_DOWN)) {
@@ -308,12 +314,21 @@ public class Statistics {
 					died = log.getTime();
 					is_dead = true;
 				}
+				CustomSkill skill = CustomSkill.getEnum(log.getID());
+				if (skill != null) {
+					if (skill.equals(CustomSkill.DODGE)) {
+						dodge++;
+					} else if (skill.equals(CustomSkill.RESURRECT)) {
+						ress++;
+					}
+				}
 			}
 
 			String[] combat_stats = new String[] { String.format("%.2f", crit / power_loops),
 					String.format("%.2f", schl / power_loops), String.format("%.2f", move / power_loops),
-					String.valueOf(p.get_toughness()), String.valueOf(p.get_healing()),
-					String.valueOf(p.get_condition()), String.valueOf(down), String.valueOf((double) died / 1000) };
+					String.format("%.2f", flank / power_loops), String.valueOf(p.get_toughness()),
+					String.valueOf(p.get_healing()), String.valueOf(p.get_condition()), String.valueOf(dodge),
+					String.valueOf(ress), String.valueOf(down), String.valueOf((double) died / 1000) };
 			all_combat_stats.add(combat_stats);
 		}
 

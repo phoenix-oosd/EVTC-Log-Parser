@@ -16,10 +16,11 @@ public class DamageLog {
 	private boolean is_moving;
 	private StateChange is_statechange;
 	private Activation is_activation;
+	private boolean is_flanking;
 
 	// Constructor
 	public DamageLog(int time, int damage, int skill_id, boolean is_condi, Result result, boolean is_ninety,
-			boolean is_moving, StateChange is_statechange, Activation activation) {
+			boolean is_moving, StateChange is_statechange, Activation activation, boolean is_flanking) {
 		this.time = time;
 		this.damage = damage;
 		this.skill_id = skill_id;
@@ -29,6 +30,7 @@ public class DamageLog {
 		this.is_moving = is_moving;
 		this.is_statechange = is_statechange;
 		this.is_activation = activation;
+		this.is_flanking = is_flanking;
 	}
 
 	// Getters
@@ -66,6 +68,10 @@ public class DamageLog {
 
 	public Activation is_activation() {
 		return is_activation;
+	}
+
+	public boolean is_flanking() {
+		return is_flanking;
 	}
 
 }

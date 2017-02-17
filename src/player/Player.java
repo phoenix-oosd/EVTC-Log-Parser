@@ -10,13 +10,14 @@ import data.BossData;
 import data.CombatItem;
 import data.SkillData;
 import enums.Boon;
+import enums.CustomSkill;
 import enums.IFF;
 import enums.StateChange;
 
 public class Player {
 
 	// Fields
-	private long agent;
+	// private long agent;
 	private int instid;
 	private String account;
 	private String character;
@@ -29,7 +30,7 @@ public class Player {
 
 	// Constructors
 	public Player(AgentItem agent) {
-		this.agent = agent.get_agent();
+		// this.agent = agent.get_agent();
 		this.instid = agent.get_instid();
 		String[] name = agent.get_name().split(":");
 		if (name.length > 1) {
@@ -96,22 +97,29 @@ public class Player {
 				if (bossData.get_instid() == c.get_dst_instid() && c.get_iff().equals(IFF.FOE)) {
 					if (state.equals(StateChange.NORMAL)) {
 						if (c.is_buff() && c.get_buff_dmg() != 0) {
-							outDamageLogs
-									.add(new DamageLog(time, c.get_buff_dmg(), c.get_skill_id(), true, c.get_result(),
-											c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+							outDamageLogs.add(new DamageLog(time, c.get_buff_dmg(), c.get_skill_id(), true,
+									c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(),
+									c.isFlanking()));
 						} else if (!c.is_buff() && c.get_value() != 0) {
-							outDamageLogs
-									.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
-											c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+							outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false,
+									c.get_result(), c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(),
+									c.isFlanking()));
 						}
 					}
-				} else if (instid == c.get_src_instid() && state.equals(StateChange.CHANGE_DOWN)) {
-					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
-							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
-				} else if (instid == c.get_src_instid() && state.equals(StateChange.CHANGE_DEAD)) {
-					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
-							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
+				} else if (instid == c.get_src_instid()) {
+					if (state.equals(StateChange.CHANGE_DEAD)) {
+						outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
+								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(), c.isFlanking()));
+					} else if (state.equals(StateChange.CHANGE_DOWN)) {
+						outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
+								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(), c.isFlanking()));
+					} else if (CustomSkill.getEnum(c.get_skill_id()) != null) {
+						outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
+								c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation(), c.isFlanking()));
+					}
+
 				}
+
 			}
 		}
 	}
