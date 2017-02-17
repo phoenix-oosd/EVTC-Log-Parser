@@ -123,15 +123,20 @@ public class Player {
 			boonMap.put(boon, new ArrayList<BoonLog>());
 		}
 
-		int timeStart = bossData.get_first_aware();
+		int time_start = bossData.get_first_aware();
+		int fight_duration = bossData.get_last_aware() - time_start;
 
 		for (CombatItem c : combatList) {
 			if (instid == c.get_dst_instid()) {
 				String skill_name = skillData.getName(c.get_skill_id());
 				if (c.is_buff() && (c.get_value() > 0)) {
 					if (boonList.contains(skill_name)) {
-						int time = c.get_time() - timeStart;
-						boonMap.get(skill_name).add(new BoonLog(time, c.get_value()));
+						int time = c.get_time() - time_start;
+						if (time < fight_duration) {
+							boonMap.get(skill_name).add(new BoonLog(time, c.get_value()));
+						} else {
+							break;
+						}
 					}
 				}
 			}

@@ -558,13 +558,9 @@ public class Statistics {
 
 		// Trim duration overflow
 		int fight_duration = bossData.get_last_aware() - bossData.get_first_aware();
-		for (Point p : boon_intervals) {
-			if (p.getX() > fight_duration) {
-				p.x = fight_duration;
-			}
-			if (p.getY() > fight_duration) {
-				p.y = fight_duration;
-			}
+		int last = boon_intervals.size() - 1;
+		if (boon_intervals.get(last).getY() > fight_duration) {
+			boon_intervals.get(last).y = fight_duration;
 		}
 
 		return boon_intervals;
@@ -573,16 +569,12 @@ public class Statistics {
 	private String get_boon_duration(List<Point> boon_intervals) {
 
 		// Calculate average duration
-		// System.out.println(boon_intervals.size());
+
 		double average_duration = 0;
 		for (Point p : boon_intervals) {
-			// System.out.println(p.toString());
+
 			average_duration = average_duration + (p.getY() - p.getX());
 		}
-		// System.out.println(average_duration);
-		// System.out.println(bossData.get_last_aware() -
-		// bossData.get_first_aware());
-		// System.exit(0);
 
 		return String.format("%.2f", (average_duration / (bossData.get_last_aware() - bossData.get_first_aware())));
 	}
@@ -610,14 +602,12 @@ public class Statistics {
 				}
 			}
 			double duration = 0;
-			// System.out.println(boons_intervals_during_phase.size());
+
 			for (Point b : boons_intervals_during_phase) {
-				// System.out.println(b.toString());
+
 				duration = duration + (b.getY() - b.getX());
 			}
-			// System.out.println(duration);
-			// System.out.println(p.getY() - p.getX());
-			// System.exit(0);
+
 			phase_durations[i] = String.format("%.2f", (duration / (p.getY() - p.getX())));
 		}
 
@@ -654,16 +644,10 @@ public class Statistics {
 		return boon_stacks;
 	}
 
-	// TRIM STACKING TRIM STACKING TRIM STACKING
-
 	private String get_average_stacks(List<Integer> boon_stacks) {
 
 		// Calculate average stacks
 		double average_stacks = boon_stacks.stream().mapToInt(Integer::intValue).sum();
-		//
-		// System.out.println(average_stacks);
-		// System.out.println(boon_stacks.size());
-		// System.exit(0);
 
 		return String.format("%.2f", average_stacks / boon_stacks.size());
 	}
@@ -678,10 +662,6 @@ public class Statistics {
 			Point p = fight_intervals.get(i);
 			List<Integer> phase_boon_stacks = new ArrayList<Integer>(boon_stacks.subList(p.x, p.y));
 			double average_stacks = phase_boon_stacks.stream().mapToInt(Integer::intValue).sum();
-			//
-			// System.out.println(average_stacks);
-			// System.out.println(phase_boon_stacks.size());
-			// System.exit(0);
 
 			phase_stacks[i] = String.format("%.2f", average_stacks / phase_boon_stacks.size());
 		}

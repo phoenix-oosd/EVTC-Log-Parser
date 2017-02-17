@@ -290,9 +290,11 @@ public class Parse {
 		List<AgentItem> NPCList = agentData.getNPCAgents();
 		for (AgentItem NPC : NPCList) {
 			if (NPC.get_prof().endsWith(String.valueOf(bossData.getSpeciesID()))) {
-				bossData.set_agent(NPC.get_agent());
-				bossData.set_instid(NPC.get_instid());
-				bossData.set_first_aware(NPC.get_first_aware());
+				if (bossData.get_agent() == 0) {
+					bossData.set_agent(NPC.get_agent());
+					bossData.set_instid(NPC.get_instid());
+					bossData.set_first_aware(NPC.get_first_aware());
+				}
 				bossData.set_last_aware(NPC.get_last_aware());
 			}
 
