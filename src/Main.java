@@ -42,7 +42,7 @@ public class Main {
 
 			// Data anonymization
 			if (is_anon != null) {
-				Parse.willHidePlayers = Utility.getBool(Integer.valueOf(is_anon));
+				Statistics.willHidePlayers = Utility.getBool(Integer.valueOf(is_anon));
 			}
 
 			// File Association

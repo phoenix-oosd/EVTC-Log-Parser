@@ -13,6 +13,7 @@ import enums.Boon;
 import enums.CustomSkill;
 import enums.IFF;
 import enums.StateChange;
+import statistics.Statistics;
 
 public class Player {
 
@@ -43,6 +44,10 @@ public class Player {
 		} else {
 			this.character = agent.get_name();
 			this.account = "Account.XXXX";
+		}
+		if (Statistics.willHidePlayers) {
+			this.character = " P:" + String.format("%04d", instid);
+			this.account = " :A." + String.format("%04d", instid);
 		}
 		this.prof = agent.get_prof();
 		this.toughness = agent.get_toughness();

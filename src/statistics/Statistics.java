@@ -36,6 +36,7 @@ import utility.Utility;
 public class Statistics {
 
 	// Fields
+	public static boolean willHidePlayers;
 	BossData bossData;
 	AgentData agentData;
 	SkillData skillData;
@@ -44,6 +45,7 @@ public class Statistics {
 
 	// Constructor
 	public Statistics(Parse parsed) {
+
 		this.bossData = parsed.getBossData();
 		this.agentData = parsed.getAgentData();
 		this.skillData = parsed.getSkillData();

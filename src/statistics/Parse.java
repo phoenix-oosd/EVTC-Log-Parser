@@ -28,7 +28,6 @@ import utility.Utility;
 public class Parse {
 
 	// Fields
-	public static boolean willHidePlayers;
 	private BossData bossData;
 	private AgentData agentData = new AgentData();
 	private SkillData skillData = new SkillData();
