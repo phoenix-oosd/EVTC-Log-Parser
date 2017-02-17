@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
-import java.util.ArrayList;
 import java.util.List;
 
 import data.AgentData;
@@ -248,13 +247,16 @@ public class Parse {
 			// 1 byte: is_statechange
 			StateChange is_statechange = StateChange.getEnum(f.get());
 
-			// 4 bytes: garbage
-			f.position(f.position() + 4);
+			// 1 byte: is_flanking
+			boolean is_flanking = Utility.getBool(f.get());
+
+			// 3 bytes: garbage
+			f.position(f.position() + 3);
 
 			// Add combat
 			combatData.addItem(new CombatItem(time, src_agent, dst_agent, value, buff_dmg, overstack_value, skill_id,
 					src_instid, dst_instid, src_master_instid, iff, buff, result, is_activation, is_buffremove,
-					is_ninety, is_fifty, is_moving, is_statechange));
+					is_ninety, is_fifty, is_moving, is_statechange, is_flanking));
 		}
 	}
 
@@ -287,31 +289,13 @@ public class Parse {
 		// Set Boss data agent, instid, first_aware and last_aware
 		List<AgentItem> NPCList = agentData.getNPCAgents();
 		for (AgentItem NPC : NPCList) {
-			if (NPC.get_prof().endsWith(String.valueOf(bossData.get_instid()))) {
+			if (NPC.get_prof().endsWith(String.valueOf(bossData.getSpeciesID()))) {
 				bossData.set_agent(NPC.get_agent());
-				// bossData.set_instid(NPC.get_instid());
+				bossData.set_instid(NPC.get_instid());
 				bossData.set_first_aware(NPC.get_first_aware());
 				bossData.set_last_aware(NPC.get_last_aware());
-				break;
 			}
-		}
 
-		// Set duplicate Boss agents to species ID
-		List<Long> bossAgents = new ArrayList<Long>();
-		for (AgentItem NPC : NPCList) {
-			if (NPC.get_prof().endsWith(String.valueOf(bossData.get_instid()))) {
-				bossAgents.add(NPC.get_agent());
-			}
-		}
-
-		System.out.println(bossAgents.size());
-
-		for (CombatItem c : combatList) {
-			if (bossAgents.contains(c.get_src_agent())) {
-				c.set_src_agent(bossData.get_instid());
-			} else if (bossAgents.contains(c.get_dst_agent())) {
-				c.set_dst_agent(bossData.get_instid());
-			}
 		}
 
 	}
@@ -326,7 +310,7 @@ public class Parse {
 
 		// Boss Data Table
 		table.addTitle("BOSS DATA");
-		table.addRow("agent", "instid", "first_aware", "last_aware", "name", "health", "build_version");
+		table.addRow("agent", "instid", "first_aware", "last_aware", "species_id", "name", "health", "build_version");
 		table.addRow(bossData.toStringArray());
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();
@@ -365,7 +349,7 @@ public class Parse {
 		table.addTitle("COMBAT DATA");
 		table.addRow("time", "src_agent", "dst_agent", "value", "buff_dmg", "overstack_value", "skill_id", "src_instid",
 				"dst_instid", "src_master_instid", "iff", "buff", "is_crit", "is_activation", "is_buffremove",
-				"is_ninety", "is_fifty", "is_moving", "is_statechange");
+				"is_ninety", "is_fifty", "is_moving", "is_statechange", "is_flanking");
 		for (CombatItem c : combatList) {
 			table.addRow(c.toStringArray());
 		}

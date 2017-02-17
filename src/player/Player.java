@@ -90,10 +90,10 @@ public class Player {
 		int timeStart = bossData.get_first_aware();
 
 		for (CombatItem c : combatList) {
-			if (agent == c.get_src_agent() || instid == c.get_src_master_instid()) {
+			if (instid == c.get_src_instid() || instid == c.get_src_master_instid()) {
 				StateChange state = c.is_statechange();
 				int time = c.get_time() - timeStart;
-				if (bossData.get_agent() == c.get_dst_agent() && c.get_iff().equals(IFF.FOE)) {
+				if (bossData.get_instid() == c.get_dst_instid() && c.get_iff().equals(IFF.FOE)) {
 					if (state.equals(StateChange.NORMAL)) {
 						if (c.is_buff() && c.get_buff_dmg() != 0) {
 							outDamageLogs
@@ -105,10 +105,10 @@ public class Player {
 											c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 						}
 					}
-				} else if (agent == c.get_src_agent() && state.equals(StateChange.CHANGE_DOWN)) {
+				} else if (instid == c.get_src_instid() && state.equals(StateChange.CHANGE_DOWN)) {
 					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
 							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
-				} else if (agent == c.get_src_agent() && state.equals(StateChange.CHANGE_DEAD)) {
+				} else if (instid == c.get_src_instid() && state.equals(StateChange.CHANGE_DEAD)) {
 					outDamageLogs.add(new DamageLog(time, c.get_value(), c.get_skill_id(), false, c.get_result(),
 							c.is_ninety(), c.is_moving(), c.is_statechange(), c.is_activation()));
 				}
@@ -126,7 +126,7 @@ public class Player {
 		int timeStart = bossData.get_first_aware();
 
 		for (CombatItem c : combatList) {
-			if (agent == c.get_dst_agent()) {
+			if (instid == c.get_dst_instid()) {
 				String skill_name = skillData.getName(c.get_skill_id());
 				if (c.is_buff() && (c.get_value() > 0)) {
 					if (boonList.contains(skill_name)) {
