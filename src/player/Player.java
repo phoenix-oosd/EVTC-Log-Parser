@@ -54,31 +54,31 @@ public class Player {
 	}
 
 	// Getters
-	public String get_account() {
+	public String getAccount() {
 		return account;
 	}
 
-	public String get_character() {
+	public String getCharacter() {
 		return character;
 	}
 
-	public String get_sub_group() {
+	public String getGroup() {
 		return group;
 	}
 
-	public String get_prof() {
+	public String getProf() {
 		return prof;
 	}
 
-	public int get_toughness() {
+	public int getToughness() {
 		return toughness;
 	}
 
-	public int get_healing() {
+	public int getHealing() {
 		return healing;
 	}
 
-	public int get_condition() {
+	public int getCondition() {
 		return condition;
 	}
 
@@ -126,9 +126,7 @@ public class Player {
 						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
 								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
 					}
-
 				}
-
 			}
 		}
 	}

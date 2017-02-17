@@ -92,7 +92,7 @@ public class Statistics {
 		// Body
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(p.get_character(), p.get_prof(), dps.get(i), dmg.get(i));
+			table.addRow(p.getCharacter(), p.getProf(), dps.get(i), dmg.get(i));
 		}
 
 		// Footer
@@ -153,7 +153,7 @@ public class Statistics {
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
 			table.addRow(
-					Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_phase_dps.get(i)));
+					Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, all_phase_dps.get(i)));
 		}
 
 		// Footer
@@ -212,7 +212,7 @@ public class Statistics {
 			double damage_sum = skill_damage.values().stream().reduce(0, Integer::sum);
 
 			table.clear();
-			table.addTitle(p.get_character() + " - " + p.get_prof());
+			table.addTitle(p.getCharacter() + " - " + p.getProf());
 			table.addRow("SKILL", "DAMAGE", "%");
 
 			// Calculate % of each skill
@@ -259,7 +259,7 @@ public class Statistics {
 				x[i] = damage_logs.get(i).getTime() / 1000.0;
 				y[i] = total_damage / 1000;
 			}
-			chart.addSeries(p.get_character() + " - " + p.get_prof(), x, y);
+			chart.addSeries(p.getCharacter() + " - " + p.getProf(), x, y);
 		}
 
 		// Write chart to .png
@@ -328,8 +328,8 @@ public class Statistics {
 
 			String[] combat_stats = new String[] { String.format("%.2f", crit / power_loops),
 					String.format("%.2f", schl / power_loops), String.format("%.2f", move / power_loops),
-					String.format("%.2f", flank / power_loops), String.valueOf(p.get_toughness()),
-					String.valueOf(p.get_healing()), String.valueOf(p.get_condition()), String.valueOf(dodge),
+					String.format("%.2f", flank / power_loops), String.valueOf(p.getToughness()),
+					String.valueOf(p.getHealing()), String.valueOf(p.getCondition()), String.valueOf(dodge),
 					String.valueOf(ress), String.valueOf(down), String.valueOf((double) died / 1000) };
 			all_combat_stats.add(combat_stats);
 		}
@@ -337,7 +337,7 @@ public class Statistics {
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
 			table.addRow(Utility.concatStringArray(
-					new String[] { p.get_account(), p.get_character(), p.get_sub_group(), p.get_prof() },
+					new String[] { p.getAccount(), p.getCharacter(), p.getGroup(), p.getProf() },
 					all_combat_stats.get(i)));
 		}
 		return table.toString();
@@ -382,7 +382,7 @@ public class Statistics {
 		// Body
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
-			table.addRow(Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, all_rates.get(i)));
+			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, all_rates.get(i)));
 		}
 
 		return table.toString();
@@ -447,7 +447,7 @@ public class Statistics {
 				for (int k = 0; k < boon_array.length; k++) {
 					row_rates[k] = player_rates[k][i];
 				}
-				table.addRow(Utility.concatStringArray(new String[] { p.get_character(), p.get_prof() }, row_rates));
+				table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, row_rates));
 			}
 
 			output.append(System.lineSeparator() + table.toString());
