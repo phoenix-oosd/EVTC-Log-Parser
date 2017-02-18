@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,15 +16,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class Utility {
-
-	public static String getString(byte[] bytes) {
-		try {
-			return new String(bytes, "UTF-8").trim();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return "UNKNOWN";
-	}
 
 	public static boolean toBool(int i) {
 		return (i != 0);
@@ -38,12 +29,12 @@ public final class Utility {
 		}
 	}
 
-	public static void recursiveFileSearch(String dirName, List<File> files) {
+	public static void recursiveFileSearch(String dirName, List<Path> files) {
 		File dir = new File(dirName);
 		File[] file_array = dir.listFiles();
 		for (File f : file_array) {
-			if (f.isFile() && f.toString().endsWith(".evtc")) {
-				files.add(f);
+			if (f.isFile() && f.toString().endsWith(".evtc") || f.toString().endsWith(".zip")) {
+				files.add(f.toPath());
 			} else if (f.isDirectory()) {
 				recursiveFileSearch(f.getAbsolutePath(), files);
 			}

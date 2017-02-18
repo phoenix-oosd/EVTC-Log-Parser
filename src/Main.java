@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -54,7 +56,7 @@ public class Main {
 				for (int i : choices) {
 					MenuChoice c = MenuChoice.getEnum(i);
 					if (c != null && c.canBeAssociated()) {
-						String result = parseFileByChoice(c, new File(file_path));
+						String result = parseFileByChoice(c, Paths.get(file_path));
 						if (result.startsWith("Warning")) {
 							System.out.println(
 									"Warning:\tThis log is outdated. Make sure the log is created by arcdps build 20170214 onwards.");
@@ -78,11 +80,11 @@ public class Main {
 				new File("./tables").mkdirs();
 
 				// Obtain list of .evtc files in /logs/
-				List<File> logs = new ArrayList<File>();
-				Utility.recursiveFileSearch("./logs", logs);
+				List<Path> log_files = new ArrayList<Path>();
+				Utility.recursiveFileSearch("./logs", log_files);
 
 				// /logs/ must be non-empty
-				if (logs.isEmpty()) {
+				if (log_files.isEmpty()) {
 					System.out.println("/logs/ contains no .evtc files.");
 					System.out.println("Press Enter to exit.");
 					scan.nextLine();
@@ -131,10 +133,12 @@ public class Main {
 						// Valid choice
 						else {
 							// Apply option to all .evtc files in /logs/
-							for (File log : logs) {
-								System.out.println(System.lineSeparator() + "Input file:\t" + log.getName());
+							for (Path log : log_files) {
+								System.out.println(
+										System.lineSeparator() + "Input file:\t" + log.getFileName().toString());
 								String output = parseFileByChoice(choice, log);
 								System.out.println(output);
+
 							}
 						}
 					}
@@ -151,14 +155,14 @@ public class Main {
 		return;
 	}
 
-	private static String parseFileByChoice(MenuChoice choice, File log) {
+	private static String parseFileByChoice(MenuChoice choice, Path path) {
 
 		// Parse the log
-		if (current_file == null || !current_file.equals(log.getName().split("\\.(?=[^\\.]+$)")[0])) {
+		if (current_file == null || !current_file.equals(path.getFileName().toString())) {
 			try {
-				parsed_file = new Parse(log);
+				parsed_file = new Parse(path.toString());
 				statistics = new Statistics(parsed_file);
-				current_file = log.getName().split("\\.(?=[^\\.]+$)")[0];
+				current_file = path.getFileName().toString();
 				if (will_display_versions) {
 					System.out.println("Log version:\t" + parsed_file.getBossData().getBuildVersion());
 				}

@@ -1,13 +1,15 @@
 package statistics;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel.MapMode;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import data.AgentData;
 import data.AgentItem;
@@ -27,39 +29,41 @@ import utility.Utility;
 public class Parse {
 
 	// Fields
+	private BufferedInputStream f = null;
 	private BossData boss_data;
 	private AgentData agent_data = new AgentData();
 	private SkillData skill_data = new SkillData();
 	private CombatData combat_data = new CombatData();
 
 	// Constructor
-	public Parse(File file) throws IOException {
+	public Parse(String file_path) throws IOException {
 
-		FileInputStream stream = null;
-		MappedByteBuffer f = null;
+		// Read .evtc file into memory
+		ZipFile zip_file = null;
+		if (file_path.endsWith(".zip")) {
+			zip_file = new ZipFile(file_path);
+			ZipEntry evtc_file = zip_file.entries().nextElement();
+			f = new BufferedInputStream(zip_file.getInputStream(evtc_file));
+		} else if (file_path.endsWith(".evtc")) {
+			f = new BufferedInputStream(new FileInputStream(new File(file_path)));
+		}
 
-		// Read file
+		// Parse file
 		try {
-			// Into memory
-			stream = new FileInputStream(file);
-			f = stream.getChannel().map(MapMode.READ_ONLY, 0, file.length());
-			f.order(ByteOrder.LITTLE_ENDIAN);
-
-			// Parse file
 			getBossData(f);
 			getAgentData(f);
 			getSkillData(f);
 			getCombatList(f);
 			fillMissingData();
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 
-		// Close stream
+		// Close files
 		finally {
 			try {
-				stream.close();
+				if (zip_file != null) {
+					zip_file.close();
+				}
+				f.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -84,55 +88,53 @@ public class Parse {
 	}
 
 	// Private Methods
-	private void getBossData(MappedByteBuffer f) {
+	private void getBossData(BufferedInputStream f) throws IOException {
 
 		// 12 bytes: arc build version
-		f.position(f.position() + 4);
-		byte[] version_buffer = new byte[8];
-		f.get(version_buffer);
+		f.skip(4);
+		String name = getString(8);
 
 		// 1 byte: skip
-		f.position(f.position() + 1);
+		f.skip(1);
 
 		// 2 bytes: boss instance ID
-		int instid = Short.toUnsignedInt(f.getShort());
+		int instid = getShort();
 
 		// 1 byte: position
-		f.position(f.position() + 1);
+		f.skip(1);
 
 		// BossData
-		this.boss_data = new BossData(instid, Utility.getString(version_buffer));
+		this.boss_data = new BossData(instid, name);
 	}
 
-	private void getAgentData(MappedByteBuffer f) {
+	private void getAgentData(BufferedInputStream f) throws IOException {
 
 		// 4 bytes: player count
-		int player_count = f.getInt();
+		int player_count = getInt();
 
 		// 96 bytes: each player
 		for (int i = 0; i < player_count; i++) {
 
 			// 8 bytes: agent
-			long agent = f.getLong();
+			long agent = getLong();
 
 			// 4 bytes: profession
-			int prof = f.getInt();
+			int prof = getInt();
 
 			// 4 bytes: is_elite
-			int is_elite = f.getInt();
+			int is_elite = getInt();
 
 			// 4 bytes: toughness
-			int toughness = f.getInt();
+			int toughness = getInt();
 
 			// 4 bytes: healing
-			int healing = f.getInt();
+			int healing = getInt();
 
 			// 4 bytes: condition
-			int condition = f.getInt();
+			int condition = getInt();
 
 			// 68 bytes: name
-			byte[] name_buffer = new byte[68];
-			f.get(name_buffer);
+			String name = getString(68);
 
 			// Agent
 			Agent a = Agent.getEnum(prof, is_elite);
@@ -140,111 +142,107 @@ public class Parse {
 			// Add an agent
 			if (a != null) {
 				if (a.equals(Agent.NPC)) {
-					agent_data.addItem(a, new AgentItem(agent, Utility.getString(name_buffer),
-							a.getName() + ":" + String.format("%05d", prof)));
+					agent_data.addItem(a, new AgentItem(agent, name, a.getName() + ":" + String.format("%05d", prof)));
 				} else if (a.equals(Agent.GADGET)) {
-					agent_data.addItem(a, new AgentItem(agent, Utility.getString(name_buffer), a.getName()));
+					agent_data.addItem(a, new AgentItem(agent, name, a.getName()));
 				} else {
-					agent_data.addItem(a, new AgentItem(agent, Utility.getString(name_buffer), a.getName(), toughness,
-							healing, condition));
+					agent_data.addItem(a, new AgentItem(agent, name, a.getName(), toughness, healing, condition));
 				}
 			} else {
-				agent_data.addItem(a, new AgentItem(agent, Utility.getString(name_buffer), String.valueOf(prof),
-						toughness, healing, condition));
+				agent_data.addItem(a, new AgentItem(agent, name, String.valueOf(prof), toughness, healing, condition));
 			}
 		}
 	}
 
-	private void getSkillData(MappedByteBuffer f) {
+	private void getSkillData(BufferedInputStream f) throws IOException {
 
 		// 4 bytes: player count
-		int skill_count = f.getInt();
+		int skill_count = getInt();
 
 		// 68 bytes: each skill
 		for (int i = 0; i < skill_count; i++) {
 
 			// 4 bytes: skill ID
-			int skill_id = f.getInt();
+			int skill_id = getInt();
 
 			// 64 bytes: name
-			byte[] name_buffer = new byte[64];
-			f.get(name_buffer);
+			String name = getString(64);
 
 			// Add skill
-			skill_data.addItem(new SkillItem(skill_id, Utility.getString(name_buffer)));
+			skill_data.addItem(new SkillItem(skill_id, name));
 		}
 	}
 
-	private void getCombatList(MappedByteBuffer f) {
+	private void getCombatList(BufferedInputStream f) throws IOException {
 
 		// 64 bytes: each combat
-		while (f.remaining() >= 64) {
+		while (f.available() >= 64) {
 
 			// 8 bytes: time
-			int time = (int) f.getLong();
+			int time = (int) getLong();
 
 			// 8 bytes: src_agent
-			long src_agent = f.getLong();
+			long src_agent = getLong();
 
 			// 8 bytes: dst_agent
-			long dst_agent = f.getLong();
+			long dst_agent = getLong();
 
 			// 4 bytes: value
-			int value = f.getInt();
+			int value = getInt();
 
 			// 4 bytes: buff_dmg
-			int buff_dmg = f.getInt();
+			int buff_dmg = getInt();
 
 			// 2 bytes: overstack_value
-			int overstack_value = Short.toUnsignedInt(f.getShort());
+			int overstack_value = getShort();
 
 			// 2 bytes: skill_id
-			int skill_id = Short.toUnsignedInt(f.getShort());
+			int skill_id = getShort();
 
 			// 2 bytes: src_instid
-			int src_instid = Short.toUnsignedInt(f.getShort());
+			int src_instid = getShort();
 
 			// 2 bytes: dst_instid
-			int dst_instid = Short.toUnsignedInt(f.getShort());
+			int dst_instid = getShort();
 
 			// 2 bytes: src_master_instid
-			int src_master_instid = Short.toUnsignedInt(f.getShort());
+			int src_master_instid = getShort();
 
 			// 9 bytes: garbage
-			f.position(f.position() + 9);
+			f.skip(9);
 
 			// 1 byte: iff
-			IFF iff = IFF.getEnum(f.get());
+			IFF iff = IFF.getEnum(f.read());
 
 			// 1 byte: buff
-			boolean buff = Utility.toBool(f.get());
+			boolean buff = Utility.toBool(f.read());
 
 			// 1 byte: result
-			Result result = Result.getEnum(f.get());
+			Result result = Result.getEnum(f.read());
 
 			// 1 byte: is_activation
-			Activation is_activation = Activation.getEnum(f.get());
+			Activation is_activation = Activation.getEnum(f.read());
 
 			// 1 byte: is_buffremove
-			boolean is_buffremove = Utility.toBool(f.get());
+			boolean is_buffremove = Utility.toBool(f.read());
 
 			// 1 byte: is_ninety
-			boolean is_ninety = Utility.toBool(f.get());
+			boolean is_ninety = Utility.toBool(f.read());
 
 			// 1 byte: is_fifty
-			boolean is_fifty = Utility.toBool(f.get());
+			boolean is_fifty = Utility.toBool(f.read());
 
 			// 1 byte: is_moving
-			boolean is_moving = Utility.toBool(f.get());
+			boolean is_moving = Utility.toBool(f.read());
 
 			// 1 byte: is_statechange
-			StateChange is_statechange = StateChange.getEnum(f.get());
+			StateChange is_statechange = StateChange.getEnum(f.read());
 
 			// 1 byte: is_flanking
-			boolean is_flanking = Utility.toBool(f.get());
+			boolean is_flanking = Utility.toBool(f.read());
 
 			// 3 bytes: garbage
-			f.position(f.position() + 3);
+			f.skip(3);
 
 			// Add combat
 			combat_data.addItem(new CombatItem(time, src_agent, dst_agent, value, buff_dmg, overstack_value, skill_id,
@@ -292,6 +290,16 @@ public class Parse {
 				boss_data.setLastAware(NPC.getLastAware());
 			}
 
+		}
+
+		// Xera stuff
+		for (CombatItem c : combatList) {
+			if (c.getSrcInstid() == 16286) {
+				c.setSrcAgent(16246);
+			}
+			if (c.getDstInstid() == 16286) {
+				c.setDstAgent(16246);
+			}
 		}
 
 		// Set Boss health
@@ -360,6 +368,37 @@ public class Parse {
 		output.append(table.toString() + System.lineSeparator());
 
 		return output.toString();
+	}
+
+	// Private Methods
+
+	private int getShort() throws IOException {
+		byte[] bytes = new byte[2];
+		f.read(bytes);
+		return Short.toUnsignedInt(ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort());
+	}
+
+	private int getInt() throws IOException {
+		byte[] bytes = new byte[4];
+		f.read(bytes);
+		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
+	}
+
+	private long getLong() throws IOException {
+		byte[] bytes = new byte[8];
+		f.read(bytes);
+		return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getLong();
+	}
+
+	private String getString(int length) throws IOException {
+		byte[] bytes = new byte[length];
+		f.read(bytes);
+		try {
+			return new String(bytes, "UTF-8").trim();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return "UNKNOWN";
 	}
 
 }
