@@ -18,7 +18,6 @@ import data.SkillData;
 import data.SkillItem;
 import enums.Activation;
 import enums.Agent;
-import enums.Boss;
 import enums.IFF;
 import enums.Result;
 import enums.StateChange;
@@ -102,12 +101,7 @@ public class Parse {
 		f.position(f.position() + 1);
 
 		// BossData
-		Boss boss = Boss.getEnum(instid);
-		if (boss != null) {
-			this.boss_data = new BossData(boss, Utility.getString(version_buffer));
-		} else {
-			this.boss_data = new BossData(instid, Utility.getString(version_buffer));
-		}
+		this.boss_data = new BossData(instid, Utility.getString(version_buffer));
 	}
 
 	private void getAgentData(MappedByteBuffer f) {
@@ -285,18 +279,27 @@ public class Parse {
 			}
 		}
 
-		// Set Boss data agent, instid, first_aware and last_aware
+		// Set Boss data agent, instid, first_aware, last_aware and name
 		List<AgentItem> NPCList = agent_data.getNPCAgentList();
 		for (AgentItem NPC : NPCList) {
-			if (NPC.getProf().endsWith(String.valueOf(boss_data.getSpeciesID()))) {
+			if (NPC.getProf().endsWith(String.valueOf(boss_data.getID()))) {
 				if (boss_data.getAgent() == 0) {
 					boss_data.setAgent(NPC.getAgent());
 					boss_data.setInstid(NPC.getInstid());
 					boss_data.setFirstAware(NPC.getFirstAware());
+					boss_data.setName(NPC.getName());
 				}
 				boss_data.setLastAware(NPC.getLastAware());
 			}
 
+		}
+
+		// Set Boss health
+		for (CombatItem c : combatList) {
+			if (c.getSrcInstid() == boss_data.getInstid() && c.isStateChange().equals(StateChange.ENTER_COMBAT)) {
+				boss_data.setHealth((int) c.getDstAgent());
+				break;
+			}
 		}
 
 	}
@@ -311,7 +314,7 @@ public class Parse {
 
 		// Boss Data Table
 		table.addTitle("BOSS DATA");
-		table.addRow("agent", "instid", "first_aware", "last_aware", "species_id", "name", "health", "build_version");
+		table.addRow("agent", "instid", "first_aware", "last_aware", "id", "name", "health", "build_version");
 		table.addRow(boss_data.toStringArray());
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();

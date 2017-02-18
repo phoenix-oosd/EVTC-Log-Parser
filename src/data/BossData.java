@@ -1,7 +1,5 @@
 package data;
 
-import enums.Boss;
-
 public class BossData {
 
 	// Fields
@@ -9,23 +7,14 @@ public class BossData {
 	private int instid = 0;
 	private int first_aware = 0;
 	private int last_aware = Integer.MAX_VALUE;
-	private int species_id;
-	private String name;
-	private int health;
+	private int id;
+	private String name = "UNKNOWN";
+	private int health = -1;
 	private String build_version;
 
 	// Constructors
-	public BossData(Boss boss, String build_version) {
-		this.species_id = boss.getSpeciesID();
-		this.name = boss.getName();
-		this.health = boss.getHealth();
-		this.build_version = build_version;
-	}
-
-	public BossData(int species_id, String build_version) {
-		this.species_id = species_id;
-		this.name = "UNKNOWN";
-		this.health = -1;
+	public BossData(int id, String build_version) {
+		this.id = id;
 		this.build_version = build_version;
 	}
 
@@ -36,7 +25,7 @@ public class BossData {
 		array[1] = String.valueOf(instid);
 		array[2] = String.valueOf(first_aware);
 		array[3] = String.valueOf(last_aware);
-		array[4] = String.valueOf(species_id);
+		array[4] = String.valueOf(id);
 		array[5] = String.valueOf(name);
 		array[6] = String.valueOf(health);
 		array[7] = String.valueOf(build_version);
@@ -60,8 +49,8 @@ public class BossData {
 		return last_aware;
 	}
 
-	public int getSpeciesID() {
-		return species_id;
+	public int getID() {
+		return id;
 	}
 
 	public String getName() {
@@ -91,6 +80,14 @@ public class BossData {
 
 	public void setLastAware(int last_aware) {
 		this.last_aware = last_aware;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 
 }
