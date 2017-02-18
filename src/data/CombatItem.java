@@ -172,4 +172,12 @@ public class CombatItem {
 		this.dst_agent = dst_agent;
 	}
 
+	public void setSrcInstid(int src_instid) {
+		this.src_instid = src_instid;
+	}
+
+	public void setDstInstid(int dst_instid) {
+		this.dst_instid = dst_instid;
+	}
+
 }

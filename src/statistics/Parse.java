@@ -292,21 +292,28 @@ public class Parse {
 
 		}
 
-		// Xera stuff
-		for (CombatItem c : combatList) {
-			if (c.getSrcInstid() == 16286) {
-				c.setSrcAgent(16246);
-			}
-			if (c.getDstInstid() == 16286) {
-				c.setDstAgent(16246);
-			}
-		}
-
 		// Set Boss health
 		for (CombatItem c : combatList) {
 			if (c.getSrcInstid() == boss_data.getInstid() && c.isStateChange().equals(StateChange.ENTER_COMBAT)) {
 				boss_data.setHealth((int) c.getDstAgent());
 				break;
+			}
+		}
+
+		// Duplicate boss stuff
+		int xera_2_instid = 0;
+		for (AgentItem NPC : NPCList) {
+			if (NPC.getProf().contains("16286")) {
+				xera_2_instid = NPC.getInstid();
+				boss_data.setLastAware(NPC.getLastAware());
+			}
+		}
+		for (CombatItem c : combatList) {
+			if (c.getSrcInstid() == xera_2_instid) {
+				c.setSrcInstid(boss_data.getInstid());
+			}
+			if (c.getDstInstid() == xera_2_instid) {
+				c.setDstInstid(boss_data.getInstid());
 			}
 		}
 
