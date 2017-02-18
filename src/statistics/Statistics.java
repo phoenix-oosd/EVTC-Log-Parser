@@ -263,14 +263,15 @@ public class Statistics {
 		}
 
 		// Write chart to .png
+
 		try {
-			String file_name = "./graphs/" + base + "_" + bossData.getName() + "TDG.png";
+			String file_name = "./graphs/" + base + "_" + bossData.getName() + "_TDG.png";
 			BitmapEncoder.saveBitmapWithDPI(chart, file_name, BitmapFormat.PNG, 300);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return base + "_" + bossData.getName() + ".png";
+		return base + "_" + bossData.getName() + "_TDG.png";
 	}
 
 	// Combat Statistics
@@ -363,7 +364,7 @@ public class Statistics {
 					if (boon.getType().equals("duration")) {
 						rate = getBoonDuration(getBoonIntervalsList(boon_object, logs));
 					} else if (boon.getType().equals("intensity")) {
-						rate = getAverageStacks(get_boon_stacks_list(boon_object, logs));
+						rate = getAverageStacks(getBoonStacksList(boon_object, logs));
 					}
 				}
 				rates[j] = rate;
@@ -417,7 +418,7 @@ public class Statistics {
 						List<Point> boon_intervals = getBoonIntervalsList(boon_object, logs);
 						rate = getBoonDuration(boon_intervals, fight_intervals);
 					} else if (boon.getType().equals("intensity")) {
-						List<Integer> boon_stacks = get_boon_stacks_list(boon_object, logs);
+						List<Integer> boon_stacks = getBoonStacksList(boon_object, logs);
 						rate = getAverageStacks(boon_stacks, fight_intervals);
 					}
 				}
@@ -626,7 +627,7 @@ public class Statistics {
 		return phase_durations;
 	}
 
-	private List<Integer> get_boon_stacks_list(AbstractBoon boon, List<BoonLog> boon_logs) {
+	private List<Integer> getBoonStacksList(AbstractBoon boon, List<BoonLog> boon_logs) {
 
 		// Initialise variables
 		int t_prev = 0;
@@ -649,7 +650,7 @@ public class Statistics {
 		}
 
 		// Fill in remaining stacks
-		boon.addStacksBetween(boon_stacks, t_curr - t_prev);
+		boon.addStacksBetween(boon_stacks, bossData.getLastAware() - bossData.getFirstAware() - t_prev);
 		boon.update(1);
 		boon_stacks.add(boon.getStackValue());
 		return boon_stacks;

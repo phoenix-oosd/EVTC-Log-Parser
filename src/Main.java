@@ -138,7 +138,6 @@ public class Main {
 										System.lineSeparator() + "Input file:\t" + log.getFileName().toString());
 								String output = parseFileByChoice(choice, log);
 								System.out.println(output);
-
 							}
 						}
 					}
@@ -158,11 +157,11 @@ public class Main {
 	private static String parseFileByChoice(MenuChoice choice, Path path) {
 
 		// Parse the log
-		if (current_file == null || !current_file.equals(path.getFileName().toString())) {
+		if (current_file == null || !current_file.equals(path.getFileName().toString().split("\\.")[0])) {
 			try {
 				parsed_file = new Parse(path.toString());
 				statistics = new Statistics(parsed_file);
-				current_file = path.getFileName().toString();
+				current_file = path.getFileName().toString().split("\\.")[0];
 				if (will_display_versions) {
 					System.out.println("Log version:\t" + parsed_file.getBossData().getBuildVersion());
 				}
