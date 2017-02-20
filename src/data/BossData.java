@@ -10,17 +10,15 @@ public class BossData {
 	private int id;
 	private String name = "UNKNOWN";
 	private int health = -1;
-	private String build_version;
 
 	// Constructors
-	public BossData(int id, String build_version) {
+	public BossData(int id) {
 		this.id = id;
-		this.build_version = build_version;
 	}
 
 	// Public Methods
 	public String[] toStringArray() {
-		String[] array = new String[8];
+		String[] array = new String[7];
 		array[0] = String.valueOf(agent);
 		array[1] = String.valueOf(instid);
 		array[2] = String.valueOf(first_aware);
@@ -28,7 +26,6 @@ public class BossData {
 		array[4] = String.valueOf(id);
 		array[5] = String.valueOf(name);
 		array[6] = String.valueOf(health);
-		array[7] = String.valueOf(build_version);
 		return array;
 	}
 
@@ -59,10 +56,6 @@ public class BossData {
 
 	public int getHealth() {
 		return health;
-	}
-
-	public String getBuildVersion() {
-		return build_version;
 	}
 
 	// Setters

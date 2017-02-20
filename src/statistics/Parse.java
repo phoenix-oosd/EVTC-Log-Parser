@@ -16,6 +16,7 @@ import data.AgentItem;
 import data.BossData;
 import data.CombatData;
 import data.CombatItem;
+import data.LogData;
 import data.SkillData;
 import data.SkillItem;
 import enums.Activation;
@@ -30,6 +31,7 @@ public class Parse {
 
 	// Fields
 	private BufferedInputStream f = null;
+	private LogData log_data;
 	private BossData boss_data;
 	private AgentData agent_data = new AgentData();
 	private SkillData skill_data = new SkillData();
@@ -50,10 +52,10 @@ public class Parse {
 
 		// Parse file
 		try {
-			getBossData(f);
-			getAgentData(f);
-			getSkillData(f);
-			getCombatList(f);
+			parseBossData();
+			parseAgentData();
+			parseSkillData();
+			parseCombatList();
 			fillMissingData();
 		}
 
@@ -71,6 +73,10 @@ public class Parse {
 	}
 
 	// Public Methods
+	public LogData getLogData() {
+		return log_data;
+	}
+
 	public BossData getBossData() {
 		return boss_data;
 	}
@@ -88,26 +94,26 @@ public class Parse {
 	}
 
 	// Private Methods
-	private void getBossData(BufferedInputStream f) throws IOException {
+	private void parseBossData() throws IOException {
 
 		// 12 bytes: arc build version
-		f.skip(4);
-		String name = getString(8);
+		String build_version = getString(12);
+		this.log_data = new LogData(build_version);
 
 		// 1 byte: skip
-		f.skip(1);
+		safeSkip(1);
 
 		// 2 bytes: boss instance ID
 		int instid = getShort();
 
 		// 1 byte: position
-		f.skip(1);
+		safeSkip(1);
 
 		// BossData
-		this.boss_data = new BossData(instid, name);
+		this.boss_data = new BossData(instid);
 	}
 
-	private void getAgentData(BufferedInputStream f) throws IOException {
+	private void parseAgentData() throws IOException {
 
 		// 4 bytes: player count
 		int player_count = getInt();
@@ -154,7 +160,7 @@ public class Parse {
 		}
 	}
 
-	private void getSkillData(BufferedInputStream f) throws IOException {
+	private void parseSkillData() throws IOException {
 
 		// 4 bytes: player count
 		int skill_count = getInt();
@@ -173,11 +179,10 @@ public class Parse {
 		}
 	}
 
-	private void getCombatList(BufferedInputStream f) throws IOException {
+	private void parseCombatList() throws IOException {
 
 		// 64 bytes: each combat
 		while (f.available() >= 64) {
-
 			// 8 bytes: time
 			int time = (int) getLong();
 
@@ -209,7 +214,7 @@ public class Parse {
 			int src_master_instid = getShort();
 
 			// 9 bytes: garbage
-			f.skip(9);
+			safeSkip(9);
 
 			// 1 byte: iff
 			IFF iff = IFF.getEnum(f.read());
@@ -242,23 +247,24 @@ public class Parse {
 			boolean is_flanking = Utility.toBool(f.read());
 
 			// 3 bytes: garbage
-			f.skip(3);
+			safeSkip(3);
 
 			// Add combat
 			combat_data.addItem(new CombatItem(time, src_agent, dst_agent, value, buff_dmg, overstack_value, skill_id,
 					src_instid, dst_instid, src_master_instid, iff, buff, result, is_activation, is_buffremove,
 					is_ninety, is_fifty, is_moving, is_statechange, is_flanking));
 		}
+
 	}
 
 	private void fillMissingData() {
 
 		// Set Agent instid, first_aware and last_aware
-		List<AgentItem> agentList = agent_data.getAllAgentsList();
-		List<CombatItem> combatList = combat_data.getCombatList();
-		for (AgentItem a : agentList) {
+		List<AgentItem> agent_list = agent_data.getAllAgentsList();
+		List<CombatItem> combat_list = combat_data.getCombatList();
+		for (AgentItem a : agent_list) {
 			boolean assigned_first = false;
-			for (CombatItem c : combatList) {
+			for (CombatItem c : combat_list) {
 				if (a.getAgent() == c.getSrcAgent() && c.getSrcInstid() != 0) {
 					if (!assigned_first) {
 						a.setInstid(c.getSrcInstid());
@@ -273,13 +279,17 @@ public class Parse {
 						assigned_first = true;
 					}
 					a.setLastAware(c.getTime());
+				} else if (c.isStateChange().equals(StateChange.LOG_START)) {
+					log_data.setLogStart(c.getValue());
+				} else if (c.isStateChange().equals(StateChange.LOG_END)) {
+					log_data.setLogEnd(c.getValue());
 				}
 			}
 		}
 
 		// Set Boss data agent, instid, first_aware, last_aware and name
-		List<AgentItem> NPCList = agent_data.getNPCAgentList();
-		for (AgentItem NPC : NPCList) {
+		List<AgentItem> NPC_list = agent_data.getNPCAgentList();
+		for (AgentItem NPC : NPC_list) {
 			if (NPC.getProf().endsWith(String.valueOf(boss_data.getID()))) {
 				if (boss_data.getAgent() == 0) {
 					boss_data.setAgent(NPC.getAgent());
@@ -289,31 +299,31 @@ public class Parse {
 				}
 				boss_data.setLastAware(NPC.getLastAware());
 			}
-
 		}
 
 		// Set Boss health
-		for (CombatItem c : combatList) {
+		for (CombatItem c : combat_list) {
 			if (c.getSrcInstid() == boss_data.getInstid() && c.isStateChange().equals(StateChange.ENTER_COMBAT)) {
-				boss_data.setHealth((int) c.getDstAgent());
+				boss_data.setHealth((int) (c.getDstAgent() + c.getValue()));
 				break;
 			}
 		}
 
 		// Duplicate boss stuff
 		int xera_2_instid = 0;
-		for (AgentItem NPC : NPCList) {
+		for (AgentItem NPC : NPC_list) {
 			if (NPC.getProf().contains("16286")) {
 				xera_2_instid = NPC.getInstid();
 				boss_data.setLastAware(NPC.getLastAware());
-			}
-		}
-		for (CombatItem c : combatList) {
-			if (c.getSrcInstid() == xera_2_instid) {
-				c.setSrcInstid(boss_data.getInstid());
-			}
-			if (c.getDstInstid() == xera_2_instid) {
-				c.setDstInstid(boss_data.getInstid());
+				for (CombatItem c : combat_list) {
+					if (c.getSrcInstid() == xera_2_instid) {
+						c.setSrcInstid(boss_data.getInstid());
+					}
+					if (c.getDstInstid() == xera_2_instid) {
+						c.setDstInstid(boss_data.getInstid());
+					}
+				}
+				break;
 			}
 		}
 
@@ -327,9 +337,16 @@ public class Parse {
 		StringBuilder output = new StringBuilder();
 		TableBuilder table = new TableBuilder();
 
+		// Log Data Table
+		table.addTitle("LOG DATA");
+		table.addRow("build_version", "log_start", "log_end");
+		table.addRow(log_data.toStringArray());
+		output.append(table.toString() + System.lineSeparator());
+		table.clear();
+
 		// Boss Data Table
 		table.addTitle("BOSS DATA");
-		table.addRow("agent", "instid", "first_aware", "last_aware", "id", "name", "health", "build_version");
+		table.addRow("agent", "instid", "first_aware", "last_aware", "id", "name", "health");
 		table.addRow(boss_data.toStringArray());
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();
@@ -378,6 +395,20 @@ public class Parse {
 	}
 
 	// Private Methods
+	private void safeSkip(long bytes_to_skip) throws IOException {
+		while (bytes_to_skip > 0) {
+			long bytes_actually_skipped = f.skip(bytes_to_skip);
+			if (bytes_actually_skipped > 0) {
+				bytes_to_skip -= bytes_actually_skipped;
+			} else if (bytes_actually_skipped == 0) {
+				if (f.read() == -1) {
+					break;
+				} else {
+					bytes_to_skip--;
+				}
+			}
+		}
+	}
 
 	private int getShort() throws IOException {
 		byte[] bytes = new byte[2];
