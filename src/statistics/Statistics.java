@@ -471,10 +471,10 @@ public class Statistics {
 		if (bossData.getName().equals("Vale Guardian")) {
 			i_count = 2;
 			t_invuln = 20000;
-		} else if (bossData.getName().equals("Gorseval")) {
+		} else if (bossData.getName().equals("Gorseval the Multifarious")) {
 			i_count = 2;
 			t_invuln = 30000;
-		} else if (bossData.getName().equals("Sabetha")) {
+		} else if (bossData.getName().equals("Sabetha the Saboteur")) {
 			i_count = 3;
 			t_invuln = 25000;
 		} else if (bossData.getName().equals("Xera")) {
