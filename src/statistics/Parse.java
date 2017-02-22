@@ -298,6 +298,13 @@ public class Parse {
 					boss_data.setName(NPC.getName());
 				}
 				boss_data.setLastAware(NPC.getLastAware());
+			} else if (boss_data.getID() == 1) {
+				boss_data.setAgent(NPC.getAgent());
+				boss_data.setInstid(NPC.getInstid());
+				boss_data.setFirstAware(NPC.getFirstAware());
+				boss_data.setName(NPC.getName());
+				boss_data.setLastAware(NPC.getLastAware());
+				break;
 			}
 		}
 
