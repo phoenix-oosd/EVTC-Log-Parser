@@ -30,6 +30,8 @@ import enums.StateChange;
 import player.BoonLog;
 import player.DamageLog;
 import player.Player;
+import utility.FinalDpsHolder;
+import utility.PhaseDpsHolder;
 import utility.TableBuilder;
 import utility.Utility;
 
@@ -56,13 +58,15 @@ public class Statistics {
 		for (AgentItem playerAgent : playerAgentList) {
 			this.playerList.add(new Player(playerAgent));
 		}
+		// Sort players by subgroup - also added in to each function in case different sorts are used in the future
+		sortPlayerList();
 	}
 
 	// Final DPS
 	public String getFinalDPS() {
 
-		List<String> dps = new ArrayList<String>();
-		List<String> dmg = new ArrayList<String>();
+	    // Holder used to allow sorting by dps
+        List<FinalDpsHolder> holder = new ArrayList<FinalDpsHolder>();
 
 		int total_damage = 0;
 		double total_dps = 0.0;
@@ -74,13 +78,14 @@ public class Statistics {
 			for (DamageLog log : damage_logs) {
 				player_damage = player_damage + log.getDamage();
 			}
-
-			dps.add(String.format("%.2f", (player_damage / fight_duration)));
-			dmg.add(String.valueOf((int) player_damage));
+            holder.add(new FinalDpsHolder(p, String.format("%.2f", (player_damage / fight_duration)), player_damage));
 
 			total_dps = total_dps + (player_damage / fight_duration);
 			total_damage = (int) (total_damage + player_damage);
 		}
+
+		// Sort players by damage (and therefore dps)
+        holder.sort((a,b) -> (int) (b.getDamage() - a.getDamage()));
 
 		// Table
 		TableBuilder table = new TableBuilder();
@@ -90,9 +95,10 @@ public class Statistics {
 		table.addRow("Name", "Profession", "DPS", "Damage");
 
 		// Body
-		for (int i = 0; i < playerList.size(); i++) {
-			Player p = playerList.get(i);
-			table.addRow(p.getCharacter(), p.getProf(), dps.get(i), dmg.get(i));
+		for (int i = 0; i < holder.size(); i++) {
+		    FinalDpsHolder h = holder.get(i);
+            Player p = h.getPlayer();
+            table.addRow(p.getCharacter(), p.getProf(), h.getDps(), String.valueOf((int) h.getDamage()));
 		}
 
 		// Footer
@@ -106,7 +112,7 @@ public class Statistics {
 	public String getPhaseDPS() {
 
 		List<Point> fight_intervals = getFightIntervals();
-		List<String[]> all_phase_dps = new ArrayList<String[]>();
+        List<PhaseDpsHolder> holder = new ArrayList<PhaseDpsHolder>();
 
 		for (int i = 0; i < playerList.size(); i++) {
 
@@ -132,8 +138,11 @@ public class Statistics {
 			}
 
 			phase_dps[fight_intervals.size()] = String.format("%.2f", average_dps);
-			all_phase_dps.add(phase_dps);
+            holder.add(new PhaseDpsHolder(p, phase_dps, average_dps));
 		}
+
+		// Sort players by average dps
+        holder.sort((a,b) -> (int) (b.getAverage_dps() - a.getAverage_dps()));
 
 		// Table
 		TableBuilder table = new TableBuilder();
@@ -150,10 +159,11 @@ public class Statistics {
 		table.addRow(header);
 
 		// Body
-		for (int i = 0; i < playerList.size(); i++) {
-			Player p = playerList.get(i);
+		for (int i = 0; i <holder.size(); i++) {
+			PhaseDpsHolder h = holder.get(i);
+			Player p = h.getPlayer();
 			table.addRow(
-					Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, all_phase_dps.get(i)));
+                    Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, h.getAll_phase_dps()));
 		}
 
 		// Footer
@@ -286,6 +296,9 @@ public class Statistics {
 		table.addRow("Account", "Character", "Group", "Profession", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL",
 				"COND", "DOGE", "RESS", "DOWN", "DIED");
 
+		// Sort players by subgroup
+		sortPlayerList();
+
 		// Body
 		for (Player p : playerList) {
 
@@ -351,6 +364,9 @@ public class Statistics {
 		BoonFactory boonFactory = new BoonFactory();
 		List<String[]> all_rates = new ArrayList<String[]>();
 
+		// Sort players by subgroup
+		sortPlayerList();
+
 		for (int i = 0; i < playerList.size(); i++) {
 			Player p = playerList.get(i);
 			Map<String, List<BoonLog>> boon_logs = p.getBoonMap(bossData, skillData, combatData.getCombatList());
@@ -396,6 +412,9 @@ public class Statistics {
 		BoonFactory boonFactory = new BoonFactory();
 		List<String[][]> all_rates = new ArrayList<String[][]>();
 		List<Point> fight_intervals = getFightIntervals();
+
+		// Sort players by subgroup
+		sortPlayerList();
 
 		for (int i = 0; i < playerList.size(); i++) {
 
@@ -712,6 +731,11 @@ public class Statistics {
 			phase_stacks[i] = String.format("%.2f", average_stacks / phase_boon_stacks.size());
 		}
 		return phase_stacks;
+	}
+
+	// resorts the player list by subgroup - checks for "N/A" for logs before subgroups were added
+	private void sortPlayerList() {
+		playerList.sort((a,b) -> Integer.parseInt(a.getGroup()!="N/A"?a.getGroup():"0") - Integer.parseInt(b.getGroup()!="N/A"?b.getGroup():"0"));
 	}
 
 }
