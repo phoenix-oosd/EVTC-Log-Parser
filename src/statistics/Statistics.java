@@ -482,7 +482,8 @@ public class Statistics {
 
 		List<Point> fight_intervals = new ArrayList<Point>();
 		List<CombatItem> combatList = combatData.getCombatList();
-		int timeStart = bossData.getFirstAware() - combatList.get(0).getTime();
+		int combatStart = combatList.get(0).getTime();
+		int timeStart = bossData.getFirstAware() - combatStart;
 
 		int i_count;
 		int t_invuln;
@@ -505,7 +506,42 @@ public class Statistics {
 		} else if (bossData.getName().equals("Samarog")) {
 			i_count = 2;
 			t_invuln = 20000;
-		} else {
+		} else if (bossData.getName().equals("Keep Construct")) {
+			int t_curr = 0;
+			int t_prev = timeStart;
+			// Flag to show first phase before burn phases
+			boolean first_phase_flag = true;
+			// Flag to prevent multiple invuln phases causing more intervals
+			boolean same_phase_flag = false;
+			for (CombatItem c : combatList) {
+				t_curr = c.getTime();
+				if (c.getSrcAgent() == bossData.getAgent()) {
+					// Start of invulnerability (757 is invulnerability skill id)
+					if (c.getSkillID() == 757 && c.getDstAgent() == bossData.getAgent()) {
+						if (first_phase_flag) {
+							fight_intervals.add(new Point(t_prev, t_curr - combatStart));
+							first_phase_flag = false;
+						}
+						// End of invulnerability (DstAgent is not set)
+					} else if (c.getSkillID() == 757) {
+						if (!same_phase_flag) {
+							t_prev = t_curr - combatStart;
+						}
+						same_phase_flag = true;
+						// Start of red/white orb phase (35025 is Xera's Boon skill id)
+					} else if (c.getSkillID() == 35025 && c.getDstAgent() == bossData.getAgent()) {
+						fight_intervals.add(new Point(t_prev, t_curr - combatStart));
+						same_phase_flag = false;
+						// End of red/white orb phase
+					} else if (c.getSkillID() == 35025) {
+						t_prev = t_curr - combatStart;
+					}
+				}
+			}
+			// Add last burn phase
+			fight_intervals.add(new Point(t_prev, bossData.getLastAware() - combatStart));
+			return fight_intervals;
+		}else {
 			fight_intervals.add(new Point(timeStart, bossData.getLastAware() - bossData.getFirstAware()));
 			return fight_intervals;
 		}
