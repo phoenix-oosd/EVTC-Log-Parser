@@ -18,6 +18,7 @@ public enum Boon {
 	SPOTTER("Spotter", "SPOT", "duration", 1),
 	SPIRIT_OF_FROST("Spirit of Frost", "FRST", "duration", 1),
 	SUN_SPIRIT("Sun Spirit", "SUNS", "duration", 1),
+	STONE_SPIRIT("Stone Spirit", "STNE", "duration", 1),
 	STORM_SPIRIT("Storm Spirit", "STRM", "duration", 1),
 	GLYPH_OF_EMPOWERMENT("Glyph of Empowerment", "GOFE", "duration", 1),
 	GRACE_OF_THE_LAND("Grace of the Land", "GOTL", "intensity", 5),

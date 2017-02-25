@@ -24,6 +24,50 @@ public class TableBuilder {
 		rows = new ArrayList<String[]>();
 	}
 
+	public void removeEmptyColumns() {
+
+		// Columns that contain all "0.00" will have existance[i] = false
+		int cols = rows.get(0).length;
+		boolean[] existance = new boolean[cols];
+		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
+			String[] row = iter.next();
+			for (int i = 0; i < cols; i++) {
+				if (!existance[i] && !row[i].equals("0.00")) {
+					existance[i] = true;
+				}
+			}
+		}
+
+		// Check if there are any false values
+		int exist_count = 0;
+		for (boolean exists : existance) {
+			if (exists) {
+				exist_count++;
+			}
+		}
+		if (exist_count == cols) {
+			return;
+		}
+
+		// Create new table with no empty columns
+		List<String[]> new_rows = new ArrayList<String[]>();
+		for (String[] row : rows) {
+			int i = 0;
+			int j = 0;
+			String[] new_row = new String[exist_count];
+			for (boolean exists : existance) {
+				if (exists) {
+					new_row[i] = row[j];
+					i++;
+				}
+				j++;
+			}
+			new_rows.add(new_row);
+		}
+		rows = new_rows;
+
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder output = new StringBuilder();
@@ -70,4 +114,5 @@ public class TableBuilder {
 		}
 		return widths;
 	}
+
 }

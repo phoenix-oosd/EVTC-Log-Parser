@@ -58,15 +58,16 @@ public class Statistics {
 		for (AgentItem playerAgent : playerAgentList) {
 			this.playerList.add(new Player(playerAgent));
 		}
-		// Sort players by subgroup - also added in to each function in case different sorts are used in the future
+		// Sort players by subgroup - also added in to each function in case
+		// different sorts are used in the future
 		sortPlayerList();
 	}
 
 	// Final DPS
 	public String getFinalDPS() {
 
-	    // Holder used to allow sorting by dps
-        List<FinalDpsHolder> holder = new ArrayList<FinalDpsHolder>();
+		// Holder used to allow sorting by dps
+		List<FinalDpsHolder> holder = new ArrayList<FinalDpsHolder>();
 
 		int total_damage = 0;
 		double total_dps = 0.0;
@@ -78,14 +79,14 @@ public class Statistics {
 			for (DamageLog log : damage_logs) {
 				player_damage = player_damage + log.getDamage();
 			}
-            holder.add(new FinalDpsHolder(p, String.format("%.2f", (player_damage / fight_duration)), player_damage));
+			holder.add(new FinalDpsHolder(p, String.format("%.2f", (player_damage / fight_duration)), player_damage));
 
 			total_dps = total_dps + (player_damage / fight_duration);
 			total_damage = (int) (total_damage + player_damage);
 		}
 
 		// Sort players by damage (and therefore dps)
-        holder.sort((a,b) -> (int) (b.getDamage() - a.getDamage()));
+		holder.sort((a, b) -> (int) (b.getDamage() - a.getDamage()));
 
 		// Table
 		TableBuilder table = new TableBuilder();
@@ -96,9 +97,9 @@ public class Statistics {
 
 		// Body
 		for (int i = 0; i < holder.size(); i++) {
-		    FinalDpsHolder h = holder.get(i);
-            Player p = h.getPlayer();
-            table.addRow(p.getCharacter(), p.getProf(), h.getDps(), String.valueOf((int) h.getDamage()));
+			FinalDpsHolder h = holder.get(i);
+			Player p = h.getPlayer();
+			table.addRow(p.getCharacter(), p.getProf(), h.getDps(), String.valueOf((int) h.getDamage()));
 		}
 
 		// Footer
@@ -112,7 +113,7 @@ public class Statistics {
 	public String getPhaseDPS() {
 
 		List<Point> fight_intervals = getFightIntervals();
-        List<PhaseDpsHolder> holder = new ArrayList<PhaseDpsHolder>();
+		List<PhaseDpsHolder> holder = new ArrayList<PhaseDpsHolder>();
 
 		for (int i = 0; i < playerList.size(); i++) {
 
@@ -138,11 +139,11 @@ public class Statistics {
 			}
 
 			phase_dps[fight_intervals.size()] = String.format("%.2f", average_dps);
-            holder.add(new PhaseDpsHolder(p, phase_dps, average_dps));
+			holder.add(new PhaseDpsHolder(p, phase_dps, average_dps));
 		}
 
 		// Sort players by average dps
-        holder.sort((a,b) -> (int) (b.getAverage_dps() - a.getAverage_dps()));
+		holder.sort((a, b) -> (int) (b.getAverage_dps() - a.getAverage_dps()));
 
 		// Table
 		TableBuilder table = new TableBuilder();
@@ -159,11 +160,11 @@ public class Statistics {
 		table.addRow(header);
 
 		// Body
-		for (int i = 0; i <holder.size(); i++) {
+		for (int i = 0; i < holder.size(); i++) {
 			PhaseDpsHolder h = holder.get(i);
 			Player p = h.getPlayer();
 			table.addRow(
-                    Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, h.getAll_phase_dps()));
+					Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, h.getAll_phase_dps()));
 		}
 
 		// Footer
@@ -401,6 +402,7 @@ public class Statistics {
 			Player p = playerList.get(i);
 			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, all_rates.get(i)));
 		}
+		table.removeEmptyColumns();
 
 		return table.toString();
 	}
@@ -469,6 +471,7 @@ public class Statistics {
 				}
 				table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, row_rates));
 			}
+			table.removeEmptyColumns();
 
 			output.append(System.lineSeparator() + table.toString());
 
@@ -516,7 +519,8 @@ public class Statistics {
 			for (CombatItem c : combatList) {
 				t_curr = c.getTime();
 				if (c.getSrcAgent() == bossData.getAgent()) {
-					// Start of invulnerability (757 is invulnerability skill id)
+					// Start of invulnerability (757 is invulnerability skill
+					// id)
 					if (c.getSkillID() == 757 && c.getDstAgent() == bossData.getAgent()) {
 						if (first_phase_flag) {
 							fight_intervals.add(new Point(t_prev, t_curr - combatStart));
@@ -528,7 +532,8 @@ public class Statistics {
 							t_prev = t_curr - combatStart;
 						}
 						same_phase_flag = true;
-						// Start of red/white orb phase (35025 is Xera's Boon skill id)
+						// Start of red/white orb phase (35025 is Xera's Boon
+						// skill id)
 					} else if (c.getSkillID() == 35025 && c.getDstAgent() == bossData.getAgent()) {
 						fight_intervals.add(new Point(t_prev, t_curr - combatStart));
 						same_phase_flag = false;
@@ -541,7 +546,7 @@ public class Statistics {
 			// Add last burn phase
 			fight_intervals.add(new Point(t_prev, bossData.getLastAware() - combatStart));
 			return fight_intervals;
-		}else {
+		} else {
 			fight_intervals.add(new Point(timeStart, bossData.getLastAware() - bossData.getFirstAware()));
 			return fight_intervals;
 		}
@@ -733,9 +738,11 @@ public class Statistics {
 		return phase_stacks;
 	}
 
-	// resorts the player list by subgroup - checks for "N/A" for logs before subgroups were added
+	// resorts the player list by subgroup - checks for "N/A" for logs before
+	// subgroups were added
 	private void sortPlayerList() {
-		playerList.sort((a,b) -> Integer.parseInt(a.getGroup()!="N/A"?a.getGroup():"0") - Integer.parseInt(b.getGroup()!="N/A"?b.getGroup():"0"));
+		playerList.sort((a, b) -> Integer.parseInt(a.getGroup() != "N/A" ? a.getGroup() : "0")
+				- Integer.parseInt(b.getGroup() != "N/A" ? b.getGroup() : "0"));
 	}
 
 }

@@ -129,23 +129,24 @@ public class Player {
 				}
 			}
 		}
+
 	}
 
 	public void setBoonMap(BossData bossData, SkillData skillData, List<CombatItem> combatList) {
 
-		List<String> boonList = Boon.getList();
-		for (String boon : boonList) {
-			boon_map.put(boon, new ArrayList<BoonLog>());
+		// Initialize Boon Map with every Boon
+		for (Boon boon : Boon.values()) {
+			boon_map.put(boon.getName(), new ArrayList<BoonLog>());
 		}
 
+		// Fill in Boon Map
 		int time_start = bossData.getFirstAware();
 		int fight_duration = bossData.getLastAware() - time_start;
-
 		for (CombatItem c : combatList) {
 			if (instid == c.getDstInstid()) {
 				String skill_name = skillData.getName(c.getSkillID());
 				if (c.isBuff() && (c.getValue() > 0)) {
-					if (boonList.contains(skill_name)) {
+					if (boon_map.containsKey(skill_name)) {
 						int time = c.getTime() - time_start;
 						if (time < fight_duration) {
 							boon_map.get(skill_name).add(new BoonLog(time, c.getValue()));
@@ -156,6 +157,7 @@ public class Player {
 				}
 			}
 		}
+
 	}
 
 }
