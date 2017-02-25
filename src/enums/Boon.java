@@ -20,7 +20,8 @@ public enum Boon {
 	BANNER_OF_STRENGTH("Banner of Strength", "BoS", "duration", 1),
 	BANNER_OF_DISCIPLINE("Banner of Discipline", "BoD", "duration", 1),
 	SOOTHING_MIST("Soothing Mist", "MIST", "duration", 1),
-	ASSASSINS_PRESENCE("Assassin's Presence", "ASNP", "duration", 1);
+	ASSASSINS_PRESENCE("Assassin's Presence", "ASNP", "duration", 1),
+	NATURALISTIC_RESONANCE("Naturalistic Resonance", "NATR", "duration", 1);
 
 	// Fields
 	private String name;
