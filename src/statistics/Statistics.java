@@ -345,7 +345,7 @@ public class Statistics {
 					String.format("%.2f", schl / power_loops), String.format("%.2f", move / power_loops),
 					String.format("%.2f", flank / power_loops), String.valueOf(p.getToughness()),
 					String.valueOf(p.getHealing()), String.valueOf(p.getCondition()), String.valueOf(dodge),
-					String.valueOf(ress), String.valueOf(down), String.valueOf((double) died / 1000) };
+					String.valueOf(ress), String.valueOf(down), String.format("%.2f", (double) died / 1000) };
 			all_combat_stats.add(combat_stats);
 		}
 
@@ -402,7 +402,6 @@ public class Statistics {
 			Player p = playerList.get(i);
 			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, all_rates.get(i)));
 		}
-		table.removeEmptyColumns();
 
 		return table.toString();
 	}
@@ -471,7 +470,6 @@ public class Statistics {
 				}
 				table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, row_rates));
 			}
-			table.removeEmptyColumns();
 
 			output.append(System.lineSeparator() + table.toString());
 
