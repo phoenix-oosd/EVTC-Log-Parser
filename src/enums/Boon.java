@@ -5,23 +5,42 @@ import java.util.List;
 
 public enum Boon {
 
-	// Constants
+	// Boon
 	MIGHT("Might", "MGHT", "intensity", 25),
 	QUICKNESS("Quickness", "QCKN", "duration", 5),
 	FURY("Fury", "FURY", "duration", 9),
 	PROTECTION("Protection", "PROT", "duration", 5),
+
+	// Mesmer (also Ventari Revenant o.o)
 	ALACRITY("Alacrity", "ALAC", "duration", 9),
+
+	// Ranger
 	SPOTTER("Spotter", "SPOT", "duration", 1),
 	SPIRIT_OF_FROST("Spirit of Frost", "FRST", "duration", 1),
 	SUN_SPIRIT("Sun Spirit", "SUNS", "duration", 1),
-	GLYPH_OF_EMPOWERMENT("Glyph of Empowerment", "GoE", "duration", 1),
-	GRACE_OF_THE_LAND("Grace of the Land", "GoTL", "intensity", 5),
-	EMPOWER_ALLIES("Empower Allies", "EA", "duration", 1),
-	BANNER_OF_STRENGTH("Banner of Strength", "BoS", "duration", 1),
-	BANNER_OF_DISCIPLINE("Banner of Discipline", "BoD", "duration", 1),
-	SOOTHING_MIST("Soothing Mist", "MIST", "duration", 1),
+	STORM_SPIRIT("Storm Spirit", "STRM", "duration", 1),
+	GLYPH_OF_EMPOWERMENT("Glyph of Empowerment", "GOFE", "duration", 1),
+	GRACE_OF_THE_LAND("Grace of the Land", "GOTL", "intensity", 5),
+
+	// Warrior
+	EMPOWER_ALLIES("Empower Allies", "EALL", "duration", 1),
+	BANNER_OF_STRENGTH("Banner of Strength", "STRB", "duration", 1),
+	BANNER_OF_DISCIPLINE("Banner of Discipline", "DISC", "duration", 1),
+	BANNER_OF_TACTICS("Banner of Tactics", "TACT", "duration", 1),
+	BANNER_OF_DEFENCE("Banner of Defence", "DEFN", "duration", 1),
+
+	// Revenant
 	ASSASSINS_PRESENCE("Assassin's Presence", "ASNP", "duration", 1),
-	NATURALISTIC_RESONANCE("Naturalistic Resonance", "NATR", "duration", 1);
+	NATURALISTIC_RESONANCE("Naturalistic Resonance", "NATR", "duration", 1),
+
+	// Engineer
+	PINPOINT_PRECISION("Pinpoint Distribution", "PIND", "duration", 1),
+
+	// Elementalist
+	SOOTHING_MIST("Soothing Mist", "MIST", "duration", 1),
+
+	// Necro
+	VAMPIRIC_PRESENCE("Vampiric Presence", "VAMP", "duration", 1);
 
 	// Fields
 	private String name;
