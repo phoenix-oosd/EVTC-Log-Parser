@@ -506,7 +506,7 @@ public class Statistics {
 			t_invuln = 7000;
 		} else if (bossData.getName().equals("Samarog")) {
 			i_count = 2;
-			t_invuln = 20000;
+			t_invuln = 40000;
 		} else if (bossData.getName().equals("Keep Construct")) {
 			int t_curr = 0;
 			int t_prev = timeStart;

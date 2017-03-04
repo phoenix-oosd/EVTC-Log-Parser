@@ -7,8 +7,8 @@ import java.util.List;
 public abstract class AbstractBoon {
 
 	// Fields
-	protected int capacity;
 	protected List<Integer> boon_stack = new ArrayList<Integer>();
+	protected int capacity;
 
 	// Constructor
 	public AbstractBoon(int capacity) {
@@ -24,20 +24,18 @@ public abstract class AbstractBoon {
 
 	// Public Methods
 	public void add(int boon_duration) {
-
 		// Find empty slot
 		if (!isFull()) {
 			boon_stack.add(boon_duration);
 			sort();
-			return;
 		}
-
 		// Replace lowest value
-		int index = boon_stack.size() - 1;
-		if (boon_stack.get(index) < boon_duration) {
-			boon_stack.set(index, boon_duration);
-			sort();
-			return;
+		else {
+			int index = boon_stack.size() - 1;
+			if (boon_stack.get(index) < boon_duration) {
+				boon_stack.set(index, boon_duration);
+				sort();
+			}
 		}
 	}
 
@@ -49,4 +47,5 @@ public abstract class AbstractBoon {
 	protected void sort() {
 		Collections.sort(boon_stack, Collections.reverseOrder());
 	}
+
 }
