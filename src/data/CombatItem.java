@@ -60,8 +60,8 @@ public class CombatItem {
 	public String[] toStringArray() {
 		String[] array = new String[20];
 		array[0] = String.valueOf(time);
-		array[1] = String.valueOf(src_agent);
-		array[2] = String.valueOf(dst_agent);
+		array[1] = Long.toHexString(src_agent);
+		array[2] = Long.toHexString(dst_agent);
 		array[3] = String.valueOf(value);
 		array[4] = String.valueOf(buff_dmg);
 		array[5] = String.valueOf(overstack_value);

@@ -32,12 +32,12 @@ public class AgentItem {
 	// Public Methods
 	public String[] toStringArray() {
 		String[] array = new String[9];
-		array[0] = String.valueOf(agent);
+		array[0] = Long.toHexString(agent);
 		array[1] = String.valueOf(instid);
 		array[2] = String.valueOf(first_aware);
 		array[3] = String.valueOf(last_aware);
-		array[4] = String.valueOf(name);
-		array[5] = String.valueOf(prof);
+		array[4] = name;
+		array[5] = prof;
 		array[6] = String.valueOf(toughness);
 		array[7] = String.valueOf(healing);
 		array[8] = String.valueOf(condition);

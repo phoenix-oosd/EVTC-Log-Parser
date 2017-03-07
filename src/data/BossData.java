@@ -19,12 +19,12 @@ public class BossData {
 	// Public Methods
 	public String[] toStringArray() {
 		String[] array = new String[7];
-		array[0] = String.valueOf(agent);
+		array[0] = Long.toHexString(agent);
 		array[1] = String.valueOf(instid);
 		array[2] = String.valueOf(first_aware);
 		array[3] = String.valueOf(last_aware);
 		array[4] = String.valueOf(id);
-		array[5] = String.valueOf(name);
+		array[5] = name;
 		array[6] = String.valueOf(health);
 		return array;
 	}
