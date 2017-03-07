@@ -13,7 +13,8 @@ public enum StateChange {
 	DESPAWN(7),
 	HEALTH_UPDATE(8),
 	LOG_START(9),
-	LOG_END(10);
+	LOG_END(10),
+	WEAPON_SWAP(11);
 
 	// Fields
 	private int ID;

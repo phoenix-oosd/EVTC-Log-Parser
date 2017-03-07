@@ -295,7 +295,7 @@ public class Statistics {
 
 		// Header
 		table.addRow("Account", "Character", "Group", "Profession", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL",
-				"COND", "DOGE", "RESS", "DOWN", "DIED");
+				"COND", "SWAP", "DOGE", "RESS", "DOWN", "DIED");
 
 		// Sort players by subgroup
 		sortPlayerList();
@@ -304,7 +304,7 @@ public class Statistics {
 		for (Player p : playerList) {
 
 			double power_loops = 0.0, crit = 0.0, schl = 0.0, move = 0.0, flank = 0.0;
-			int dodge = 0, ress = 0, down = 0, died = 0;
+			int swap = 0, dodge = 0, ress = 0, down = 0, died = 0;
 			boolean is_dead = false;
 
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
@@ -325,7 +325,9 @@ public class Statistics {
 					}
 					power_loops++;
 				}
-				if (log.isStatechange().equals(StateChange.CHANGE_DOWN)) {
+				if (log.isStatechange().equals(StateChange.WEAPON_SWAP)) {
+					swap++;
+				} else if (log.isStatechange().equals(StateChange.CHANGE_DOWN)) {
 					down++;
 				} else if (!is_dead && log.isStatechange().equals(StateChange.CHANGE_DEAD)) {
 					died = log.getTime();
@@ -344,8 +346,9 @@ public class Statistics {
 			String[] combat_stats = new String[] { String.format("%.2f", crit / power_loops),
 					String.format("%.2f", schl / power_loops), String.format("%.2f", move / power_loops),
 					String.format("%.2f", flank / power_loops), String.valueOf(p.getToughness()),
-					String.valueOf(p.getHealing()), String.valueOf(p.getCondition()), String.valueOf(dodge),
-					String.valueOf(ress), String.valueOf(down), String.format("%.2f", (double) died / 1000) };
+					String.valueOf(p.getHealing()), String.valueOf(p.getCondition()), String.valueOf(swap),
+					String.valueOf(dodge), String.valueOf(ress), String.valueOf(down),
+					String.format("%.2f", (double) died / 1000) };
 			all_combat_stats.add(combat_stats);
 		}
 

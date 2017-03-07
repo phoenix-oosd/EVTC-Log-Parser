@@ -116,10 +116,8 @@ public class Player {
 						}
 					}
 				} else if (instid == c.getSrcInstid()) {
-					if (state.equals(StateChange.CHANGE_DEAD)) {
-						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
-								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
-					} else if (state.equals(StateChange.CHANGE_DOWN)) {
+					if (state.equals(StateChange.CHANGE_DEAD) || state.equals(StateChange.CHANGE_DOWN)
+							|| state.equals(StateChange.WEAPON_SWAP)) {
 						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
 								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
 					} else if (CustomSkill.getEnum(c.getSkillID()) != null) {
@@ -129,7 +127,6 @@ public class Player {
 				}
 			}
 		}
-
 	}
 
 	public void setBoonMap(BossData bossData, SkillData skillData, List<CombatItem> combatList) {
