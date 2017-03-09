@@ -9,6 +9,7 @@ public class TableBuilder {
 	// Fields
 	private String title = "";
 	private List<String[]> rows = new ArrayList<String[]>();
+	private String nl = System.lineSeparator();
 
 	// Public Methods
 	public void addTitle(String title) {
@@ -39,11 +40,9 @@ public class TableBuilder {
 
 		// Title
 		if (!title.equals("")) {
-			output.append(
-					'\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + System.lineSeparator());
-			output.append('\u2502' + title + '\u2502' + System.lineSeparator());
-			output.append(
-					'\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518' + System.lineSeparator());
+			output.append('\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + nl);
+			output.append('\u2502' + title + '\u2502' + nl);
+			output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518' + nl);
 		}
 
 		// Header
@@ -53,19 +52,19 @@ public class TableBuilder {
 			if (colNum != numCols - 1) {
 				output.append('\u252C');
 			} else {
-				output.append('\u2510' + System.lineSeparator() + '\u2502');
+				output.append('\u2510' + nl + '\u2502');
 			}
 		}
 		for (int colNum = 0; colNum < numCols; colNum++) {
 			output.append(Utility.centerString(rows.get(0)[colNum], colWidths[colNum]) + '\u2502');
 		}
-		output.append(System.lineSeparator() + '\u255E');
+		output.append(nl + '\u251C');
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
 			output.append(Utility.fillWithChar(colWidths[colNum], '\u2550'));
 			if (colNum != numCols - 1) {
-				output.append('\u256A');
+				output.append('\u253C');
 			} else {
-				output.append('\u2561' + System.lineSeparator());
+				output.append('\u2524' + nl);
 			}
 		}
 
@@ -75,7 +74,7 @@ public class TableBuilder {
 			for (int colNum = 0; colNum < row.length; colNum++) {
 				output.append('\u2502' + Utility.centerString(row[colNum], colWidths[colNum]));
 			}
-			output.append('\u2502' + System.lineSeparator());
+			output.append('\u2502' + nl);
 		}
 		output.append('\u2514');
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
@@ -83,7 +82,7 @@ public class TableBuilder {
 			if (colNum != numCols - 1) {
 				output.append('\u2534');
 			} else {
-				output.append('\u2518');
+				output.append('\u2518' + nl);
 			}
 		}
 
