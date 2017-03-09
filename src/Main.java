@@ -66,7 +66,7 @@ public class Main {
 						}
 					}
 				}
-				output.append("<END>");
+				output.append(System.lineSeparator() + "<END>");
 				System.out.println(output.toString());
 				scan.nextLine();
 				return;

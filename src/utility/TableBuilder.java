@@ -82,7 +82,7 @@ public class TableBuilder {
 			if (colNum != numCols - 1) {
 				output.append('\u2534');
 			} else {
-				output.append('\u2518' + nl);
+				output.append('\u2518');
 			}
 		}
 

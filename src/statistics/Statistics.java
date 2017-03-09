@@ -201,9 +201,11 @@ public class Statistics {
 		// Table
 		TableBuilder table = new TableBuilder();
 		StringBuilder output = new StringBuilder();
-		output.append("_________________________________________" + System.lineSeparator() + System.lineSeparator());
-		output.append("Damage Distribution - " + bossData.getName() + System.lineSeparator());
-		output.append("_________________________________________" + System.lineSeparator());
+
+		String title = " Damage Distribution - " + bossData.getName() + ' ';
+		output.append('\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + System.lineSeparator());
+		output.append('\u2502' + title + '\u2502' + System.lineSeparator());
+		output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518');
 
 		// Body
 		for (Player p : playerList) {
@@ -454,9 +456,10 @@ public class Statistics {
 		TableBuilder table = new TableBuilder();
 		String[] boon_array = Boon.getArray();
 
-		output.append("_________________________________________" + System.lineSeparator() + System.lineSeparator());
-		output.append("Phase - " + bossData.getName() + System.lineSeparator());
-		output.append("_________________________________________" + System.lineSeparator());
+		String title = " Phase Boon Rates - " + bossData.getName() + ' ';
+		output.append('\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + System.lineSeparator());
+		output.append('\u2502' + title + '\u2502' + System.lineSeparator());
+		output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518');
 
 		for (int i = 0; i < fight_intervals.size(); i++) {
 
