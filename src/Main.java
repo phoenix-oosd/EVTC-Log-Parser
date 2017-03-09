@@ -163,7 +163,8 @@ public class Main {
 				statistics = new Statistics(parsed_file);
 				current_file = path.getFileName().toString().split("\\.")[0];
 				if (will_display_versions) {
-					System.out.println("Log version:\t" + parsed_file.getLogData().getBuildVersion());
+					System.out.println(
+							"Log version:\t" + parsed_file.getLogData().getBuildVersion() + System.lineSeparator());
 				}
 				if (Integer.valueOf(parsed_file.getLogData().getBuildVersion().replaceAll("EVTC", "")) < 20170214) {
 					return "Warning:\t\tThis log is outdated. Make sure the log is created by arcdps build 20170214 onwards.";

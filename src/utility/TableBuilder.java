@@ -12,11 +12,15 @@ public class TableBuilder {
 
 	// Public Methods
 	public void addTitle(String title) {
-		this.title = title;
+		this.title = ' ' + title + ' ';
 	}
 
 	public void addRow(String... cols) {
 		rows.add(cols);
+		String[] row = rows.get(rows.size() - 1);
+		for (int i = 0; i < row.length; i++) {
+			row[i] = ' ' + row[i] + ' ';
+		}
 	}
 
 	public void clear() {
@@ -31,33 +35,58 @@ public class TableBuilder {
 		removeEmptyColumns();
 		StringBuilder output = new StringBuilder();
 		int[] colWidths = getWidths();
+		int numCols = rows.get(0).length;
 
 		// Title
 		if (!title.equals("")) {
-			output.append(Utility.fillWithChar(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
-			output.append(title + System.lineSeparator());
-			output.append(Utility.fillWithChar(title.length(), '_') + System.lineSeparator() + System.lineSeparator());
+			output.append(
+					'\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + System.lineSeparator());
+			output.append('\u2502' + title + '\u2502' + System.lineSeparator());
+			output.append(
+					'\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518' + System.lineSeparator());
 		}
+
 		// Header
+		output.append('\u250C');
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			output.append(Utility.centerString(rows.get(0)[colNum], colWidths[colNum]));
-			output.append("   ");
+			output.append(Utility.fillWithChar(colWidths[colNum], '\u2500'));
+			if (colNum != numCols - 1) {
+				output.append('\u252C');
+			} else {
+				output.append('\u2510' + System.lineSeparator() + '\u2502');
+			}
 		}
-		output.append(System.lineSeparator());
+		for (int colNum = 0; colNum < numCols; colNum++) {
+			output.append(Utility.centerString(rows.get(0)[colNum], colWidths[colNum]) + '\u2502');
+		}
+		output.append(System.lineSeparator() + '\u255E');
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
-			output.append(Utility.centerString(Utility.fillWithChar(colWidths[colNum], '_'), colWidths[colNum]));
-			output.append("   ");
+			output.append(Utility.fillWithChar(colWidths[colNum], '\u2550'));
+			if (colNum != numCols - 1) {
+				output.append('\u256A');
+			} else {
+				output.append('\u2561' + System.lineSeparator());
+			}
 		}
-		output.append(System.lineSeparator() + System.lineSeparator());
+
 		// Body
 		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
 			String[] row = iter.next();
 			for (int colNum = 0; colNum < row.length; colNum++) {
-				output.append(Utility.centerString(row[colNum], colWidths[colNum]));
-				output.append("   ");
+				output.append('\u2502' + Utility.centerString(row[colNum], colWidths[colNum]));
 			}
-			output.append(System.lineSeparator());
+			output.append('\u2502' + System.lineSeparator());
 		}
+		output.append('\u2514');
+		for (int colNum = 0; colNum < rows.get(0).length; colNum++) {
+			output.append(Utility.fillWithChar(colWidths[colNum], '\u2500'));
+			if (colNum != numCols - 1) {
+				output.append('\u2534');
+			} else {
+				output.append('\u2518');
+			}
+		}
+
 		return output.toString();
 	}
 
