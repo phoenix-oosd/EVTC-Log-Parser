@@ -94,20 +94,20 @@ public class Main {
 				// Display menu
 				else {
 					while (!will_quit) {
-						System.out.println("_______________" + System.lineSeparator());
+						System.out.println("===============");
 						System.out.println("EVTC Log Parser");
-						System.out.println("_______________" + System.lineSeparator());
-						System.out.println("0. Dump EVTC");
-						System.out.println("1. Final DPS");
-						System.out.println("2. Phase DPS");
-						System.out.println("3. Damage Distribution");
-						System.out.println("4. Graph Total Damage");
-						System.out.println("5. Misc. Combat Stats");
-						System.out.println("6. Final Boons");
-						System.out.println("7. Phase Boons");
-						System.out.println("8. Dump Tables");
-						System.out.println("9. Quit");
-						System.out.println("_______________" + System.lineSeparator());
+						System.out.println("===============");
+						System.out.println(" 0. Dump EVTC");
+						System.out.println(" 1. Final DPS");
+						System.out.println(" 2. Phase DPS");
+						System.out.println(" 3. Damage Distribution");
+						System.out.println(" 4. Graph Total Damage");
+						System.out.println(" 5. Misc. Combat Stats");
+						System.out.println(" 6. Final Boon Rates");
+						System.out.println(" 7. Phase Boon Rates");
+						System.out.println(" 8. Dump All Tables");
+						System.out.println(" 9. Quit");
+						System.out.println("===============");
 						System.out.println("Enter an option by number below:");
 
 						// Read user input
