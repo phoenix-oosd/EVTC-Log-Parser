@@ -77,7 +77,9 @@ public class Statistics {
 			double player_damage = 0.0;
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
 			for (DamageLog log : damage_logs) {
-				player_damage = player_damage + log.getDamage();
+				if (CustomSkill.getEnum(log.getID()) == null) {
+					player_damage = player_damage + log.getDamage();
+				}
 			}
 			holder.add(new FinalDpsHolder(p, String.format("%.2f", (player_damage / fight_duration)), player_damage));
 
@@ -129,8 +131,10 @@ public class Statistics {
 				double phase_damage = 0;
 
 				for (DamageLog log : damage_logs) {
-					if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y)) {
-						phase_damage = phase_damage + log.getDamage();
+					if (CustomSkill.getEnum(log.getID()) == null) {
+						if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y)) {
+							phase_damage = phase_damage + log.getDamage();
+						}
 					}
 				}
 				double dps = phase_damage / (interval.getY() - interval.getX()) * 1000;
@@ -232,9 +236,11 @@ public class Statistics {
 			skill_damage = Utility.sortByValue(skill_damage);
 			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet()) {
 				String skill_name = skillData.getName(entry.getKey());
-				double damage = entry.getValue();
-				table.addRow(skill_name, String.valueOf((int) damage),
-						String.format("%.2f", (damage / damage_sum * 100)));
+				if (!CustomSkill.contains(skill_name)) {
+					double damage = entry.getValue();
+					table.addRow(skill_name, String.valueOf((int) damage),
+							String.format("%.2f", (damage / damage_sum * 100)));
+				}
 			}
 
 			// Append player table
@@ -268,9 +274,11 @@ public class Statistics {
 			double[] y = new double[damage_logs.size()];
 			double total_damage = 0.0;
 			for (int i = 0; i < damage_logs.size(); i++) {
-				total_damage = total_damage + damage_logs.get(i).getDamage();
-				x[i] = damage_logs.get(i).getTime() / 1000.0;
-				y[i] = total_damage / 1000;
+				if (CustomSkill.getEnum(damage_logs.get(i).getID()) == null) {
+					total_damage = total_damage + damage_logs.get(i).getDamage();
+					x[i] = damage_logs.get(i).getTime() / 1000.0;
+					y[i] = total_damage / 1000;
+				}
 			}
 			chart.addSeries(p.getCharacter() + " - " + p.getProf(), x, y);
 		}

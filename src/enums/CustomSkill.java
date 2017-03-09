@@ -27,6 +27,15 @@ public enum CustomSkill {
 		return null;
 	}
 
+	public static boolean contains(String name) {
+		for (CustomSkill c : CustomSkill.values()) {
+			if (c.name().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Getters
 	public int getID() {
 		return ID;
