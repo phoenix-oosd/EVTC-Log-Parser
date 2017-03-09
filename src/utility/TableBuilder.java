@@ -112,7 +112,7 @@ public class TableBuilder {
 		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();) {
 			String[] row = iter.next();
 			for (int i = 0; i < cols; i++) {
-				if (!existance[i] && !row[i].equals("0.00")) {
+				if (!existance[i] && !row[i].equals(" 0.00 ")) {
 					existance[i] = true;
 				}
 			}
