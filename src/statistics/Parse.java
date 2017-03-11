@@ -310,9 +310,16 @@ public class Parse {
 
 		// Set Boss health
 		for (CombatItem c : combat_list) {
-			if (c.getSrcInstid() == boss_data.getInstid() && c.isStateChange().equals(StateChange.ENTER_COMBAT)) {
-				boss_data.setHealth((int) (c.getDstAgent() + c.getValue()));
-				break;
+			if (c.getSrcInstid() == boss_data.getInstid()) {
+				// Older logs
+				if (c.isStateChange().equals(StateChange.ENTER_COMBAT)) {
+					boss_data.setHealth((int) (c.getDstAgent() + c.getValue()));
+					break;
+				}
+				// Newer logs
+				else if (c.isStateChange().equals(StateChange.MAX_HEALTH_UPDATE)) {
+					boss_data.setHealth((int) (c.getDstAgent()));
+				}
 			}
 		}
 
