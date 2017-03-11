@@ -298,28 +298,16 @@ public class Parse {
 					boss_data.setName(NPC.getName());
 				}
 				boss_data.setLastAware(NPC.getLastAware());
-			} else if (boss_data.getID() == 1) {
+
+			}
+			// Manual log
+			else if (boss_data.getID() == 1) {
 				boss_data.setAgent(NPC.getAgent());
 				boss_data.setInstid(NPC.getInstid());
 				boss_data.setFirstAware(NPC.getFirstAware());
 				boss_data.setName(NPC.getName());
 				boss_data.setLastAware(NPC.getLastAware());
 				break;
-			}
-		}
-
-		// Set Boss health
-		for (CombatItem c : combat_list) {
-			if (c.getSrcInstid() == boss_data.getInstid()) {
-				// Older logs
-				if (c.isStateChange().equals(StateChange.ENTER_COMBAT)) {
-					boss_data.setHealth((int) (c.getDstAgent() + c.getValue()));
-					break;
-				}
-				// Newer logs
-				else if (c.isStateChange().equals(StateChange.MAX_HEALTH_UPDATE)) {
-					boss_data.setHealth((int) (c.getDstAgent()));
-				}
 			}
 		}
 
@@ -338,6 +326,15 @@ public class Parse {
 					}
 				}
 				break;
+			}
+		}
+
+		// Set Boss health
+		for (CombatItem c : combat_list) {
+			if (c.getSrcInstid() == boss_data.getInstid()) {
+				if (c.isStateChange().equals(StateChange.MAX_HEALTH_UPDATE)) {
+					boss_data.setHealth((int) (c.getDstAgent()));
+				}
 			}
 		}
 
