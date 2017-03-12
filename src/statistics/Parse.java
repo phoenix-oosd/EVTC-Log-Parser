@@ -358,8 +358,10 @@ public class Parse
 			}
 		}
 
-		// Dealing with second half of Xera
+		// Dealing with second half of Xera | ((22611300 * 0.5) + (25560600 *
+		// 0.5)
 		int xera_2_instid = 0;
+		boss_data.setHealth(24085950);
 		for (AgentItem NPC : NPC_list)
 		{
 			if (NPC.getProf().contains("16286"))
