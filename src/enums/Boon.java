@@ -3,10 +3,11 @@ package enums;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum Boon {
+public enum Boon
+{
 
 	// Boon
-	MIGHT("Might", "MGHT", "intensity", 25),
+	MIGHT("Might", "MIGHT", "intensity", 25),
 	QUICKNESS("Quickness", "QCKN", "duration", 5),
 	FURY("Fury", "FURY", "duration", 9),
 	PROTECTION("Protection", "PROT", "duration", 5),
@@ -50,7 +51,8 @@ public enum Boon {
 	private int capacity;
 
 	// Constructor
-	private Boon(String name, String abrv, String type, int capacity) {
+	private Boon(String name, String abrv, String type, int capacity)
+	{
 		this.name = name;
 		this.abrv = abrv;
 		this.type = type;
@@ -58,45 +60,56 @@ public enum Boon {
 	}
 
 	// Public Methods
-	public static Boon getEnum(String name) {
-		for (Boon b : values()) {
-			if (b.getName() == name) {
+	public static Boon getEnum(String name)
+	{
+		for (Boon b : values())
+		{
+			if (b.getName() == name)
+			{
 				return b;
 			}
 		}
 		return null;
 	}
 
-	public static String[] getArray() {
+	public static String[] getArray()
+	{
 		List<String> boonList = new ArrayList<String>();
-		for (Boon b : values()) {
+		for (Boon b : values())
+		{
 			boonList.add(b.getAbrv());
 		}
 		return boonList.toArray(new String[boonList.size()]);
 	}
 
-	public static List<String> getList() {
+	public static List<String> getList()
+	{
 		List<String> boonList = new ArrayList<String>();
-		for (Boon b : values()) {
+		for (Boon b : values())
+		{
 			boonList.add(b.getName());
 		}
 		return boonList;
 	}
 
 	// Getters
-	public String getName() {
+	public String getName()
+	{
 		return this.name;
 	}
 
-	public String getAbrv() {
+	public String getAbrv()
+	{
 		return this.abrv;
 	}
 
-	public String getType() {
+	public String getType()
+	{
 		return this.type;
 	}
 
-	public int getCapacity() {
+	public int getCapacity()
+	{
 		return this.capacity;
 	}
 

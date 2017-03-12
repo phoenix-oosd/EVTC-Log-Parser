@@ -35,7 +35,8 @@ import utility.PhaseDpsHolder;
 import utility.TableBuilder;
 import utility.Utility;
 
-public class Statistics {
+public class Statistics
+{
 
 	// Fields
 	public static boolean willHidePlayers;
@@ -46,25 +47,29 @@ public class Statistics {
 	List<Player> playerList;
 
 	// Constructor
-	public Statistics(Parse parsed) {
-
+	public Statistics(Parse parsed)
+	{
+		// Parsed data
 		this.bossData = parsed.getBossData();
 		this.agentData = parsed.getAgentData();
 		this.skillData = parsed.getSkillData();
 		this.combatData = parsed.getCombatData();
 
+		// Player list
 		playerList = new ArrayList<Player>();
 		List<AgentItem> playerAgentList = agentData.getPlayerAgentList();
-		for (AgentItem playerAgent : playerAgentList) {
+		for (AgentItem playerAgent : playerAgentList)
+		{
 			this.playerList.add(new Player(playerAgent));
 		}
-		// Sort players by subgroup - also added in to each function in case
-		// different sorts are used in the future
+
+		// Sort players by subgroup
 		sortPlayerList();
 	}
 
 	// Final DPS
-	public String getFinalDPS() {
+	public String getFinalDPS()
+	{
 
 		// Holder used to allow sorting by dps
 		List<FinalDpsHolder> holder = new ArrayList<FinalDpsHolder>();
@@ -73,11 +78,14 @@ public class Statistics {
 		double total_dps = 0.0;
 		double fight_duration = (bossData.getLastAware() - bossData.getFirstAware()) / 1000;
 
-		for (Player p : playerList) {
+		for (Player p : playerList)
+		{
 			double player_damage = 0.0;
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
-			for (DamageLog log : damage_logs) {
-				if (CustomSkill.getEnum(log.getID()) == null) {
+			for (DamageLog log : damage_logs)
+			{
+				if (CustomSkill.getEnum(log.getID()) == null)
+				{
 					player_damage = player_damage + log.getDamage();
 				}
 			}
@@ -98,7 +106,8 @@ public class Statistics {
 		table.addRow("Name", "Profession", "DPS", "Damage");
 
 		// Body
-		for (int i = 0; i < holder.size(); i++) {
+		for (int i = 0; i < holder.size(); i++)
+		{
 			FinalDpsHolder h = holder.get(i);
 			Player p = h.getPlayer();
 			table.addRow(p.getCharacter(), p.getProf(), h.getDps(), String.valueOf((int) h.getDamage()));
@@ -112,27 +121,33 @@ public class Statistics {
 	}
 
 	// Phase DPS
-	public String getPhaseDPS() {
+	public String getPhaseDPS()
+	{
 
 		List<Point> fight_intervals = getFightIntervals();
 		List<PhaseDpsHolder> holder = new ArrayList<PhaseDpsHolder>();
 
-		for (int i = 0; i < playerList.size(); i++) {
+		for (int i = 0; i < playerList.size(); i++)
+		{
 
 			Player p = playerList.get(i);
 			String[] phase_dps = new String[fight_intervals.size() + 1];
 			double average_dps = 0;
 
-			for (int j = 0; j < fight_intervals.size(); j++) {
+			for (int j = 0; j < fight_intervals.size(); j++)
+			{
 
 				Point interval = fight_intervals.get(j);
 				List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
 
 				double phase_damage = 0;
 
-				for (DamageLog log : damage_logs) {
-					if (CustomSkill.getEnum(log.getID()) == null) {
-						if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y)) {
+				for (DamageLog log : damage_logs)
+				{
+					if (CustomSkill.getEnum(log.getID()) == null)
+					{
+						if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y))
+						{
 							phase_damage = phase_damage + log.getDamage();
 						}
 					}
@@ -157,14 +172,16 @@ public class Statistics {
 		String[] header = new String[fight_intervals.size() + 3];
 		header[0] = "Name";
 		header[1] = "Profession";
-		for (int i = 2; i < fight_intervals.size() + 2; i++) {
+		for (int i = 2; i < fight_intervals.size() + 2; i++)
+		{
 			header[i] = "Phase " + String.valueOf(i - 1);
 		}
 		header[header.length - 1] = "Average";
 		table.addRow(header);
 
 		// Body
-		for (int i = 0; i < holder.size(); i++) {
+		for (int i = 0; i < holder.size(); i++)
+		{
 			PhaseDpsHolder h = holder.get(i);
 			Player p = h.getPlayer();
 			table.addRow(
@@ -176,7 +193,8 @@ public class Statistics {
 		double total_time = 0.0;
 		durations[0] = "-";
 		durations[1] = "-";
-		for (int i = 2; i < fight_intervals.size() + 2; i++) {
+		for (int i = 2; i < fight_intervals.size() + 2; i++)
+		{
 			Point p = fight_intervals.get(i - 2);
 			double time = (p.getY() - p.getX()) / 1000.0;
 			total_time += time;
@@ -188,7 +206,8 @@ public class Statistics {
 		String[] intervals = new String[fight_intervals.size() + 3];
 		intervals[0] = "-";
 		intervals[1] = "-";
-		for (int i = 2; i < fight_intervals.size() + 2; i++) {
+		for (int i = 2; i < fight_intervals.size() + 2; i++)
+		{
 			Point p = fight_intervals.get(i - 2);
 			intervals[i] = "(" + String.format("%.2f", p.getX() / 1000.0) + ", "
 					+ String.format("%.2f", p.getY() / 1000.0) + ")";
@@ -200,7 +219,8 @@ public class Statistics {
 	}
 
 	// Damage Distribution
-	public String getDamageDistribution() {
+	public String getDamageDistribution()
+	{
 
 		// Table
 		TableBuilder table = new TableBuilder();
@@ -212,16 +232,22 @@ public class Statistics {
 		output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518');
 
 		// Body
-		for (Player p : playerList) {
+		for (Player p : playerList)
+		{
 
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
 			Map<Integer, Integer> skill_damage = new HashMap<Integer, Integer>();
 
-			for (DamageLog log : damage_logs) {
-				if (skill_damage.containsKey(log.getID())) {
+			for (DamageLog log : damage_logs)
+			{
+				if (skill_damage.containsKey(log.getID()))
+				{
 					skill_damage.put(log.getID(), skill_damage.get(log.getID()) + log.getDamage());
-				} else {
-					if (log.getID() > 0) {
+				}
+				else
+				{
+					if (log.getID() > 0)
+					{
 						skill_damage.put(log.getID(), log.getDamage());
 					}
 				}
@@ -234,9 +260,11 @@ public class Statistics {
 
 			// Calculate % of each skill
 			skill_damage = Utility.sortByValue(skill_damage);
-			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet()) {
+			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet())
+			{
 				String skill_name = skillData.getName(entry.getKey());
-				if (!CustomSkill.contains(skill_name)) {
+				if (!CustomSkill.contains(skill_name))
+				{
 					double damage = entry.getValue();
 					table.addRow(skill_name, String.valueOf((int) damage),
 							String.format("%.2f", (damage / damage_sum * 100)));
@@ -252,7 +280,8 @@ public class Statistics {
 	}
 
 	// Generate a graph
-	public String getTotalDamageGraph(String base) {
+	public String getTotalDamageGraph(String base)
+	{
 
 		// Build chart
 		XYChartBuilder chartBuilder = new XYChartBuilder().width(1600).height(900);
@@ -268,13 +297,16 @@ public class Statistics {
 		chart.getStyler().setLegendFont(new Font("Dialog", Font.PLAIN, 16));
 
 		// Add series to chart
-		for (Player p : playerList) {
+		for (Player p : playerList)
+		{
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
 			double[] x = new double[damage_logs.size()];
 			double[] y = new double[damage_logs.size()];
 			double total_damage = 0.0;
-			for (int i = 0; i < damage_logs.size(); i++) {
-				if (CustomSkill.getEnum(damage_logs.get(i).getID()) == null) {
+			for (int i = 0; i < damage_logs.size(); i++)
+			{
+				if (CustomSkill.getEnum(damage_logs.get(i).getID()) == null)
+				{
 					total_damage = total_damage + damage_logs.get(i).getDamage();
 					x[i] = damage_logs.get(i).getTime() / 1000.0;
 					y[i] = total_damage / 1000;
@@ -285,10 +317,12 @@ public class Statistics {
 
 		// Write chart to .png
 
-		try {
+		try
+		{
 			String file_name = "./graphs/" + base + "_" + bossData.getName() + "_TDG.png";
 			BitmapEncoder.saveBitmapWithDPI(chart, file_name, BitmapFormat.PNG, 300);
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -296,7 +330,8 @@ public class Statistics {
 	}
 
 	// Combat Statistics
-	public String getCombatStatistics() {
+	public String getCombatStatistics()
+	{
 
 		// Table
 		List<String[]> all_combat_stats = new ArrayList<String[]>();
@@ -311,43 +346,59 @@ public class Statistics {
 		sortPlayerList();
 
 		// Body
-		for (Player p : playerList) {
+		for (Player p : playerList)
+		{
 
 			double power_loops = 0.0, crit = 0.0, schl = 0.0, move = 0.0, flank = 0.0;
 			int swap = 0, dodge = 0, ress = 0, down = 0, died = 0;
 			boolean is_dead = false;
 
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatData.getCombatList());
-			for (DamageLog log : damage_logs) {
+			for (DamageLog log : damage_logs)
+			{
 
-				if (!log.isCondi()) {
-					if (log.getResult().equals(Result.CRIT)) {
+				if (!log.isCondi())
+				{
+					if (log.getResult().equals(Result.CRIT))
+					{
 						crit++;
 					}
-					if (log.isNinety()) {
+					if (log.isNinety())
+					{
 						schl++;
 					}
-					if (log.isMoving()) {
+					if (log.isMoving())
+					{
 						move++;
 					}
-					if (log.isFlanking()) {
+					if (log.isFlanking())
+					{
 						flank++;
 					}
 					power_loops++;
 				}
-				if (log.isStatechange().equals(StateChange.WEAPON_SWAP)) {
+				if (log.isStatechange().equals(StateChange.WEAPON_SWAP))
+				{
 					swap++;
-				} else if (log.isStatechange().equals(StateChange.CHANGE_DOWN)) {
+				}
+				else if (log.isStatechange().equals(StateChange.CHANGE_DOWN))
+				{
 					down++;
-				} else if (!is_dead && log.isStatechange().equals(StateChange.CHANGE_DEAD)) {
+				}
+				else if (!is_dead && log.isStatechange().equals(StateChange.CHANGE_DEAD))
+				{
 					died = log.getTime();
 					is_dead = true;
 				}
 				CustomSkill skill = CustomSkill.getEnum(log.getID());
-				if (skill != null) {
-					if (skill.equals(CustomSkill.DODGE)) {
+				if (skill != null)
+				{
+					if (skill.equals(CustomSkill.DODGE))
+					{
 						dodge++;
-					} else if (skill.equals(CustomSkill.RESURRECT)) {
+					}
+					else if (skill.equals(CustomSkill.RESURRECT))
+					{
 						ress++;
 					}
 				}
@@ -362,7 +413,8 @@ public class Statistics {
 			all_combat_stats.add(combat_stats);
 		}
 
-		for (int i = 0; i < playerList.size(); i++) {
+		for (int i = 0; i < playerList.size(); i++)
+		{
 			Player p = playerList.get(i);
 			table.addRow(Utility.concatStringArray(
 					new String[] { p.getAccount(), p.getCharacter(), p.getGroup(), p.getProf() },
@@ -372,7 +424,8 @@ public class Statistics {
 	}
 
 	// Final Boons
-	public String getFinalBoons() {
+	public String getFinalBoons()
+	{
 
 		List<String> boon_list = Boon.getList();
 		BoonFactory boonFactory = new BoonFactory();
@@ -381,19 +434,25 @@ public class Statistics {
 		// Sort players by subgroup
 		sortPlayerList();
 
-		for (int i = 0; i < playerList.size(); i++) {
+		for (int i = 0; i < playerList.size(); i++)
+		{
 			Player p = playerList.get(i);
 			Map<String, List<BoonLog>> boon_logs = p.getBoonMap(bossData, skillData, combatData.getCombatList());
 			String[] rates = new String[boon_list.size()];
-			for (int j = 0; j < boon_list.size(); j++) {
+			for (int j = 0; j < boon_list.size(); j++)
+			{
 				Boon boon = Boon.getEnum(boon_list.get(j));
 				AbstractBoon boon_object = boonFactory.makeBoon(boon);
 				List<BoonLog> logs = boon_logs.get(boon.getName());
 				String rate = "0.00";
-				if (!logs.isEmpty()) {
-					if (boon.getType().equals("duration")) {
+				if (!logs.isEmpty())
+				{
+					if (boon.getType().equals("duration"))
+					{
 						rate = getBoonDuration(getBoonIntervalsList(boon_object, logs));
-					} else if (boon.getType().equals("intensity")) {
+					}
+					else if (boon.getType().equals("intensity"))
+					{
 						rate = getAverageStacks(getBoonStacksList(boon_object, logs));
 					}
 				}
@@ -411,7 +470,8 @@ public class Statistics {
 		table.addRow(Utility.concatStringArray(new String[] { "Name", "Profession" }, boon_array));
 
 		// Body
-		for (int i = 0; i < playerList.size(); i++) {
+		for (int i = 0; i < playerList.size(); i++)
+		{
 			Player p = playerList.get(i);
 			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, all_rates.get(i)));
 		}
@@ -420,7 +480,8 @@ public class Statistics {
 	}
 
 	// Phase Boons
-	public String getPhaseBoons() {
+	public String getPhaseBoons()
+	{
 
 		List<String> boon_list = Boon.getList();
 		BoonFactory boonFactory = new BoonFactory();
@@ -430,14 +491,16 @@ public class Statistics {
 		// Sort players by subgroup
 		sortPlayerList();
 
-		for (int i = 0; i < playerList.size(); i++) {
+		for (int i = 0; i < playerList.size(); i++)
+		{
 
 			Player p = playerList.get(i);
 			Map<String, List<BoonLog>> boon_logs = p.getBoonMap(bossData, skillData, combatData.getCombatList());
 
 			String[][] rates = new String[boon_logs.size()][];
 
-			for (int j = 0; j < boon_list.size(); j++) {
+			for (int j = 0; j < boon_list.size(); j++)
+			{
 
 				Boon boon = Boon.getEnum(boon_list.get(j));
 				String[] rate = new String[fight_intervals.size()];
@@ -445,12 +508,16 @@ public class Statistics {
 
 				List<BoonLog> logs = boon_logs.get(boon.getName());
 
-				if (!logs.isEmpty()) {
+				if (!logs.isEmpty())
+				{
 					AbstractBoon boon_object = boonFactory.makeBoon(boon);
-					if (boon.getType().equals("duration")) {
+					if (boon.getType().equals("duration"))
+					{
 						List<Point> boon_intervals = getBoonIntervalsList(boon_object, logs);
 						rate = getBoonDuration(boon_intervals, fight_intervals);
-					} else if (boon.getType().equals("intensity")) {
+					}
+					else if (boon.getType().equals("intensity"))
+					{
 						List<Integer> boon_stacks = getBoonStacksList(boon_object, logs);
 						rate = getAverageStacks(boon_stacks, fight_intervals);
 					}
@@ -469,17 +536,20 @@ public class Statistics {
 		output.append('\u2502' + title + '\u2502' + System.lineSeparator());
 		output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518');
 
-		for (int i = 0; i < fight_intervals.size(); i++) {
+		for (int i = 0; i < fight_intervals.size(); i++)
+		{
 
 			table.clear();
 			table.addTitle("Phase " + (i + 1));
 			table.addRow(Utility.concatStringArray(new String[] { "Name", "Profession" }, boon_array));
-			for (int j = 0; j < playerList.size(); j++) {
+			for (int j = 0; j < playerList.size(); j++)
+			{
 				Player p = playerList.get(j);
 
 				String[][] player_rates = all_rates.get(j);
 				String[] row_rates = new String[boon_array.length];
-				for (int k = 0; k < boon_array.length; k++) {
+				for (int k = 0; k < boon_array.length; k++)
+				{
 					row_rates[k] = player_rates[k][i];
 				}
 				table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, row_rates));
@@ -493,7 +563,8 @@ public class Statistics {
 	}
 
 	// Private Methods
-	private List<Point> getFightIntervals() {
+	private List<Point> getFightIntervals()
+	{
 
 		List<Point> fight_intervals = new ArrayList<Point>();
 		List<CombatItem> combatList = combatData.getCombatList();
@@ -503,54 +574,78 @@ public class Statistics {
 		int i_count;
 		int t_invuln;
 
-		if (bossData.getName().equals("Vale Guardian")) {
+		if (bossData.getName().equals("Vale Guardian"))
+		{
 			i_count = 2;
 			t_invuln = 20000;
-		} else if (bossData.getName().equals("Gorseval the Multifarious")) {
+		}
+		else if (bossData.getName().equals("Gorseval the Multifarious"))
+		{
 			i_count = 2;
 			t_invuln = 30000;
-		} else if (bossData.getName().equals("Sabetha the Saboteur")) {
+		}
+		else if (bossData.getName().equals("Sabetha the Saboteur"))
+		{
 			i_count = 3;
 			t_invuln = 25000;
-		} else if (bossData.getName().equals("Xera")) {
+		}
+		else if (bossData.getName().equals("Xera"))
+		{
 			i_count = 1;
 			t_invuln = 60000;
-		} else if (bossData.getName().equals("Slothasor")) {
+		}
+		else if (bossData.getName().equals("Slothasor"))
+		{
 			i_count = 5;
 			t_invuln = 7000;
-		} else if (bossData.getName().equals("Samarog")) {
+		}
+		else if (bossData.getName().equals("Samarog"))
+		{
 			i_count = 2;
 			t_invuln = 40000;
-		} else if (bossData.getName().equals("Keep Construct")) {
+		}
+		else if (bossData.getName().equals("Keep Construct"))
+		{
 			int t_curr = 0;
 			int t_prev = timeStart;
 			// Flag to show first phase before burn phases
 			boolean first_phase_flag = true;
 			// Flag to prevent multiple invuln phases causing more intervals
 			boolean same_phase_flag = false;
-			for (CombatItem c : combatList) {
+			for (CombatItem c : combatList)
+			{
 				t_curr = c.getTime();
-				if (c.getSrcAgent() == bossData.getAgent()) {
+				if (c.getSrcAgent() == bossData.getAgent())
+				{
 					// Start of invulnerability (757 is invulnerability skill
 					// id)
-					if (c.getSkillID() == 757 && c.getDstAgent() == bossData.getAgent()) {
-						if (first_phase_flag) {
+					if (c.getSkillID() == 757 && c.getDstAgent() == bossData.getAgent())
+					{
+						if (first_phase_flag)
+						{
 							fight_intervals.add(new Point(t_prev, t_curr - combatStart));
 							first_phase_flag = false;
 						}
 						// End of invulnerability (DstAgent is not set)
-					} else if (c.getSkillID() == 757) {
-						if (!same_phase_flag) {
+					}
+					else if (c.getSkillID() == 757)
+					{
+						if (!same_phase_flag)
+						{
 							t_prev = t_curr - combatStart;
 						}
 						same_phase_flag = true;
 						// Start of red/white orb phase (35025 is Xera's Boon
 						// skill id)
-					} else if (c.getSkillID() == 35025 && c.getDstAgent() == bossData.getAgent()) {
+					}
+					else if (c.getSkillID() == 35025 && c.getDstAgent() == bossData.getAgent())
+					{
 						fight_intervals.add(new Point(t_prev, t_curr - combatStart));
 						same_phase_flag = false;
 						// End of red/white orb phase
-					} else if (c.getSkillID() == 35025) {
+					}
+					else if (c.getSkillID() == 35025)
+					{
 						t_prev = t_curr - combatStart;
 					}
 				}
@@ -558,7 +653,9 @@ public class Statistics {
 			// Add last burn phase
 			fight_intervals.add(new Point(t_prev, bossData.getLastAware() - combatStart));
 			return fight_intervals;
-		} else {
+		}
+		else
+		{
 			fight_intervals.add(new Point(timeStart, bossData.getLastAware() - bossData.getFirstAware()));
 			return fight_intervals;
 		}
@@ -566,21 +663,26 @@ public class Statistics {
 		// Get the interval when the boss is invulnerable
 		List<List<Point>> i_intervals = new ArrayList<List<Point>>();
 
-		for (Player p : playerList) {
+		for (Player p : playerList)
+		{
 			List<DamageLog> damage_logs = p.getOutBossDamage(bossData, combatList);
 			int t_curr = 0;
 			int t_prev = 0;
 			List<Point> player_intervals = new ArrayList<Point>();
-			for (DamageLog log : damage_logs) {
-				if (!log.isCondi()) {
+			for (DamageLog log : damage_logs)
+			{
+				if (!log.isCondi())
+				{
 					t_curr = log.getTime();
-					if ((t_curr - t_prev) > t_invuln) {
+					if ((t_curr - t_prev) > t_invuln)
+					{
 						player_intervals.add(new Point(t_prev, t_curr));
 					}
 					t_prev = t_curr;
 				}
 			}
-			if (player_intervals.size() == i_count) {
+			if (player_intervals.size() == i_count)
+			{
 				i_intervals.add(player_intervals);
 			}
 
@@ -589,37 +691,46 @@ public class Statistics {
 		// Derive the fight intervals
 		List<Point> real_fight_intervals = new ArrayList<Point>();
 
-		for (int i = 0; i < i_count; i++) {
+		for (int i = 0; i < i_count; i++)
+		{
 			fight_intervals.add(new Point(timeStart, bossData.getLastAware() - bossData.getFirstAware()));
 			real_fight_intervals.add(new Point(timeStart, bossData.getLastAware() - bossData.getFirstAware()));
 		}
 		real_fight_intervals.add(new Point(0, bossData.getLastAware() - bossData.getFirstAware()));
-		for (List<Point> player_intervals : i_intervals) {
-			for (int i = 0; i < i_count; i++) {
+		for (List<Point> player_intervals : i_intervals)
+		{
+			for (int i = 0; i < i_count; i++)
+			{
 				Point new_point = player_intervals.get(i);
 				Point old_point = fight_intervals.get(i);
 				int t_begin = new_point.x;
 				int t_end = new_point.y;
-				if (t_begin > old_point.x) {
+				if (t_begin > old_point.x)
+				{
 					old_point.x = t_begin;
 				}
-				if (t_end < old_point.y) {
+				if (t_end < old_point.y)
+				{
 					old_point.y = t_end;
 				}
 			}
 		}
 		// Shift points to the right
-		for (int i = 0; i < real_fight_intervals.size(); i++) {
+		for (int i = 0; i < real_fight_intervals.size(); i++)
+		{
 			// Start
-			if (i == 0) {
+			if (i == 0)
+			{
 				real_fight_intervals.get(i).y = fight_intervals.get(i).x;
 			}
 			// End
-			else if ((i + 1) == real_fight_intervals.size()) {
+			else if ((i + 1) == real_fight_intervals.size())
+			{
 				real_fight_intervals.get(i).x = fight_intervals.get(i - 1).y;
 			}
 			// Middle
-			else {
+			else
+			{
 				real_fight_intervals.get(i).x = fight_intervals.get(i - 1).y;
 				real_fight_intervals.get(i).y = fight_intervals.get(i).x;
 			}
@@ -628,7 +739,8 @@ public class Statistics {
 		return real_fight_intervals;
 	}
 
-	private List<Point> getBoonIntervalsList(AbstractBoon boon, List<BoonLog> boon_logs) {
+	private List<Point> getBoonIntervalsList(AbstractBoon boon, List<BoonLog> boon_logs)
+	{
 
 		// Initialise variables
 		int t_prev = 0;
@@ -636,7 +748,8 @@ public class Statistics {
 		List<Point> boon_intervals = new ArrayList<Point>();
 
 		// Loop: update then add durations
-		for (BoonLog log : boon_logs) {
+		for (BoonLog log : boon_logs)
+		{
 			t_curr = log.getTime();
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
@@ -650,47 +763,62 @@ public class Statistics {
 		// Trim duration overflow
 		int fight_duration = bossData.getLastAware() - bossData.getFirstAware();
 		int last = boon_intervals.size() - 1;
-		if (boon_intervals.get(last).getY() > fight_duration) {
+		if (boon_intervals.get(last).getY() > fight_duration)
+		{
 			boon_intervals.get(last).y = fight_duration;
 		}
 
 		return boon_intervals;
 	}
 
-	private String getBoonDuration(List<Point> boon_intervals) {
+	private String getBoonDuration(List<Point> boon_intervals)
+	{
 
 		// Calculate average duration
 		double average_duration = 0;
-		for (Point p : boon_intervals) {
+		for (Point p : boon_intervals)
+		{
 			average_duration = average_duration + (p.getY() - p.getX());
 		}
 		return String.format("%.2f", (average_duration / (bossData.getLastAware() - bossData.getFirstAware())));
 	}
 
-	private String[] getBoonDuration(List<Point> boon_intervals, List<Point> fight_intervals) {
+	private String[] getBoonDuration(List<Point> boon_intervals, List<Point> fight_intervals)
+	{
 
 		// Phase durations
 		String[] phase_durations = new String[fight_intervals.size()];
 
 		// Loop: add intervals in between, merge, calculate duration
-		for (int i = 0; i < fight_intervals.size(); i++) {
+		for (int i = 0; i < fight_intervals.size(); i++)
+		{
 			Point p = fight_intervals.get(i);
 			List<Point> boons_intervals_during_phase = new ArrayList<Point>();
-			for (Point b : boon_intervals) {
-				if (b.x < p.y && p.x < b.y) {
-					if (p.x <= b.x && b.y <= p.y) {
+			for (Point b : boon_intervals)
+			{
+				if (b.x < p.y && p.x < b.y)
+				{
+					if (p.x <= b.x && b.y <= p.y)
+					{
 						boons_intervals_during_phase.add(b);
-					} else if (b.x < p.x && p.y < b.y) {
+					}
+					else if (b.x < p.x && p.y < b.y)
+					{
 						boons_intervals_during_phase.add(p);
-					} else if (b.x < p.x && b.y <= p.y) {
+					}
+					else if (b.x < p.x && b.y <= p.y)
+					{
 						boons_intervals_during_phase.add(new Point(p.x, b.y));
-					} else if (p.x <= b.x && p.y < b.y) {
+					}
+					else if (p.x <= b.x && p.y < b.y)
+					{
 						boons_intervals_during_phase.add(new Point(b.x, p.y));
 					}
 				}
 			}
 			double duration = 0;
-			for (Point b : boons_intervals_during_phase) {
+			for (Point b : boons_intervals_during_phase)
+			{
 				duration = duration + (b.getY() - b.getX());
 			}
 			phase_durations[i] = String.format("%.2f", (duration / (p.getY() - p.getX())));
@@ -699,7 +827,8 @@ public class Statistics {
 		return phase_durations;
 	}
 
-	private List<Integer> getBoonStacksList(AbstractBoon boon, List<BoonLog> boon_logs) {
+	private List<Integer> getBoonStacksList(AbstractBoon boon, List<BoonLog> boon_logs)
+	{
 
 		// Initialise variables
 		int t_prev = 0;
@@ -708,14 +837,18 @@ public class Statistics {
 		boon_stacks.add(0);
 
 		// Loop: fill, update, and add to stacks
-		for (BoonLog log : boon_logs) {
+		for (BoonLog log : boon_logs)
+		{
 			t_curr = log.getTime();
 			boon.addStacksBetween(boon_stacks, t_curr - t_prev);
 			boon.update(t_curr - t_prev);
 			boon.add(log.getValue());
-			if (t_curr != t_prev) {
+			if (t_curr != t_prev)
+			{
 				boon_stacks.add(boon.getStackValue());
-			} else {
+			}
+			else
+			{
 				boon_stacks.set(boon_stacks.size() - 1, boon.getStackValue());
 			}
 			t_prev = t_curr;
@@ -728,20 +861,23 @@ public class Statistics {
 		return boon_stacks;
 	}
 
-	private String getAverageStacks(List<Integer> boon_stacks) {
+	private String getAverageStacks(List<Integer> boon_stacks)
+	{
 
 		// Calculate average stacks
 		double average_stacks = boon_stacks.stream().mapToInt(Integer::intValue).sum();
 		return String.format("%.2f", average_stacks / boon_stacks.size());
 	}
 
-	private String[] getAverageStacks(List<Integer> boon_stacks, List<Point> fight_intervals) {
+	private String[] getAverageStacks(List<Integer> boon_stacks, List<Point> fight_intervals)
+	{
 
 		// Phase stacks
 		String[] phase_stacks = new String[fight_intervals.size()];
 
 		// Loop: get sublist and calculate average stacks
-		for (int i = 0; i < fight_intervals.size(); i++) {
+		for (int i = 0; i < fight_intervals.size(); i++)
+		{
 			Point p = fight_intervals.get(i);
 			List<Integer> phase_boon_stacks = new ArrayList<Integer>(boon_stacks.subList(p.x, p.y));
 			double average_stacks = phase_boon_stacks.stream().mapToInt(Integer::intValue).sum();
@@ -752,7 +888,8 @@ public class Statistics {
 
 	// resorts the player list by subgroup - checks for "N/A" for logs before
 	// subgroups were added
-	private void sortPlayerList() {
+	private void sortPlayerList()
+	{
 		playerList.sort((a, b) -> Integer.parseInt(a.getGroup() != "N/A" ? a.getGroup() : "0")
 				- Integer.parseInt(b.getGroup() != "N/A" ? b.getGroup() : "0"));
 	}

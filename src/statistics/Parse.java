@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -283,7 +284,7 @@ public class Parse
 		}
 	}
 
-	private void fillMissingData()
+	public void fillMissingData()
 	{
 		// Set Agent instid, first_aware and last_aware
 		List<AgentItem> agent_list = agent_data.getAllAgentsList();
@@ -324,11 +325,16 @@ public class Parse
 			}
 		}
 
+		// Manual log target selection
+		if (boss_data.getID() == 1)
+		{
+			targetSelection();
+		}
+
 		// Set Boss data agent, instid, first_aware, last_aware and name
 		List<AgentItem> NPC_list = agent_data.getNPCAgentList();
 		for (AgentItem NPC : NPC_list)
 		{
-			// An automatic log
 			if (NPC.getProf().endsWith(String.valueOf(boss_data.getID())))
 			{
 				if (boss_data.getAgent() == 0)
@@ -339,16 +345,6 @@ public class Parse
 					boss_data.setName(NPC.getName());
 				}
 				boss_data.setLastAware(NPC.getLastAware());
-			}
-			// A manual log
-			else if (boss_data.getID() == 1)
-			{
-				boss_data.setAgent(NPC.getAgent());
-				boss_data.setInstid(NPC.getInstid());
-				boss_data.setFirstAware(NPC.getFirstAware());
-				boss_data.setName(NPC.getName());
-				boss_data.setLastAware(NPC.getLastAware());
-				break;
 			}
 		}
 
@@ -385,6 +381,56 @@ public class Parse
 			}
 		}
 
+	}
+
+	@SuppressWarnings("resource")
+	private void targetSelection()
+	{
+		List<AgentItem> NPC_list = agent_data.getNPCAgentList();
+		TableBuilder target_table = new TableBuilder();
+		target_table.addTitle("NPC List");
+		target_table.addRow("ID", "Name", "Species");
+
+		for (AgentItem NPC : NPC_list)
+		{
+			target_table.addRow(String.valueOf(NPC.getInstid()), NPC.getName(), NPC.getProf().substring(4));
+		}
+
+		System.out.println(target_table.toString());
+
+		// Read user input
+		Scanner scan = null;
+		scan = new Scanner(System.in);
+		boolean quitting = false;
+		while (!quitting)
+		{
+			System.out.println(Utility.boxText("Select an NPC to target by ID."));
+			System.out.print(" >> ");
+			// A number
+			if (scan.hasNextInt())
+			{
+				int target_id = scan.nextInt();
+				for (AgentItem NPC : NPC_list)
+				{
+					// Input matches an ID
+					if (target_id == NPC.getInstid())
+					{
+						boss_data.setAgent(NPC.getAgent());
+						boss_data.setInstid(NPC.getInstid());
+						boss_data.setFirstAware(NPC.getFirstAware());
+						boss_data.setName(NPC.getName());
+						boss_data.setLastAware(NPC.getLastAware());
+						quitting = true;
+						break;
+					}
+				}
+			}
+			else
+			{
+				System.out.println(Utility.boxText("Invalid NPC ID. Try another ID."));
+			}
+			scan.nextLine();
+		}
 	}
 
 	// Override

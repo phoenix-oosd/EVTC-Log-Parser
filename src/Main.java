@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -30,9 +29,11 @@ public class Main
 	public static void main(String[] args)
 	{
 		// Scanner
-		Scanner scan = new Scanner(System.in);
+		Scanner scan = null;
 		try
 		{
+			scan = new Scanner(System.in);
+
 			// Read arguments
 			for (String arg : args)
 			{
@@ -125,17 +126,11 @@ public class Main
 
 						// Read user input
 						MenuChoice choice = null;
-						try
+						System.out.println(Utility.boxText("Enter an option below (by number): "));
+						System.out.print(" >> ");
+						if (scan.hasNextInt())
 						{
-							System.out.println(Utility.boxText("Enter an option below (by number): "));
-							System.out.print(" >> ");
-							if (scan.hasNextInt())
-							{
-								choice = MenuChoice.getEnum(scan.nextInt());
-							}
-						} catch (InputMismatchException e)
-						{
-							e.printStackTrace();
+							choice = MenuChoice.getEnum(scan.nextInt());
 						}
 						scan.nextLine();
 
