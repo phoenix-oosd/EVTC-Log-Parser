@@ -404,7 +404,7 @@ public class Parse
 		boolean quitting = false;
 		while (!quitting)
 		{
-			System.out.println(Utility.boxText("Select an NPC to target by ID."));
+			System.out.println(Utility.boxText("Select an NPC to target by ID"));
 			System.out.print(" >> ");
 			// A number
 			if (scan.hasNextInt())
@@ -424,10 +424,11 @@ public class Parse
 						break;
 					}
 				}
+				System.out.println(Utility.boxText("WARNING : Invalid NPC ID"));
 			}
 			else
 			{
-				System.out.println(Utility.boxText("Invalid NPC ID. Try another ID."));
+				System.out.println(Utility.boxText("WARNING : Invalid NPC ID"));
 			}
 			scan.nextLine();
 		}
@@ -437,7 +438,6 @@ public class Parse
 	@Override
 	public String toString()
 	{
-
 		// Build tables
 		StringBuilder output = new StringBuilder();
 		TableBuilder table = new TableBuilder();

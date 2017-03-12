@@ -5,7 +5,6 @@ import java.util.List;
 
 public enum Boon
 {
-
 	// Boon
 	MIGHT("Might", "MIGHT", "intensity", 25),
 	QUICKNESS("Quickness", "QCKN", "duration", 5),
@@ -112,5 +111,4 @@ public enum Boon
 	{
 		return this.capacity;
 	}
-
 }

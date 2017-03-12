@@ -20,7 +20,7 @@ public class Main
 	private static boolean will_quit = false;
 	private static boolean will_display_versions = true;
 	private static Map<String, String> argument_map = new HashMap<>();
-	private static String old_version = Utility.boxText("Error: This only support arcdps builds 20170311 onwards.");
+	private static String old_version = Utility.boxText("ERROR   : This only supports versions 20170311 and onwards");
 	private static String current_file;
 	private static Parse parsed_file;
 	private static Statistics statistics;
@@ -65,7 +65,7 @@ public class Main
 					if (c != null && c.canBeAssociated())
 					{
 						String result = parseFileByChoice(c, Paths.get(file_path));
-						if (result.contains("Error"))
+						if (result.contains("ERROR"))
 						{
 							System.out.println(old_version);
 							scan.nextLine();
@@ -98,8 +98,14 @@ public class Main
 				// No logs to process
 				if (log_files.isEmpty())
 				{
-					System.out.println(Utility.boxText("No log files found at \""
-							+ log_folder.getAbsolutePath().toString() + "\". Press Enter to exit."));
+					try
+					{
+						System.out.println(Utility.boxText("ERROR : No log files found at \""
+								+ log_folder.getCanonicalPath().toString() + "\" ... press Enter to exit"));
+					} catch (IOException e)
+					{
+						e.printStackTrace();
+					}
 					scan.nextLine();
 					return;
 				}
@@ -126,7 +132,7 @@ public class Main
 
 						// Read user input
 						MenuChoice choice = null;
-						System.out.println(Utility.boxText("Enter an option below (by number): "));
+						System.out.println(Utility.boxText("Enter an option by number"));
 						System.out.print(" >> ");
 						if (scan.hasNextInt())
 						{
@@ -137,7 +143,7 @@ public class Main
 						// Invalid option
 						if (choice == null)
 						{
-							System.out.println(Utility.boxText("Invalid option. Try another option."));
+							System.out.println(Utility.boxText("WARNING : Invalid option"));
 						}
 						// Quit
 						else if (choice.equals(MenuChoice.QUIT))
@@ -150,9 +156,10 @@ public class Main
 							// Apply option to all logs
 							for (Path log : log_files)
 							{
-								System.out.println(Utility.boxText("Input file: " + log.getFileName().toString()));
+								System.out.println(Utility.boxText("INPUT   : " + log.getFileName().toString()));
 								String output = parseFileByChoice(choice, log);
-								System.out.println(output);
+								System.out.println(output + System.lineSeparator() + System.lineSeparator()
+										+ Utility.fillWithChar(50, '\u2500') + System.lineSeparator());
 							}
 						}
 					}
@@ -183,7 +190,7 @@ public class Main
 				current_file = path.getFileName().toString().split("\\.")[0];
 				if (will_display_versions)
 				{
-					System.out.println(Utility.boxText("Log version: " + parsed_file.getLogData().getBuildVersion()));
+					System.out.println(Utility.boxText("VERSION : " + parsed_file.getLogData().getBuildVersion()));
 				}
 				if (Integer.valueOf(parsed_file.getLogData().getBuildVersion().replaceAll("EVTC", "")) < 20170311)
 				{
@@ -210,7 +217,7 @@ public class Main
 		}
 		else if (choice.equals(MenuChoice.G_TOTAL_DMG))
 		{
-			return Utility.boxText("Output file: " + statistics.getTotalDamageGraph(current_file));
+			return Utility.boxText("OUTPUT  : " + statistics.getTotalDamageGraph(current_file));
 		}
 		else if (choice.equals(MenuChoice.MISC_STATS))
 		{
@@ -235,7 +242,7 @@ public class Main
 			{
 				e.printStackTrace();
 			}
-			return Utility.boxText("Output file: " + evtc_dump.getName());
+			return Utility.boxText("OUTPUT  : " + evtc_dump.getName());
 		}
 		else if (choice.equals(MenuChoice.DUMP_TABLES))
 		{
@@ -251,7 +258,7 @@ public class Main
 			{
 				e.printStackTrace();
 			}
-			return Utility.boxText("Output file:\t" + text_dump.getName());
+			return Utility.boxText("OUTPUT  : " + text_dump.getName());
 		}
 		return "";
 	}
