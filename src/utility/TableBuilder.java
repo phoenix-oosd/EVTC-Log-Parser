@@ -37,7 +37,6 @@ public class TableBuilder
 	@Override
 	public String toString()
 	{
-
 		// Initialize
 		removeEmptyColumns();
 		StringBuilder output = new StringBuilder();
