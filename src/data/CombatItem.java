@@ -1,11 +1,13 @@
 package data;
 
 import enums.Activation;
+import enums.BuffRemove;
 import enums.IFF;
 import enums.Result;
 import enums.StateChange;
 
-public class CombatItem {
+public class CombatItem
+{
 
 	// Fields
 	private int time;
@@ -19,21 +21,22 @@ public class CombatItem {
 	private int dst_instid;
 	private int src_master_instid;
 	private IFF iff;
-	private boolean is_buff;
+	private int is_buff;
 	private Result result;
 	private Activation is_activation;
-	private boolean is_buffremove;
-	private boolean is_ninety;
-	private boolean is_fifty;
-	private boolean is_moving;
+	private BuffRemove is_buffremove;
+	private int is_ninety;
+	private int is_fifty;
+	private int is_moving;
 	private StateChange is_statechange;
-	private boolean is_flanking;
+	private int is_flanking;
 
 	// Constructor
 	public CombatItem(int time, long src_agent, long dst_agent, int value, int buff_dmg, int overstack_value,
-			int skill_id, int src_instid, int dst_instid, int src_master_instid, IFF iff, boolean buff, Result result,
-			Activation is_activation, boolean is_buffremove, boolean is_ninety, boolean is_fifty, boolean is_moving,
-			StateChange is_statechange, boolean is_flanking) {
+			int skill_id, int src_instid, int dst_instid, int src_master_instid, IFF iff, int buff, Result result,
+			Activation is_activation, BuffRemove is_buffremove, int is_ninety, int is_fifty, int is_moving,
+			StateChange is_statechange, int is_flanking)
+	{
 		this.time = time;
 		this.src_agent = src_agent;
 		this.dst_agent = dst_agent;
@@ -57,7 +60,8 @@ public class CombatItem {
 	}
 
 	// Public Methods
-	public String[] toStringArray() {
+	public String[] toStringArray()
+	{
 		String[] array = new String[20];
 		array[0] = String.valueOf(time);
 		array[1] = Long.toHexString(src_agent);
@@ -83,100 +87,124 @@ public class CombatItem {
 	}
 
 	// Getters
-	public int getTime() {
+	public int getTime()
+	{
 		return time;
 	}
 
-	public long getSrcAgent() {
+	public long getSrcAgent()
+	{
 		return src_agent;
 	}
 
-	public long getDstAgent() {
+	public long getDstAgent()
+	{
 		return dst_agent;
 	}
 
-	public int getValue() {
+	public int getValue()
+	{
 		return value;
 	}
 
-	public int getBuffDmg() {
+	public int getBuffDmg()
+	{
 		return buff_dmg;
 	}
 
-	public int getOverstackValue() {
+	public int getOverstackValue()
+	{
 		return overstack_value;
 	}
 
-	public int getSkillID() {
+	public int getSkillID()
+	{
 		return skill_id;
 	}
 
-	public int getSrcInstid() {
+	public int getSrcInstid()
+	{
 		return src_instid;
 	}
 
-	public int getDstInstid() {
+	public int getDstInstid()
+	{
 		return dst_instid;
 	}
 
-	public int getSrcMasterInstid() {
+	public int getSrcMasterInstid()
+	{
 		return src_master_instid;
 	}
 
-	public IFF getIFF() {
+	public IFF getIFF()
+	{
 		return iff;
 	}
 
-	public boolean isBuff() {
+	public int isBuff()
+	{
 		return is_buff;
 	}
 
-	public Result getResult() {
+	public Result getResult()
+	{
 		return result;
 	}
 
-	public Activation isActivation() {
+	public Activation isActivation()
+	{
 		return is_activation;
 	}
 
-	public boolean isBuffremove() {
+	public BuffRemove isBuffremove()
+	{
 		return is_buffremove;
 	}
 
-	public boolean isNinety() {
+	public int isNinety()
+	{
 		return is_ninety;
 	}
 
-	public boolean isFifty() {
+	public int isFifty()
+	{
 		return is_fifty;
 	}
 
-	public boolean isMoving() {
+	public int isMoving()
+	{
 		return is_moving;
 	}
 
-	public boolean isFlanking() {
+	public int isFlanking()
+	{
 		return is_flanking;
 	}
 
-	public StateChange isStateChange() {
+	public StateChange isStateChange()
+	{
 		return is_statechange;
 	}
 
 	// Setters
-	public void setSrcAgent(long src_agent) {
+	public void setSrcAgent(long src_agent)
+	{
 		this.src_agent = src_agent;
 	}
 
-	public void setDstAgent(long dst_agent) {
+	public void setDstAgent(long dst_agent)
+	{
 		this.dst_agent = dst_agent;
 	}
 
-	public void setSrcInstid(int src_instid) {
+	public void setSrcInstid(int src_instid)
+	{
 		this.src_instid = src_instid;
 	}
 
-	public void setDstInstid(int dst_instid) {
+	public void setDstInstid(int dst_instid)
+	{
 		this.dst_instid = dst_instid;
 	}
 

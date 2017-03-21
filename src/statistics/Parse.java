@@ -22,6 +22,7 @@ import data.SkillData;
 import data.SkillItem;
 import enums.Activation;
 import enums.Agent;
+import enums.BuffRemove;
 import enums.IFF;
 import enums.Result;
 import enums.StateChange;
@@ -248,7 +249,7 @@ public class Parse
 			IFF iff = IFF.getEnum(f.read());
 
 			// 1 byte: buff
-			boolean buff = Utility.toBool(f.read());
+			int buff = f.read();
 
 			// 1 byte: result
 			Result result = Result.getEnum(f.read());
@@ -257,22 +258,22 @@ public class Parse
 			Activation is_activation = Activation.getEnum(f.read());
 
 			// 1 byte: is_buffremove
-			boolean is_buffremove = Utility.toBool(f.read());
+			BuffRemove is_buffremove = BuffRemove.getEnum(f.read());
 
 			// 1 byte: is_ninety
-			boolean is_ninety = Utility.toBool(f.read());
+			int is_ninety = f.read();
 
 			// 1 byte: is_fifty
-			boolean is_fifty = Utility.toBool(f.read());
+			int is_fifty = f.read();
 
 			// 1 byte: is_moving
-			boolean is_moving = Utility.toBool(f.read());
+			int is_moving = f.read();
 
 			// 1 byte: is_statechange
 			StateChange is_statechange = StateChange.getEnum(f.read());
 
 			// 1 byte: is_flanking
-			boolean is_flanking = Utility.toBool(f.read());
+			int is_flanking = f.read();
 
 			// 3 bytes: garbage
 			safeSkip(3);
@@ -379,7 +380,6 @@ public class Parse
 						c.setDstInstid(boss_data.getInstid());
 					}
 				}
-
 				break;
 			}
 		}
@@ -427,7 +427,10 @@ public class Parse
 						break;
 					}
 				}
-				System.out.println(Utility.boxText("WARNING : Invalid NPC ID"));
+				if (!quitting)
+				{
+					System.out.println(Utility.boxText("WARNING : Invalid NPC ID"));
+				}
 			}
 			else
 			{

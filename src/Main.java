@@ -49,7 +49,7 @@ public class Main
 			// Handle arguments
 			if (is_anon != null)
 			{
-				Statistics.willHidePlayers = Utility.toBool(Integer.valueOf(is_anon));
+				Statistics.hiding_players = Utility.toBool(Integer.valueOf(is_anon));
 			}
 
 			// File Association

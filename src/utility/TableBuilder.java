@@ -1,6 +1,9 @@
 package utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -9,6 +12,7 @@ public class TableBuilder
 
 	// Fields
 	private String title = "";
+	private String[] header = null;
 	private List<String[]> rows = new ArrayList<String[]>();
 	private String nl = System.lineSeparator();
 
@@ -28,9 +32,58 @@ public class TableBuilder
 		}
 	}
 
+	public void addSeparator()
+	{
+		if (rows.size() > 2)
+		{
+			String[] separator = new String[rows.get(0).length];
+			Arrays.fill(separator, "");
+			rows.add(separator);
+		}
+	}
+
+	public void sortAsDouble(int col)
+	{
+		// Get body
+		int separator = 0;
+		for (String[] row : rows)
+		{
+			if (row[0].equals(""))
+			{
+				break;
+			}
+			separator++;
+		}
+		List<String[]> body = rows.subList(1, separator);
+
+		// Sort by column
+		Collections.sort(body, new Comparator<String[]>()
+		{
+			@Override
+			public int compare(String[] x, String[] y)
+			{
+				double x_dbl = Double.parseDouble(x[col].replaceAll("\\s+", ""));
+				double y_dbl = Double.parseDouble(y[col].replaceAll("\\s+", ""));
+				if (x_dbl > y_dbl)
+				{
+					return -1;
+				}
+				else if (x_dbl == y_dbl)
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+			}
+		});
+	}
+
 	public void clear()
 	{
 		title = "";
+		header = null;
 		rows = new ArrayList<String[]>();
 	}
 
@@ -95,9 +148,31 @@ public class TableBuilder
 			String[] row = iter.next();
 			for (int colNum = 0; colNum < row.length; colNum++)
 			{
-				output.append('\u2502' + Utility.centerString(row[colNum], colWidths[colNum]));
+				if (row[0].equals(""))
+				{
+					if (colNum == 0)
+					{
+						output.append('\u251C');
+					}
+					else
+					{
+						output.append('\u253C');
+					}
+					output.append(Utility.fillWithChar(colWidths[colNum], '\u2500'));
+				}
+				else
+				{
+					output.append('\u2502' + Utility.centerString(row[colNum], colWidths[colNum]));
+				}
 			}
-			output.append('\u2502' + nl);
+			if (row[0].equals(""))
+			{
+				output.append('\u2524' + nl);
+			}
+			else
+			{
+				output.append('\u2502' + nl);
+			}
 		}
 		output.append('\u2514');
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++)

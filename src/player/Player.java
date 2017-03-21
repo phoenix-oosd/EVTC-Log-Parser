@@ -10,24 +10,22 @@ import data.BossData;
 import data.CombatItem;
 import data.SkillData;
 import enums.Boon;
-import enums.CustomSkill;
 import enums.IFF;
 import enums.StateChange;
 import statistics.Statistics;
 
 public class Player
 {
-
 	// Fields
 	private int instid;
 	private String account;
 	private String character;
-	private String group = "N/A";
+	private String group;
 	private String prof;
 	private int toughness;
 	private int healing;
 	private int condition;
-	private List<DamageLog> out_damage_logs = new ArrayList<DamageLog>();
+	private List<DamageLog> damage_logs = new ArrayList<DamageLog>();
 	private Map<String, List<BoonLog>> boon_map = new HashMap<>();
 
 	// Constructors
@@ -35,21 +33,10 @@ public class Player
 	{
 		this.instid = agent.getInstid();
 		String[] name = agent.getName().split(Character.toString('\0'));
-		if (name.length >= 2)
-		{
-			this.character = name[0];
-			this.account = name[1];
-			if (name.length == 3)
-			{
-				this.group = name[2];
-			}
-		}
-		else
-		{
-			this.character = agent.getName();
-			this.account = "Account.XXXX";
-		}
-		if (Statistics.willHidePlayers)
+		this.character = name[0];
+		this.account = name[1];
+		this.group = name[2];
+		if (Statistics.hiding_players)
 		{
 			this.character = "P:" + String.format("%04d", instid);
 			this.account = ":A." + String.format("%04d", instid);
@@ -61,6 +48,11 @@ public class Player
 	}
 
 	// Getters
+	public int getInstid()
+	{
+		return instid;
+	}
+
 	public String getAccount()
 	{
 		return account;
@@ -96,13 +88,13 @@ public class Player
 		return condition;
 	}
 
-	public List<DamageLog> getOutBossDamage(BossData bossData, List<CombatItem> combatList)
+	public List<DamageLog> getDamageLogs(BossData bossData, List<CombatItem> combatList)
 	{
-		if (out_damage_logs.isEmpty())
+		if (damage_logs.isEmpty())
 		{
-			setOutDamageLogs(bossData, combatList);
+			setDamageLogs(bossData, combatList);
 		}
-		return out_damage_logs;
+		return damage_logs;
 	}
 
 	public Map<String, List<BoonLog>> getBoonMap(BossData bossData, SkillData skillData, List<CombatItem> combatList)
@@ -115,45 +107,29 @@ public class Player
 	}
 
 	// Private Methods
-	private void setOutDamageLogs(BossData bossData, List<CombatItem> combatList)
+	private void setDamageLogs(BossData bossData, List<CombatItem> combatList)
 	{
-
-		int timeStart = bossData.getFirstAware();
-
+		int time_start = bossData.getFirstAware();
 		for (CombatItem c : combatList)
 		{
 			if (instid == c.getSrcInstid() || instid == c.getSrcMasterInstid())
 			{
 				StateChange state = c.isStateChange();
-				int time = c.getTime() - timeStart;
+				int time = c.getTime() - time_start;
 				if (bossData.getInstid() == c.getDstInstid() && c.getIFF().equals(IFF.FOE))
 				{
 					if (state.equals(StateChange.NORMAL))
 					{
-						if (c.isBuff() && c.getBuffDmg() != 0)
+						if (c.isBuff() == 1 && c.getBuffDmg() != 0)
 						{
-							out_damage_logs.add(new DamageLog(time, c.getBuffDmg(), c.getSkillID(), true, c.getResult(),
-									c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
+							damage_logs.add(new DamageLog(time, c.getBuffDmg(), c.getSkillID(), c.isBuff(),
+									c.getResult(), c.isNinety(), c.isMoving(), c.isFlanking()));
 						}
-						else if (!c.isBuff() && c.getValue() != 0)
+						else if (c.isBuff() == 0 && c.getValue() != 0)
 						{
-							out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
-									c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
+							damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), c.isBuff(),
+									c.getResult(), c.isNinety(), c.isMoving(), c.isFlanking()));
 						}
-					}
-				}
-				else if (instid == c.getSrcInstid())
-				{
-					if (state.equals(StateChange.CHANGE_DEAD) || state.equals(StateChange.CHANGE_DOWN)
-							|| state.equals(StateChange.WEAPON_SWAP))
-					{
-						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
-								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
-					}
-					else if (CustomSkill.getEnum(c.getSkillID()) != null)
-					{
-						out_damage_logs.add(new DamageLog(time, c.getValue(), c.getSkillID(), false, c.getResult(),
-								c.isNinety(), c.isMoving(), c.isStateChange(), c.isActivation(), c.isFlanking()));
 					}
 				}
 			}
@@ -177,7 +153,7 @@ public class Player
 			if (instid == c.getDstInstid())
 			{
 				String skill_name = skillData.getName(c.getSkillID());
-				if (c.isBuff() && (c.getValue() > 0))
+				if (c.isBuff() == 1 && c.getValue() > 0)
 				{
 					if (boon_map.containsKey(skill_name))
 					{
