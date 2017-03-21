@@ -469,6 +469,8 @@ public class Statistics
 		TableBuilder table = new TableBuilder();
 		String[] boon_array = Boon.getArray();
 
+		String[] phase_names = b_data.getPhaseNames();
+
 		String title = " Phase Boon Rates - " + b_data.getName() + ' ';
 		output.append('\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + System.lineSeparator());
 		output.append('\u2502' + title + '\u2502' + System.lineSeparator());
@@ -478,7 +480,7 @@ public class Statistics
 		{
 
 			table.clear();
-			table.addTitle("Phase " + (i + 1));
+			table.addTitle(phase_names[i]);
 			table.addRow(Utility.concatStringArray(new String[] { "Name", "Profession" }, boon_array));
 			for (int j = 0; j < player_list.size(); j++)
 			{
