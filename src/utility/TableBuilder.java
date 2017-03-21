@@ -12,7 +12,6 @@ public class TableBuilder
 
 	// Fields
 	private String title = "";
-	private String[] header = null;
 	private List<String[]> rows = new ArrayList<String[]>();
 	private String nl = System.lineSeparator();
 
@@ -83,7 +82,6 @@ public class TableBuilder
 	public void clear()
 	{
 		title = "";
-		header = null;
 		rows = new ArrayList<String[]>();
 	}
 

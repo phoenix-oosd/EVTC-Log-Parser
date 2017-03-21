@@ -41,10 +41,6 @@ public class BossData
 		{
 			return new String[] { "100% - 80%", "80% - 60%", "60% - 40%", "40% - 0%" };
 		}
-		else if (name.equals("Samarog"))
-		{
-			return new String[] { "100% - 66%", "66% - 33%", "33% - 0%" };
-		}
 		else if (name.equals("Keep Construct"))
 		{
 			return new String[] { "100% - 66%", "66% - 33%", "33% - 0%" };
@@ -52,6 +48,15 @@ public class BossData
 		// else if (name.equals("Xera"))
 		// {
 		// return new String[] { "100% - 50%", "50% - 0%" };
+		// }
+		else if (name.equals("Samarog"))
+		{
+			return new String[] { "100% - 66%", "66% - 33%", "33% - 0%" };
+		}
+		// else if (name.equals("Deimos"))
+		// {
+		// return new String[] { "100% - 75%", "75% - 50%", "50% - 25%", "25% -
+		// 10%" };
 		// }
 		return new String[] { "100% - 0%" };
 	}

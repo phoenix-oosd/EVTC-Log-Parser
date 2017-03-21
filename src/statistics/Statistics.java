@@ -320,7 +320,7 @@ public class Statistics
 			List<DamageLog> damage_logs = p.getDamageLogs(b_data, c_data.getCombatList());
 			int instid = p.getInstid();
 
-			// Calculate rates
+			// Rates
 			double power_loop_count = 0.0;
 			double critical_rate = 0.0;
 			double scholar_rate = 0.0;
@@ -337,14 +337,15 @@ public class Statistics
 					power_loop_count++;
 				}
 			}
+			power_loop_count = (power_loop_count == 0) ? 1 : power_loop_count;
 
-			// Calculate counts
+			// Counts
 			int swap = c_data.getStates(instid, StateChange.WEAPON_SWAP).size();
 			int down = c_data.getStates(instid, StateChange.CHANGE_DOWN).size();
 			int dodge = c_data.getSkillCount(instid, CustomSkill.DODGE.getID());
 			int ress = c_data.getSkillCount(instid, CustomSkill.RESURRECT.getID());
 
-			// Time of death
+			// R.I.P
 			List<Point> dead = c_data.getStates(instid, StateChange.CHANGE_DEAD);
 			double died = 0.0;
 			if (!dead.isEmpty())
@@ -360,8 +361,9 @@ public class Statistics
 					String.format("%.2f", flanking_rate / power_loop_count), String.valueOf(p.getToughness()),
 					String.valueOf(p.getHealing()), String.valueOf(p.getCondition()), String.valueOf(swap),
 					String.valueOf(dodge), String.valueOf(ress), String.valueOf(down),
-					String.format("%.2f", died / 1000) });
+					String.format("%06.2f", died / 1000.0) });
 		}
+
 		return table.toString();
 	}
 
@@ -511,36 +513,49 @@ public class Statistics
 		int[] health_thresholds = null;
 		if (b_data.getName().equals("Vale Guardian"))
 		{
-			time_threshold = 15000;
+			time_threshold = 20000;
 			health_thresholds = new int[] { 6600, 3300 };
 		}
 		else if (b_data.getName().equals("Gorseval the Multifarious"))
 		{
+			time_threshold = 20000;
 			health_thresholds = new int[] { 6600, 3300 };
 		}
 		else if (b_data.getName().equals("Sabetha the Saboteur"))
 		{
+			time_threshold = 20000;
 			health_thresholds = new int[] { 7500, 5000, 2500 };
 		}
 		else if (b_data.getName().equals("Slothasor"))
 		{
+			time_threshold = 5000;
 			health_thresholds = new int[] { 8000, 6000, 4000, 2000, 1000 };
 		}
 		else if (b_data.getName().equals("Matthias Gabrel"))
 		{
+			time_threshold = 1000;
 			health_thresholds = new int[] { 8000, 6000, 4000 };
 		}
-		else if (b_data.getName().equals("Samarog"))
-		{
-			health_thresholds = new int[] { 6600, 3300 };
-		}
+
 		else if (b_data.getName().equals("Keep Construct"))
 		{
+			time_threshold = 20000;
 			health_thresholds = new int[] { 6600, 3300 };
 		}
 		// else if (b_data.getName().equals("Xera"))
 		// {
+		// time_threshold = 20000;
 		// health_thresholds = new int[] { 5000 };
+		// }
+		else if (b_data.getName().equals("Samarog"))
+		{
+			time_threshold = 20000;
+			health_thresholds = new int[] { 6600, 3300 };
+		}
+		// else if (b_data.getName().equals("Deimos"))
+		// {
+		// time_threshold = 1000;
+		// health_thresholds = new int[] { 7500, 5000, 2500 };
 		// }
 		else
 		{
