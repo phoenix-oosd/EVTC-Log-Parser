@@ -96,7 +96,7 @@ public class Statistics
 			total_damage += damage;
 
 			// Add Row
-			table.addRow(p.getCharacter(), p.getProf(), String.format("%.2f", dps), String.valueOf((int) damage));
+			table.addRow(p.getCharacter(), p.getProf(), String.format("% 9.2f", dps), String.format("% 9.0f", damage));
 		}
 
 		// Sort by DPS
@@ -104,8 +104,8 @@ public class Statistics
 
 		// Footer
 		table.addSeparator();
-		table.addRow("GROUP TOTAL", "-", String.format("%.2f", total_dps), String.valueOf((int) total_damage));
-		table.addRow("TARGET HEALTH", "-", "-", String.valueOf(b_data.getHealth()));
+		table.addRow("GROUP TOTAL", "-", String.format("% 9.2f", total_dps), String.format("% 9.0f", total_damage));
+		table.addRow("TARGET HEALTH", "-", "-", String.format("% 9d", b_data.getHealth()));
 
 		return table.toString();
 	}
@@ -153,14 +153,14 @@ public class Statistics
 					}
 				}
 				double dps = phase_damage / (interval.getY() - interval.getX()) * 1000;
-				phase_dps[i] = String.format("%.2f", dps);
+				phase_dps[i] = String.format("% 9.2f", dps);
 
 				// Adjust moving average
 				average_dps = (((average_dps * i) + dps) / (i + 1));
 			}
 
 			// Add row
-			phase_dps[number_of_intervals] = String.format("%.2f", average_dps);
+			phase_dps[number_of_intervals] = String.format("% 9.2f", average_dps);
 			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, phase_dps));
 		}
 
@@ -189,8 +189,8 @@ public class Statistics
 		for (int i = 2; i < fight_intervals.size() + 2; i++)
 		{
 			Point p = fight_intervals.get(i - 2);
-			intervals[i] = "(" + String.format("%06.2f", p.getX() / 1000.0) + ", "
-					+ String.format("%06.2f", p.getY() / 1000.0) + ")";
+			intervals[i] = String.format("%06.2f", p.getX() / 1000.0) + "-"
+					+ String.format("%06.2f", p.getY() / 1000.0);
 		}
 		intervals[intervals.length - 1] = "-";
 		table.addRow(intervals);
@@ -201,19 +201,22 @@ public class Statistics
 	// Damage Distribution
 	public String getDamageDistribution()
 	{
-		// Table
-		TableBuilder table = new TableBuilder();
+		// Heading
 		StringBuilder output = new StringBuilder();
-
 		String title = " Damage Distribution - " + b_data.getName() + ' ';
 		output.append('\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + System.lineSeparator());
 		output.append('\u2502' + title + '\u2502' + System.lineSeparator());
 		output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518');
 
+		// Table
+		TableBuilder table = new TableBuilder();
+
 		// Body
 		for (Player p : player_list)
 		{
 			List<DamageLog> damage_logs = p.getDamageLogs(b_data, c_data.getCombatList());
+
+			// Skill Damage Map
 			Map<Integer, Integer> skill_damage = new HashMap<Integer, Integer>();
 			for (DamageLog log : damage_logs)
 			{
@@ -223,29 +226,29 @@ public class Statistics
 				}
 				else
 				{
-					if (log.getID() > 0)
-					{
-						skill_damage.put(log.getID(), log.getDamage());
-					}
+					skill_damage.put(log.getID(), log.getDamage());
 				}
 			}
-			double damage_sum = skill_damage.values().stream().reduce(0, Integer::sum);
 
+			// Title and Header
 			table.clear();
 			table.addTitle(p.getCharacter() + " - " + p.getProf());
 			table.addRow("Skill", "Damage", "%");
 
-			// Calculate % of each skill
+			// Sort
 			skill_damage = Utility.sortByValue(skill_damage);
+
+			// Calculate distribution
+			double total_damage = skill_damage.values().stream().reduce(0, Integer::sum);
 			for (Map.Entry<Integer, Integer> entry : skill_damage.entrySet())
 			{
 				String skill_name = s_data.getName(entry.getKey());
 				double damage = entry.getValue();
-				table.addRow(skill_name, String.valueOf((int) damage),
-						String.format("%.2f", (damage / damage_sum * 100)));
+				table.addRow(skill_name, String.format("% 7.0f", damage),
+						String.format("% 5.2f", (damage / total_damage * 100)));
 			}
 
-			// Append player table
+			// Add table
 			output.append(System.lineSeparator());
 			output.append(table.toString());
 		}
@@ -478,7 +481,6 @@ public class Statistics
 
 		for (int i = 0; i < fight_intervals.size(); i++)
 		{
-
 			table.clear();
 			table.addTitle(phase_names[i]);
 			table.addRow(Utility.concatStringArray(new String[] { "Name", "Profession" }, boon_array));

@@ -33,7 +33,7 @@ public class TableBuilder
 
 	public void addSeparator()
 	{
-		if (rows.size() > 2)
+		if (!rows.isEmpty())
 		{
 			String[] separator = new String[rows.get(0).length];
 			Arrays.fill(separator, "");
