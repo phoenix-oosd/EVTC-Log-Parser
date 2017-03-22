@@ -546,21 +546,21 @@ public class Statistics
 			time_threshold = 20000;
 			health_thresholds = new int[] { 6600, 3300 };
 		}
-		// else if (b_data.getName().equals("Xera"))
-		// {
-		// time_threshold = 20000;
-		// health_thresholds = new int[] { 5000 };
-		// }
+		else if (b_data.getName().equals("Xera"))
+		{
+			time_threshold = 20000;
+			health_thresholds = new int[] { 5000 };
+		}
 		else if (b_data.getName().equals("Samarog"))
 		{
 			time_threshold = 20000;
 			health_thresholds = new int[] { 6600, 3300 };
 		}
-		// else if (b_data.getName().equals("Deimos"))
-		// {
-		// time_threshold = 1000;
-		// health_thresholds = new int[] { 7500, 5000, 2500 };
-		// }
+		else if (b_data.getName().equals("Deimos"))
+		{
+			time_threshold = 1000;
+			health_thresholds = new int[] { 7500, 5000, 2500 };
+		}
 		else
 		{
 			fight_intervals.add(new Point(time_start, time_end));
