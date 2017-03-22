@@ -268,16 +268,19 @@ public class Statistics
 		{
 			List<DamageLog> damage_logs = p.getDamageLogs(b_data, c_data.getCombatList());
 			int n = damage_logs.size();
-			double[] x = new double[n];
-			double[] y = new double[n];
-			double total_damage = 0.0;
-			for (int i = 0; i < n; i++)
+			if (n > 0)
 			{
-				total_damage += damage_logs.get(i).getDamage();
-				x[i] = damage_logs.get(i).getTime() / 1000.0;
-				y[i] = total_damage / 1000.0;
+				double[] x = new double[n];
+				double[] y = new double[n];
+				double total_damage = 0.0;
+				for (int i = 0; i < n; i++)
+				{
+					total_damage += damage_logs.get(i).getDamage();
+					x[i] = damage_logs.get(i).getTime() / 1000.0;
+					y[i] = total_damage / 1000.0;
+				}
+				chart.addSeries(p.getCharacter() + " - " + p.getProf(), x, y);
 			}
-			chart.addSeries(p.getCharacter() + " - " + p.getProf(), x, y);
 		}
 
 		// Write
