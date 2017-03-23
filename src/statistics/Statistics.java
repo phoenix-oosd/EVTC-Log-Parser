@@ -505,12 +505,10 @@ public class Statistics
 		}
 		else if (b_data.getName().equals("Slothasor"))
 		{
-			time_threshold = 5000;
 			health_thresholds = new int[] { 8000, 6000, 4000, 2000, 1000 };
 		}
 		else if (b_data.getName().equals("Matthias Gabrel"))
 		{
-			time_threshold = 1000;
 			health_thresholds = new int[] { 8000, 6000, 4000 };
 		}
 		else if (b_data.getName().equals("Keep Construct"))
@@ -523,6 +521,14 @@ public class Statistics
 			time_threshold = 20000;
 			health_thresholds = new int[] { 5000 };
 		}
+		else if (b_data.getName().equals("Cairn the Indomitable"))
+		{
+			health_thresholds = new int[] { 7500, 5000, 2500 };
+		}
+		else if (b_data.getName().equals("Mursaat Overseer"))
+		{
+			health_thresholds = new int[] { 7500, 5000, 2500 };
+		}
 		else if (b_data.getName().equals("Samarog"))
 		{
 			time_threshold = 20000;
@@ -530,7 +536,6 @@ public class Statistics
 		}
 		else if (b_data.getName().equals("Deimos"))
 		{
-			time_threshold = 1000;
 			health_thresholds = new int[] { 7500, 5000, 2500 };
 		}
 		else

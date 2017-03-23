@@ -49,6 +49,14 @@ public class BossData
 		{
 			return new String[] { "100% - 50%", "50% - 0%" };
 		}
+		else if (name.equals("Cairn the Indomitable"))
+		{
+			return new String[] { "100% - 75%", "75% - 50%", "50% - 25%", "25% - 0%" };
+		}
+		else if (name.equals("Mursaat Overseer"))
+		{
+			return new String[] { "100% - 75%", "75% - 50%", "50% - 25%", "25% - 0%" };
+		}
 		else if (name.equals("Samarog"))
 		{
 			return new String[] { "100% - 66%", "66% - 33%", "33% - 0%" };
