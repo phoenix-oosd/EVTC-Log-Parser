@@ -185,7 +185,8 @@ public class Statistics
 			intervals[i] = String.format("%06.2f", p.getX() / 1000.0) + "-"
 					+ String.format("%06.2f", p.getY() / 1000.0);
 		}
-		intervals[intervals.length - 1] = "-";
+		intervals[intervals.length - 1] = String.format("%06.2f", fight_intervals.get(0).getX() / 1000.0) + "-"
+				+ String.format("%06.2f", fight_intervals.get(fight_intervals.size() - 1).getY() / 1000.0);
 		table.addRow(intervals);
 		return table.toString();
 	}
