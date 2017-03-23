@@ -66,7 +66,7 @@ public class Statistics
 	{
 		double total_dps = 0.0;
 		double total_damage = 0.0;
-		double fight_duration = (b_data.getLastAware() - b_data.getFirstAware()) / 1000;
+		double fight_duration = (b_data.getLastAware() - b_data.getFirstAware()) / 1000.0;
 
 		// Table
 		TableBuilder table = new TableBuilder();
@@ -146,7 +146,7 @@ public class Statistics
 						phase_damage += log.getDamage();
 					}
 				}
-				double dps = phase_damage / (interval.getY() - interval.getX()) * 1000;
+				double dps = phase_damage / (interval.getY() - interval.getX()) * 1000.0;
 				phase_dps[i] = String.format("% 9.2f", dps);
 
 				// Moving Average
@@ -238,7 +238,7 @@ public class Statistics
 				String skill_name = s_data.getName(entry.getKey());
 				double damage = entry.getValue();
 				table.addRow(skill_name, String.format("% 7.0f", damage),
-						String.format("% 5.2f", (damage / total_damage * 100)));
+						String.format("% 5.2f", (damage / total_damage * 100.0)));
 			}
 
 			// Add table
@@ -603,7 +603,7 @@ public class Statistics
 	private String getBoonDuration(List<Point> boon_intervals)
 	{
 		// Calculate average duration
-		double average_duration = 0;
+		double average_duration = 0.0;
 		for (Point p : boon_intervals)
 		{
 			average_duration = average_duration + (p.getY() - p.getX());
@@ -643,7 +643,7 @@ public class Statistics
 					}
 				}
 			}
-			double duration = 0;
+			double duration = 0.0;
 			for (Point b : boons_intervals_during_phase)
 			{
 				duration = duration + (b.getY() - b.getX());
