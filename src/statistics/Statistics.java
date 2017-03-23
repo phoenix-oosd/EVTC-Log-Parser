@@ -546,27 +546,27 @@ public class Statistics
 
 		// Generate intervals with health updates
 		ListIterator<Point> iter = c_data.getStates(b_data.getInstid(), StateChange.HEALTH_UPDATE).listIterator();
-
-		// for (Point x : c_data.getStates(b_data.getInstid(),
-		// StateChange.HEALTH_UPDATE))
-		// {
-		// System.out.println(x.x - log_start + " " + x.y);
-		// }
-
-		Point previous_update = iter.next();
-		main: for (int threshold : health_thresholds)
+		Point previous_update = null;
+		if (iter.hasNext())
 		{
-			while (iter.hasNext())
+			previous_update = iter.next();
+		}
+		if (previous_update != null)
+		{
+			main: for (int threshold : health_thresholds)
 			{
-				Point current_update = iter.next();
-				if ((current_update.y < threshold) && ((current_update.x - previous_update.x) > time_threshold))
+				while (iter.hasNext())
 				{
-					fight_intervals.add(new Point(time_start, previous_update.x - log_start));
-					time_start = current_update.x - log_start;
+					Point current_update = iter.next();
+					if ((current_update.y < threshold) && ((current_update.x - previous_update.x) > time_threshold))
+					{
+						fight_intervals.add(new Point(time_start, previous_update.x - log_start));
+						time_start = current_update.x - log_start;
+						previous_update = current_update;
+						continue main;
+					}
 					previous_update = current_update;
-					continue main;
 				}
-				previous_update = current_update;
 			}
 		}
 		fight_intervals.add(new Point(time_start, time_end));
