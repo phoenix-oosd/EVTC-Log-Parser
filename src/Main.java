@@ -20,7 +20,7 @@ public class Main
 	private static boolean will_quit = false;
 	private static boolean will_display_versions = true;
 	private static Map<String, String> argument_map = new HashMap<>();
-	private static String old_version = Utility.boxText("ERROR   : This only supports versions 20170214 and onwards");
+	private static String old_version = Utility.boxText("ERROR   : This only supports versions 20170307 and onwards");
 	private static String current_file;
 	private static Parse parsed_file;
 	private static Statistics statistics;
@@ -192,7 +192,7 @@ public class Main
 				{
 					System.out.println(Utility.boxText("VERSION : " + parsed_file.getLogData().getBuildVersion()));
 				}
-				if (Integer.valueOf(parsed_file.getLogData().getBuildVersion().replaceAll("EVTC", "")) < 20170214)
+				if (Integer.valueOf(parsed_file.getLogData().getBuildVersion().replaceAll("EVTC", "")) < 20170307)
 				{
 					return old_version;
 				}
