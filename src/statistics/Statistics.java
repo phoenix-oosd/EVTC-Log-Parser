@@ -109,7 +109,7 @@ public class Statistics
 	// Phase DPS
 	public String getPhaseDPS()
 	{
-		double fight_duration = (b_data.getLastAware() - b_data.getFirstAware()) / 1000.0;
+		double total_time = 0.0;
 		List<Point> fight_intervals = getPhaseIntervals();
 		int n = fight_intervals.size();
 		String[] phase_names = b_data.getPhaseNames();
@@ -132,12 +132,14 @@ public class Statistics
 		// Body
 		for (Player p : p_list)
 		{
+			total_time = 0.0;
 			double total_damage = 0.0;
 			String[] phase_dps = new String[n + 1];
+
 			for (int i = 0; i < n; i++)
 			{
-				Point interval = fight_intervals.get(i);
 				List<DamageLog> damage_logs = p.getDamageLogs(b_data, c_data.getCombatList());
+				Point interval = fight_intervals.get(i);
 
 				// Damage and DPS
 				double phase_damage = 0.0;
@@ -148,13 +150,14 @@ public class Statistics
 						phase_damage += log.getDamage();
 					}
 				}
+				total_time += (interval.getY() - interval.getX());
 				total_damage += phase_damage;
 				double dps = (phase_damage / (interval.getY() - interval.getX())) * 1000.0;
 				phase_dps[i] = String.format("%.2f", dps);
 
 			}
 			// Row
-			phase_dps[n] = String.format("%.2f", total_damage / fight_duration);
+			phase_dps[n] = String.format("%.2f", (total_damage / total_time) * 1000.0);
 			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, phase_dps));
 		}
 
@@ -164,7 +167,6 @@ public class Statistics
 		// Footer
 		table.addSeparator();
 		String[] durations = new String[n + 3];
-		double total_time = 0.0;
 		durations[0] = "PHASE DURATION";
 		durations[1] = "-";
 		for (int i = 2; i < n + 2; i++)
@@ -172,9 +174,8 @@ public class Statistics
 			Point p = fight_intervals.get(i - 2);
 			double time = (p.getY() - p.getX()) / 1000.0;
 			durations[i] = String.format("%.3f", time);
-			total_time += time;
 		}
-		durations[durations.length - 1] = String.format("%.3f", total_time + (0.001 * (fight_intervals.size() - 1)));
+		durations[durations.length - 1] = String.format("%.3f", total_time / 1000.0);
 		table.addRow(durations);
 
 		String[] intervals = new String[n + 3];
@@ -561,7 +562,7 @@ public class Statistics
 					if ((current_update.y < threshold) && (time_threshold == 0))
 					{
 						fight_intervals.add(new Point(time_start, previous_update.x - log_start));
-						time_start = previous_update.x - log_start + 1;
+						time_start = previous_update.x - log_start;
 						previous_update = current_update;
 						continue main;
 					}
