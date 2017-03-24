@@ -703,7 +703,15 @@ public class Statistics
 	{
 		// Calculate average stacks
 		double average_stacks = boon_stacks.stream().mapToInt(Integer::intValue).sum();
-		return String.format("%.2f", average_stacks / boon_stacks.size());
+		double average = average_stacks / boon_stacks.size();
+		if (average > 10.0)
+		{
+			return String.format("%.1f", average);
+		}
+		else
+		{
+			return String.format("%.2f", average);
+		}
 	}
 
 	private String[] getAverageStacks(List<Integer> boon_stacks, List<Point> fight_intervals)
@@ -717,7 +725,15 @@ public class Statistics
 			Point p = fight_intervals.get(i);
 			List<Integer> phase_boon_stacks = new ArrayList<Integer>(boon_stacks.subList(p.x, p.y));
 			double average_stacks = phase_boon_stacks.stream().mapToInt(Integer::intValue).sum();
-			phase_stacks[i] = String.format("%.2f", average_stacks / phase_boon_stacks.size());
+			double average = average_stacks / phase_boon_stacks.size();
+			if (average > 10.0)
+			{
+				phase_stacks[i] = String.format("%.1f", average);
+			}
+			else
+			{
+				phase_stacks[i] = String.format("%.2f", average);
+			}
 		}
 		return phase_stacks;
 	}

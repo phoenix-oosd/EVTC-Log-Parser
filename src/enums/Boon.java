@@ -6,7 +6,7 @@ import java.util.List;
 public enum Boon
 {
 	// Boon
-	MIGHT("Might", "MIGHT", "intensity", 25),
+	MIGHT("Might", "MGHT", "intensity", 25),
 	QUICKNESS("Quickness", "QCKN", "duration", 5),
 	FURY("Fury", "FURY", "duration", 9),
 	PROTECTION("Protection", "PROT", "duration", 5),
@@ -41,7 +41,16 @@ public enum Boon
 	SOOTHING_MIST("Soothing Mist", "MIST", "duration", 1),
 
 	// Necro
-	VAMPIRIC_PRESENCE("Vampiric Presence", "VAMP", "duration", 1);
+	VAMPIRIC_PRESENCE("Vampiric Presence", "VAMP", "duration", 1),
+
+	// Thief
+	LEAD_ATTACKS("Lead Attacks", "LEAD", "intensity", 15),
+	LOTUS_TRAINING("Lotus Training", "LOTS", "duration", 1),
+	BOUNDING_DODGER("Bounding Dodger", "BDOG", "duration", 1),
+
+	// Equipment
+	MASTERFUL_CONCENTRATION("Masterful Concentration", "CONC", "duration", 1);
+	// THORNS_RUNE("Thorns", "THRN", "intensity", 5);
 
 	// Fields
 	private String name;
