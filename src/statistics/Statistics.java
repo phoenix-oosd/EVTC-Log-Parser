@@ -109,6 +109,7 @@ public class Statistics
 	// Phase DPS
 	public String getPhaseDPS()
 	{
+		double fight_duration = (b_data.getLastAware() - b_data.getFirstAware()) / 1000.0;
 		List<Point> fight_intervals = getPhaseIntervals();
 		int n = fight_intervals.size();
 		String[] phase_names = b_data.getPhaseNames();
@@ -125,20 +126,21 @@ public class Statistics
 		{
 			header[i] = phase_names[i - 2];
 		}
-		header[header.length - 1] = "Average";
+		header[header.length - 1] = "Summary";
 		table.addRow(header);
 
 		// Body
 		for (Player p : p_list)
 		{
-			double average_dps = 0;
+			double total_damage = 0.0;
 			String[] phase_dps = new String[n + 1];
 			for (int i = 0; i < n; i++)
 			{
 				Point interval = fight_intervals.get(i);
 				List<DamageLog> damage_logs = p.getDamageLogs(b_data, c_data.getCombatList());
+
 				// Damage and DPS
-				double phase_damage = 0;
+				double phase_damage = 0.0;
 				for (DamageLog log : damage_logs)
 				{
 					if ((log.getTime() >= interval.x) && (log.getTime() <= interval.y))
@@ -146,14 +148,13 @@ public class Statistics
 						phase_damage += log.getDamage();
 					}
 				}
-				double dps = phase_damage / (interval.getY() - interval.getX()) * 1000.0;
-				phase_dps[i] = String.format("% 9.2f", dps);
+				total_damage += phase_damage;
+				double dps = (phase_damage / (interval.getY() - interval.getX())) * 1000.0;
+				phase_dps[i] = String.format("%.2f", dps);
 
-				// Moving Average
-				average_dps = (((average_dps * i) + dps) / (i + 1));
 			}
 			// Row
-			phase_dps[n] = String.format("% 9.2f", average_dps);
+			phase_dps[n] = String.format("%.2f", total_damage / fight_duration);
 			table.addRow(Utility.concatStringArray(new String[] { p.getCharacter(), p.getProf() }, phase_dps));
 		}
 
@@ -170,10 +171,10 @@ public class Statistics
 		{
 			Point p = fight_intervals.get(i - 2);
 			double time = (p.getY() - p.getX()) / 1000.0;
-			durations[i] = String.format("%.2f", time);
+			durations[i] = String.format("%.3f", time);
 			total_time += time;
 		}
-		durations[durations.length - 1] = String.format("%.2f", total_time);
+		durations[durations.length - 1] = String.format("%.3f", total_time + (0.001 * (fight_intervals.size() - 1)));
 		table.addRow(durations);
 
 		String[] intervals = new String[n + 3];
@@ -182,11 +183,10 @@ public class Statistics
 		for (int i = 2; i < n + 2; i++)
 		{
 			Point p = fight_intervals.get(i - 2);
-			intervals[i] = String.format("%06.2f", p.getX() / 1000.0) + "-"
-					+ String.format("%06.2f", p.getY() / 1000.0);
+			intervals[i] = String.format("%.3f", p.getX() / 1000.0) + " - " + String.format("%.3f", p.getY() / 1000.0);
 		}
-		intervals[intervals.length - 1] = String.format("%06.2f", fight_intervals.get(0).getX() / 1000.0) + "-"
-				+ String.format("%06.2f", fight_intervals.get(fight_intervals.size() - 1).getY() / 1000.0);
+		intervals[intervals.length - 1] = String.format("%.3f", fight_intervals.get(0).getX() / 1000.0) + " - "
+				+ String.format("%.3f", fight_intervals.get(fight_intervals.size() - 1).getY() / 1000.0);
 		table.addRow(intervals);
 		return table.toString();
 	}
@@ -561,7 +561,7 @@ public class Statistics
 					if ((current_update.y < threshold) && (time_threshold == 0))
 					{
 						fight_intervals.add(new Point(time_start, previous_update.x - log_start));
-						time_start = previous_update.x - log_start;
+						time_start = previous_update.x - log_start + 1;
 						previous_update = current_update;
 						continue main;
 					}
@@ -578,7 +578,6 @@ public class Statistics
 			}
 		}
 		fight_intervals.add(new Point(time_start, time_end));
-
 		return fight_intervals;
 	}
 
