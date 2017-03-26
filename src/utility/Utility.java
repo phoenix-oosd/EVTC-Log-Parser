@@ -72,6 +72,38 @@ public final class Utility
 		return output.substring((int) start, (int) (start + len));
 	}
 
+	public static boolean isNumeric(String str)
+	{
+		try
+		{
+			double d = Double.parseDouble(str);
+		} catch (NumberFormatException nfe)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public static String rightAlignString(String text, int len)
+	{
+		while (text.length() < len)
+		{
+			text = " " + text;
+
+		}
+		return text;
+	}
+
+	public static String leftAlignString(String text, int len)
+	{
+		while (text.length() < len)
+		{
+			text += " ";
+
+		}
+		return text;
+	}
+
 	public static String fillWithChar(int len, char c)
 	{
 		if (len > 0)

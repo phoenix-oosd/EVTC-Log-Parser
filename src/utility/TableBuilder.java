@@ -141,13 +141,18 @@ public class TableBuilder
 		}
 
 		// Body
+		boolean footer = false;
 		for (ListIterator<String[]> iter = rows.listIterator(1); iter.hasNext();)
 		{
 			String[] row = iter.next();
+			String text;
+
 			for (int colNum = 0; colNum < row.length; colNum++)
 			{
 				if (row[0].equals(""))
 				{
+
+					footer = true;
 					if (colNum == 0)
 					{
 						output.append('\u251C');
@@ -160,7 +165,22 @@ public class TableBuilder
 				}
 				else
 				{
-					output.append('\u2502' + Utility.centerString(row[colNum], colWidths[colNum]));
+					text = row[colNum];
+					if (!footer)
+					{
+						if (Utility.isNumeric(text))
+						{
+							output.append('\u2502' + Utility.rightAlignString(text, colWidths[colNum]));
+						}
+						else
+						{
+							output.append('\u2502' + Utility.leftAlignString(text, colWidths[colNum]));
+						}
+					}
+					else
+					{
+						output.append('\u2502' + Utility.centerString(text, colWidths[colNum]));
+					}
 				}
 			}
 			if (row[0].equals(""))

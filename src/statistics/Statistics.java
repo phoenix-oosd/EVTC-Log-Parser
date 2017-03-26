@@ -92,7 +92,7 @@ public class Statistics
 			total_damage += damage;
 
 			// Add Row
-			table.addRow(p.getCharacter(), p.getProf(), String.format("% 9.2f", dps), String.format("% 9.0f", damage));
+			table.addRow(p.getCharacter(), p.getProf(), String.format("%.2f", dps), String.format("%.0f", damage));
 		}
 
 		// Sort by DPS
@@ -100,8 +100,8 @@ public class Statistics
 
 		// Footer
 		table.addSeparator();
-		table.addRow("GROUP TOTAL", "-", String.format("% 9.2f", total_dps), String.format("% 9.0f", total_damage));
-		table.addRow("TARGET HEALTH", "-", "-", String.format("% 9d", b_data.getHealth()));
+		table.addRow("GROUP TOTAL", "-", String.format("%.2f", total_dps), String.format("%.0f", total_damage));
+		table.addRow("TARGET HEALTH", "-", "-", String.format("%d", b_data.getHealth()));
 
 		return table.toString();
 	}
@@ -238,8 +238,8 @@ public class Statistics
 			{
 				String skill_name = s_data.getName(entry.getKey());
 				double damage = entry.getValue();
-				table.addRow(skill_name, String.format("% 7.0f", damage),
-						String.format("% 5.2f", (damage / total_damage * 100.0)));
+				table.addRow(skill_name, String.format("%.0f", damage),
+						String.format("%.2f", (damage / total_damage * 100.0)));
 			}
 
 			// Add table
@@ -305,7 +305,7 @@ public class Statistics
 		table.addTitle("Combat Statistics - " + b_data.getName());
 
 		// Header
-		table.addRow("Account", "Character", "Group", "Profession", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL",
+		table.addRow("Account", "Character", "Profession", "SUBG", "CRIT", "SCHL", "MOVE", "FLNK", "TGHN", "HEAL",
 				"COND", "SWAP", "DOGE", "RESS", "DOWN", "DIED");
 
 		// Body
@@ -348,14 +348,14 @@ public class Statistics
 			}
 
 			// Add row
-			table.addRow(new String[] { p.getAccount(), p.getCharacter(), p.getGroup(), p.getProf(),
+			table.addRow(new String[] { p.getAccount(), p.getCharacter(), p.getProf(), p.getGroup(),
 					String.format("%.2f", critical_rate / power_loop_count),
 					String.format("%.2f", scholar_rate / power_loop_count),
 					String.format("%.2f", moving_rate / power_loop_count),
 					String.format("%.2f", flanking_rate / power_loop_count), String.valueOf(p.getToughness()),
 					String.valueOf(p.getHealing()), String.valueOf(p.getCondition()), String.valueOf(swap),
 					String.valueOf(dodge), String.valueOf(ress), String.valueOf(down),
-					String.format("%06.2f", died / 1000.0) });
+					String.format("%.2f", died / 1000.0) });
 		}
 		return table.toString();
 	}
