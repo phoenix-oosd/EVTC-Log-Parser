@@ -559,20 +559,21 @@ public class Statistics
 				while (iter.hasNext())
 				{
 					Point current_update = iter.next();
-					if ((current_update.y < threshold) && (time_threshold == 0))
+					if ((current_update.y <= threshold) && (time_threshold == 0))
 					{
 						fight_intervals.add(new Point(time_start, previous_update.x - log_start));
 						time_start = previous_update.x - log_start;
 						previous_update = current_update;
 						continue main;
 					}
-					else if ((current_update.y < threshold)
+					else if ((current_update.y <= threshold)
 							&& ((current_update.x - previous_update.x) > time_threshold))
 					{
 						fight_intervals.add(new Point(time_start, previous_update.x - log_start));
 						time_start = current_update.x - log_start;
 						previous_update = current_update;
 						continue main;
+
 					}
 					previous_update = current_update;
 				}
