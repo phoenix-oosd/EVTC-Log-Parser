@@ -288,6 +288,7 @@ public class Parse
 	public void fillMissingData()
 	{
 		// Set Agent instid, first_aware and last_aware
+		List<AgentItem> player_list = agent_data.getPlayerAgentList();
 		List<AgentItem> agent_list = agent_data.getAllAgentsList();
 		List<CombatItem> combat_list = combat_data.getCombatList();
 		for (AgentItem a : agent_list)
@@ -314,6 +315,18 @@ public class Parse
 						assigned_first = true;
 					}
 					a.setLastAware(c.getTime());
+				}
+				else if (c.isStateChange().equals(StateChange.POINT_OF_VIEW))
+				{
+					int pov_instid = c.getSrcInstid();
+					for (AgentItem p : player_list)
+					{
+						if (pov_instid == p.getInstid())
+						{
+							log_data.setPOV(p.getName());
+						}
+					}
+
 				}
 				else if (c.isStateChange().equals(StateChange.LOG_START))
 				{
@@ -450,7 +463,7 @@ public class Parse
 
 		// Log Data Table
 		table.addTitle("LOG DATA");
-		table.addRow("build_version", "log_start", "log_end");
+		table.addRow("build_version", "point_of_view", "log_start", "log_end");
 		table.addRow(log_data.toStringArray());
 		output.append(table.toString() + System.lineSeparator());
 		table.clear();

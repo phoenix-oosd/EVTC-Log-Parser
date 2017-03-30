@@ -190,7 +190,10 @@ public class Main
 				current_file = path.getFileName().toString().split("\\.")[0];
 				if (will_display_versions)
 				{
-					System.out.println(Utility.boxText("VERSION : " + parsed_file.getLogData().getBuildVersion()));
+					System.out.println(Utility.boxText("BUILD   : " + parsed_file.getLogData().getBuildVersion()));
+					System.out.println(Utility.boxText("POV     : " + parsed_file.getLogData().getPOV()));
+					System.out.println(Utility.boxText("START   : " + parsed_file.getLogData().getLogStart()));
+					System.out.println(Utility.boxText("END     : " + parsed_file.getLogData().getLogEnd()));
 				}
 				if (Integer.valueOf(parsed_file.getLogData().getBuildVersion().replaceAll("EVTC", "")) < 20170218)
 				{

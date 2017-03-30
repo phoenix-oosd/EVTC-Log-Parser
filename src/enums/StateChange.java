@@ -1,6 +1,7 @@
 package enums;
 
-public enum StateChange {
+public enum StateChange
+{
 
 	// Constants
 	NORMAL(0),
@@ -15,20 +16,25 @@ public enum StateChange {
 	LOG_START(9),
 	LOG_END(10),
 	WEAPON_SWAP(11),
-	MAX_HEALTH_UPDATE(12);
+	MAX_HEALTH_UPDATE(12),
+	POINT_OF_VIEW(13);
 
 	// Fields
 	private int ID;
 
 	// Constructors
-	StateChange(int ID) {
+	StateChange(int ID)
+	{
 		this.ID = ID;
 	}
 
 	// Public Methods
-	public static StateChange getEnum(int ID) {
-		for (StateChange s : values()) {
-			if (s.getID() == ID) {
+	public static StateChange getEnum(int ID)
+	{
+		for (StateChange s : values())
+		{
+			if (s.getID() == ID)
+			{
 				return s;
 			}
 		}
@@ -36,7 +42,8 @@ public enum StateChange {
 	}
 
 	// Getters
-	public int getID() {
+	public int getID()
+	{
 		return ID;
 	}
 
