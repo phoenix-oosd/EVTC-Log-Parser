@@ -11,6 +11,7 @@ import java.util.Scanner;
 import enums.MenuChoice;
 import statistics.Parse;
 import statistics.Statistics;
+import utility.TableBuilder;
 import utility.Utility;
 
 public class Main
@@ -18,7 +19,7 @@ public class Main
 
 	// Fields
 	private static boolean will_quit = false;
-	private static boolean will_display_versions = true;
+	private static boolean displaying = true;
 	private static Map<String, String> argument_map = new HashMap<>();
 	private static String old_version = Utility.boxText("ERROR   : This only supports versions 20170218 and onwards");
 	private static String current_file;
@@ -43,6 +44,7 @@ public class Main
 				}
 			}
 			String is_anon = argument_map.get("is_anon");
+			String is_displaying = argument_map.get("is_displaying");
 			String file_path = argument_map.get("file_path");
 			String options = argument_map.get("options");
 
@@ -51,14 +53,21 @@ public class Main
 			{
 				Statistics.hiding_players = Utility.toBool(Integer.valueOf(is_anon));
 			}
+			if (is_displaying != null)
+			{
+				displaying = Utility.toBool(Integer.valueOf(is_displaying));
+			}
 
 			// File Association
 			if (file_path != null && !file_path.isEmpty() && options != null)
 			{
-				will_display_versions = false;
 				int[] choices = options.chars().map(x -> x - '0').toArray();
 
 				StringBuilder output = new StringBuilder();
+				if (displaying)
+				{
+					System.out.println((Utility.boxText("Log Data")));
+				}
 				for (int i : choices)
 				{
 					MenuChoice c = MenuChoice.getEnum(i);
@@ -136,6 +145,8 @@ public class Main
 						System.out.print(" >> ");
 						if (scan.hasNextInt())
 						{
+							System.out.println(System.lineSeparator() + Utility.fillWithChar(50, '\u2500')
+									+ System.lineSeparator());
 							choice = MenuChoice.getEnum(scan.nextInt());
 						}
 						scan.nextLine();
@@ -156,7 +167,7 @@ public class Main
 							// Apply option to all logs
 							for (Path log : log_files)
 							{
-								System.out.println(Utility.boxText("INPUT   : " + log.getFileName().toString()));
+								System.out.println(Utility.boxText("INPUT  : " + log.getFileName().toString()));
 								String output = parseFileByChoice(choice, log);
 								System.out.println(output + System.lineSeparator() + System.lineSeparator()
 										+ Utility.fillWithChar(50, '\u2500') + System.lineSeparator());
@@ -188,12 +199,12 @@ public class Main
 				parsed_file = new Parse(path.toString());
 				statistics = new Statistics(parsed_file);
 				current_file = path.getFileName().toString().split("\\.")[0];
-				if (will_display_versions)
+				if (displaying)
 				{
-					System.out.println(Utility.boxText("BUILD   : " + parsed_file.getLogData().getBuildVersion()));
-					System.out.println(Utility.boxText("POV     : " + parsed_file.getLogData().getPOV()));
-					System.out.println(Utility.boxText("START   : " + parsed_file.getLogData().getLogStart()));
-					System.out.println(Utility.boxText("END     : " + parsed_file.getLogData().getLogEnd()));
+					TableBuilder table = new TableBuilder();
+					table.addRow("Build Version", "Point of View", "Start Date", "End Date");
+					table.addRow(parsed_file.getLogData().toStringArray());
+					System.out.println(table.toString());
 				}
 				if (Integer.valueOf(parsed_file.getLogData().getBuildVersion().replaceAll("EVTC", "")) < 20170218)
 				{
@@ -245,7 +256,7 @@ public class Main
 			{
 				e.printStackTrace();
 			}
-			return Utility.boxText("OUTPUT  : " + evtc_dump.getName());
+			return Utility.boxText("OUTPUT : " + evtc_dump.getName());
 		}
 		else if (choice.equals(MenuChoice.DUMP_TABLES))
 		{
@@ -261,7 +272,7 @@ public class Main
 			{
 				e.printStackTrace();
 			}
-			return Utility.boxText("OUTPUT  : " + text_dump.getName());
+			return Utility.boxText("OUTPUT : " + text_dump.getName());
 		}
 		return "";
 	}

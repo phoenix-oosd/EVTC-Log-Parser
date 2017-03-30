@@ -99,7 +99,7 @@ public class TableBuilder
 		{
 			output.append('\u250C' + Utility.fillWithChar(title.length(), '\u2500') + '\u2510' + nl);
 			output.append('\u2502' + title + '\u2502' + nl);
-			output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518');
+			output.append('\u2514' + Utility.fillWithChar(title.length(), '\u2500') + '\u2518' + nl);
 		}
 
 		// Empty
@@ -109,7 +109,7 @@ public class TableBuilder
 		}
 
 		// Header
-		output.append(nl + '\u250C');
+		output.append('\u250C');
 		for (int colNum = 0; colNum < rows.get(0).length; colNum++)
 		{
 			output.append(Utility.fillWithChar(colWidths[colNum], '\u2500'));

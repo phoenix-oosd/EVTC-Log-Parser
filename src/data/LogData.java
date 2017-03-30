@@ -28,7 +28,7 @@ public class LogData
 		array[0] = String.valueOf(build_version);
 		array[1] = String.valueOf(pov);
 		array[2] = String.valueOf(log_start);
-		array[2] = String.valueOf(log_end);
+		array[3] = String.valueOf(log_end);
 		return array;
 	}
 
