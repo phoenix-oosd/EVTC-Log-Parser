@@ -1,26 +1,31 @@
 package enums;
 
-public enum Activation {
-
+public enum Activation
+{
 	// Constants
 	NONE(0),
 	NORMAL(1),
 	QUICKNESS(2),
 	CANCEL_FIRE(3),
-	CANCEL_CANCEL(4);
+	CANCEL_CANCEL(4),
+	RESET(5);
 
 	// Fields
 	private int ID;
 
 	// Constructors
-	private Activation(int ID) {
+	private Activation(int ID)
+	{
 		this.ID = ID;
 	}
 
 	// Public Methods
-	public static Activation getEnum(int ID) {
-		for (Activation a : values()) {
-			if (a.getID() == ID) {
+	public static Activation getEnum(int ID)
+	{
+		for (Activation a : values())
+		{
+			if (a.getID() == ID)
+			{
 				return a;
 			}
 		}
@@ -28,8 +33,8 @@ public enum Activation {
 	}
 
 	// Getters
-	public int getID() {
+	public int getID()
+	{
 		return ID;
 	}
-
 }

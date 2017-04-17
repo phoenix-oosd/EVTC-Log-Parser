@@ -316,7 +316,7 @@ public class Parse
 					}
 					a.setLastAware(c.getTime());
 				}
-				else if (c.isStateChange().equals(StateChange.POINT_OF_VIEW))
+				else if (c.isStateChange() == StateChange.POINT_OF_VIEW)
 				{
 					int pov_instid = c.getSrcInstid();
 					for (AgentItem p : player_list)
@@ -328,11 +328,11 @@ public class Parse
 					}
 
 				}
-				else if (c.isStateChange().equals(StateChange.LOG_START))
+				else if (c.isStateChange() == StateChange.LOG_START)
 				{
 					log_data.setLogStart(c.getValue());
 				}
-				else if (c.isStateChange().equals(StateChange.LOG_END))
+				else if (c.isStateChange() == StateChange.LOG_END)
 				{
 					log_data.setLogEnd(c.getValue());
 				}

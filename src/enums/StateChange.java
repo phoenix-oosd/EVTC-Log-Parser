@@ -17,13 +17,14 @@ public enum StateChange
 	LOG_END(10),
 	WEAPON_SWAP(11),
 	MAX_HEALTH_UPDATE(12),
-	POINT_OF_VIEW(13);
+	POINT_OF_VIEW(13),
+	CBTS_LANGUAGE(14);
 
 	// Fields
 	private int ID;
 
 	// Constructors
-	StateChange(int ID)
+	private StateChange(int ID)
 	{
 		this.ID = ID;
 	}
