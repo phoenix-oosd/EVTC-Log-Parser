@@ -172,7 +172,8 @@ public class Parse
 				// Gadget
 				else if (a.equals(Agent.GADGET))
 				{
-					agent_data.addItem(a, new AgentItem(agent, name, a.getName()));
+					agent_data.addItem(a,
+							new AgentItem(agent, name, a.getName() + ":" + String.format("%05d", prof & 0x0000ffff)));
 				}
 				// Player
 				else

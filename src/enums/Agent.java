@@ -1,10 +1,11 @@
 package enums;
 
-public enum Agent {
+public enum Agent
+{
 
 	// Constants
 	NPC(-1, "NPC"),
-	GADGET(0, "Gadget"),
+	GADGET(0, "GDG"),
 	GUARDIAN(1, "Guardian"),
 	WARRIOR(2, "Warrior"),
 	ENGINEER(3, "Engineer"),
@@ -29,26 +30,39 @@ public enum Agent {
 	private int ID;
 
 	// Constructor
-	Agent(int ID, String name) {
+	Agent(int ID, String name)
+	{
 		this.name = name;
 		this.ID = ID;
 	}
 
 	// Public Methods
-	public static Agent getEnum(int ID, int is_elite) {
-		for (Agent p : values()) {
-			if (is_elite == -1) {
-				if (ID == -1) {
+	public static Agent getEnum(int ID, int is_elite)
+	{
+		for (Agent p : values())
+		{
+			if (is_elite == -1)
+			{
+				if ((ID & 0xffff0000) == 0xffff0000)
+				{
 					return Agent.GADGET;
-				} else {
+				}
+				else
+				{
 					return Agent.NPC;
 				}
-			} else if (is_elite == 0) {
-				if (p.getID() == ID) {
+			}
+			else if (is_elite == 0)
+			{
+				if (p.getID() == ID)
+				{
 					return p;
 				}
-			} else if (is_elite == 1) {
-				if (p.getID() == ID + 9) {
+			}
+			else if (is_elite == 1)
+			{
+				if (p.getID() == ID + 9)
+				{
 					return p;
 				}
 			}
@@ -57,11 +71,13 @@ public enum Agent {
 	}
 
 	// Getters
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public int getID() {
+	public int getID()
+	{
 		return ID;
 	}
 
