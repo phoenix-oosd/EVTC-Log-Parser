@@ -1,0 +1,43 @@
+﻿namespace EVTC_Log_Parser.Model.Enums
+{
+    public enum Field
+    {
+        Arc,
+        Date,
+        Build,
+        Species,
+        Target,
+        Time,
+        Account,
+        Character,
+        Profession,
+        Gear,
+        DPS,
+        PDPS,
+        CDPS,
+        Might,
+        Fury,
+        Quickness,
+        Alacrity,
+        EmpowerAllies,
+        BannerOfStrength,
+        BannerOfDiscipline,
+        Spotter,
+        SunSpirit,
+        FrostSpirit,
+        GlyphOfEmpowerment,
+        GraceOfTheLand,
+        PinpointDistribution,
+        AssassinsPresence,
+        NaturalisticResonance,
+        Critical,
+        Scholar,
+        Flank,
+        Moving,
+        Dodge,
+        Swap,
+        Resurrect,
+        Downed,
+        Died
+    }
+}

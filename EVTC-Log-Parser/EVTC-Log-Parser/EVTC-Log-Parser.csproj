@@ -42,11 +42,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Data\Agent\Gadget.cs" />
+    <Compile Include="Model\Data\Agent\IAgent.cs" />
+    <Compile Include="Model\Data\Agent\NPC.cs" />
+    <Compile Include="Model\Data\Agent\Player.cs" />
+    <Compile Include="Model\Data\Boon\Boon.cs" />
+    <Compile Include="Model\Data\Boon\BoonStack.cs" />
+    <Compile Include="Model\Data\Boon\BoonStackDuration.cs" />
+    <Compile Include="Model\Data\Boon\BoonStackIntensity.cs" />
+    <Compile Include="Model\Data\Event\BoonEvent.cs" />
+    <Compile Include="Model\Data\Event\CombatEvent.cs" />
+    <Compile Include="Model\Data\Event\Event.cs" />
+    <Compile Include="Model\Data\Event\StateChangeEvent.cs" />
+    <Compile Include="Model\Data\Metadata\Metadata.cs" />
+    <Compile Include="Model\Data\Parser\Converter.cs" />
+    <Compile Include="Model\Data\Parser\Parser.cs" />
+    <Compile Include="Model\Data\Skill\Interval.cs" />
+    <Compile Include="Model\Data\Skill\Skill.cs" />
+    <Compile Include="Model\Enums\Activation.cs" />
+    <Compile Include="Model\Enums\BuffRemove.cs" />
+    <Compile Include="Model\Enums\CustomSkill.cs" />
+    <Compile Include="Model\Enums\Field.cs" />
+    <Compile Include="Model\Enums\IFF.cs" />
+    <Compile Include="Model\Enums\Language.cs" />
+    <Compile Include="Model\Enums\Profession.cs" />
+    <Compile Include="Model\Enums\Result.cs" />
+    <Compile Include="Model\Enums\StateChange.cs" />
+    <Compile Include="Model\Extensions\BinaryReaderExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
