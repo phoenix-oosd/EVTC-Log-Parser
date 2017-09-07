@@ -5,7 +5,7 @@ namespace EVTC_Log_Parser.Model
     public class Metadata
     {
         #region Properties
-        public string ARCVersion { get; set; }
+        public string ArcVersion { get; set; }
         public int TargetSpeciesId { get; set; }
         public DateTime LogStart { get; set; }
         public DateTime LogEnd { get; set; }

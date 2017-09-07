@@ -10,7 +10,7 @@ namespace EVTC_Log_Parser.Model
     public class Parser
     {
         #region Members
-        private BinaryReader _br;
+        private BinaryReader _reader;
         #endregion
 
         #region Properties
@@ -29,7 +29,7 @@ namespace EVTC_Log_Parser.Model
             {
                 if (Path.GetExtension(filePath) == ".evtc")
                 {
-                    _br = new BinaryReader(new FileStream(filePath, FileMode.Open, FileAccess.Read));
+                    _reader = new BinaryReader(new FileStream(filePath, FileMode.Open, FileAccess.Read));
                 }
                 else
                 {
@@ -37,9 +37,9 @@ namespace EVTC_Log_Parser.Model
                     MemoryStream memStream = new MemoryStream();
                     stream.CopyTo(memStream);
                     memStream.Position = 0;
-                    _br = new BinaryReader(memStream);
+                    _reader = new BinaryReader(memStream);
                 }
-                using (_br)
+                using (_reader)
                 {
                     Metadata = new Metadata();
                     Players = new List<Player>();
@@ -48,7 +48,7 @@ namespace EVTC_Log_Parser.Model
                     Skills = new List<Skill>();
                     Events = new List<Event>();
                     ParseMetadata();
-                    if (int.Parse(Metadata.ARCVersion.Substring(4)) < 20170218) { return false; }
+                    if (int.Parse(Metadata.ArcVersion.Substring(4)) < 20170218) return false;
                     ParseAgents();
                     ParseSkills();
                     ParseEvents();
@@ -63,14 +63,14 @@ namespace EVTC_Log_Parser.Model
         #region Private Methods
         private void ParseMetadata()
         {
-            Metadata.ARCVersion = _br.ReadUTF8(12); // 12 bytes: build version 
-            Metadata.TargetSpeciesId = _br.Skip(1).ReadUInt16(); // 2 bytes: instid
+            Metadata.ArcVersion = _reader.ReadUTF8(12); // 12 bytes: build version 
+            Metadata.TargetSpeciesId = _reader.Skip(1).ReadUInt16(); // 2 bytes: instid
         }
 
         private void ParseAgents()
         {
             // 4 bytes: agent count
-            int ac = _br.Skip(1).ReadInt32();
+            int ac = _reader.Skip(1).ReadInt32();
 
             // 96 bytes: each agent
             for (int i = 0; i < ac; i++)
@@ -83,15 +83,15 @@ namespace EVTC_Log_Parser.Model
         private void ParseSkills()
         {
             // 4 bytes: skill count
-            int sc = _br.ReadInt32();
+            int sc = _reader.ReadInt32();
 
             // 68 bytes: each skill
             for (int i = 0; i < sc; i++)
             {
                 Skills.Add(new Skill()
                 {
-                    Id = _br.ReadInt32(), // 4 bytes: id
-                    Name = _br.ReadUTF8(64) // 64 bytes: name
+                    Id = _reader.ReadInt32(), // 4 bytes: id
+                    Name = _reader.ReadUTF8(64) // 64 bytes: name
                 });
             }
         }
@@ -99,35 +99,35 @@ namespace EVTC_Log_Parser.Model
         private void ParseEvents()
         {
             // Until EOF
-            while (_br.BaseStream.Position != _br.BaseStream.Length)
+            while (_reader.BaseStream.Position != _reader.BaseStream.Length)
             {
                 Event combat = new Event()
                 {
-                    Time = (int)_br.ReadUInt64(), // 8 bytes: Time
-                    SrcAgent = _br.ReadUInt64Hex(), // 8 bytes: Src Agent
-                    DstAgent = _br.ReadUInt64Hex(),  // 8 bytes: Dst Agent
-                    Value = _br.ReadInt32(), // 4 bytes: Value
-                    BuffDmg = _br.ReadInt32(), // 4 bytes: Buff Damage
-                    OverstackValue = _br.ReadUInt16(), // 2 bytes: Overstack Value
-                    SkillId = _br.ReadUInt16(), // 2 bytes: Skill Id
-                    SrcInstid = _br.ReadUInt16(), // 2 bytes: Src Instid
-                    DstInstid = _br.ReadUInt16(), // 2 bytes: Dst Instid
-                    SrcMasterInstid = _br.ReadUInt16(), // 2 bytes: Src Master Instid
-                    IFF = (IFF)_br.Skip(9).Read(), // 1 byte: IFF
-                    IsBuff = _br.ReadBoolean(), // 1 byte: IsBuff
-                    Result = (Result)_br.Read(), // 1 byte: Result
-                    Activation = (Activation)_br.Read(), // 1 byte: Activation
-                    BuffRemove = (BuffRemove)_br.Read(), // 1 byte: BuffRemove
-                    IsNinety = _br.ReadBoolean(), // 1 byte: IsNinety
-                    IsFifty = _br.ReadBoolean(), // 1 byte: IsFifty
-                    IsMoving = _br.ReadBoolean(), // 1 byte: IsMoving
-                    StateChange = (StateChange)_br.Read(), // 1 byte: StateChange
-                    IsFlanking = _br.ReadBoolean(), // 1 byte: IsFlanking
-                    IsShield = _br.ReadBoolean() // 1 byte: IsShield
+                    Time = (int)_reader.ReadUInt64(), // 8 bytes: Time
+                    SrcAgent = _reader.ReadUInt64Hex(), // 8 bytes: Src Agent
+                    DstAgent = _reader.ReadUInt64Hex(),  // 8 bytes: Dst Agent
+                    Value = _reader.ReadInt32(), // 4 bytes: Value
+                    BuffDmg = _reader.ReadInt32(), // 4 bytes: Buff Damage
+                    OverstackValue = _reader.ReadUInt16(), // 2 bytes: Overstack Value
+                    SkillId = _reader.ReadUInt16(), // 2 bytes: Skill Id
+                    SrcInstid = _reader.ReadUInt16(), // 2 bytes: Src Instid
+                    DstInstid = _reader.ReadUInt16(), // 2 bytes: Dst Instid
+                    SrcMasterInstid = _reader.ReadUInt16(), // 2 bytes: Src Master Instid
+                    IFF = (IFF)_reader.Skip(9).Read(), // 1 byte: IFF
+                    IsBuff = _reader.ReadBoolean(), // 1 byte: IsBuff
+                    Result = (Result)_reader.Read(), // 1 byte: Result
+                    Activation = (Activation)_reader.Read(), // 1 byte: Activation
+                    BuffRemove = (BuffRemove)_reader.Read(), // 1 byte: BuffRemove
+                    IsNinety = _reader.ReadBoolean(), // 1 byte: IsNinety
+                    IsFifty = _reader.ReadBoolean(), // 1 byte: IsFifty
+                    IsMoving = _reader.ReadBoolean(), // 1 byte: IsMoving
+                    StateChange = (StateChange)_reader.Read(), // 1 byte: StateChange
+                    IsFlanking = _reader.ReadBoolean(), // 1 byte: IsFlanking
+                    IsShield = _reader.ReadBoolean() // 1 byte: IsShield
                 };
 
                 // Add Combat
-                _br.Skip(2);
+                _reader.Skip(2);
                 Events.Add(combat);
             }
         }
@@ -136,31 +136,31 @@ namespace EVTC_Log_Parser.Model
         {
             if (isElite == -1)
             {
-                if (pUpper == 65535)
-                {
-                    return Profession.Gadget;
-                }
-                else
-                {
-                    return Profession.NPC;
-                }
+                return (pUpper == 65535) ? Profession.Gadget : Profession.NPC;
             }
             else
             {
-                return (Profession)pLower + (9 * isElite);
+                if (int.Parse(Metadata.ArcVersion.Substring(4)) < 20170905)
+                {
+                    return (Profession)pLower + (9 * isElite);
+                }
+                else
+                {
+                    return (isElite == 0) ? (Profession)pLower : ((Specialization)isElite).ToProfession();
+                }
             }
         }
 
         private void AddAgent()
         {
-            string address = _br.ReadUInt64Hex(); // 8 bytes: Address
-            int pLower = BitConverter.ToUInt16(_br.ReadBytes(2), 0); // 2 bytes: Prof (lower bytes)
-            int pUpper = BitConverter.ToUInt16(_br.ReadBytes(2), 0); // 2 bytes: prof (upper bytes)
-            int isElite = _br.ReadInt32(); // 4 bytes: IsElite
-            int toughness = _br.ReadInt32();  // 4 bytes: Toughness
-            int healing = _br.ReadInt32();  // 4 bytes: Healing
-            int condition = _br.ReadInt32();  // 4 bytes: Condition
-            string name = _br.ReadUTF8(68); // 68 bytes: Name
+            string address = _reader.ReadUInt64Hex(); // 8 bytes: Address
+            int pLower = BitConverter.ToUInt16(_reader.ReadBytes(2), 0); // 2 bytes: Prof (lower bytes)
+            int pUpper = BitConverter.ToUInt16(_reader.ReadBytes(2), 0); // 2 bytes: prof (upper bytes)
+            int isElite = _reader.ReadInt32(); // 4 bytes: IsElite
+            int toughness = _reader.ReadInt32();  // 4 bytes: Toughness
+            int healing = _reader.ReadInt32();  // 4 bytes: Healing
+            int condition = _reader.ReadInt32();  // 4 bytes: Condition
+            string name = _reader.ReadUTF8(68); // 68 bytes: Name
 
             // Add Agent by Type
             Profession profession = ParseProfession(pLower, pUpper, isElite);
@@ -262,14 +262,14 @@ namespace EVTC_Log_Parser.Model
                 }
             }
 
-            // Time normalization
+            // Normallize Time
             int ts = Events[0].Time;
             Events.ForEach(e => e.Time -= ts);
 
             // Target
             NPC tg = NPCs.Find(n => n.SpeciesId == Metadata.TargetSpeciesId);
 
-            // Adjust instids of second half of Xera
+            // Adjust Xera Instids
             if (tg.SpeciesId == 16246)
             {
                 NPC shx = NPCs.Find(n => n.SpeciesId == 16286);
@@ -293,7 +293,7 @@ namespace EVTC_Log_Parser.Model
                 }
             }
 
-            // Set First/Last Aware for Target
+            // Set Aware Times for Target
             tg.FirstAware = Events.Where(e => e.SrcInstid == tg.Instid).First().Time;
             Event tde = Events.Find(e => e.StateChange == StateChange.ChangeDead && e.SrcInstid == tg.Instid);
             if (tde != null)

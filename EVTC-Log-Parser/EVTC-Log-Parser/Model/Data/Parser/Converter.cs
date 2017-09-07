@@ -1,76 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace EVTC_Log_Parser.Model
 {
     public class Converter
     {
         #region Members
-        private readonly Parser _parser;
-        private readonly NPC _target;
         private readonly int _time;
+        private readonly NPC _target;
+        private readonly Parser _parser;
+        private readonly List<Player> _players;
+        #endregion
+
+        #region Properties
+        public List<FinalDPS> FinalDPS { get; set; } = new List<FinalDPS>();
         #endregion
 
         #region Constructor
         public Converter(Parser parser)
         {
             _parser = parser;
-            _target = _parser.NPCs.Find(n => n.SpeciesId == _parser.Metadata.TargetSpeciesId);
+            _target = parser.NPCs.Find(n => n.SpeciesId == parser.Metadata.TargetSpeciesId);
             _time = _target.LastAware - _target.FirstAware;
+            _players = new List<Player>();
+            foreach (Player p in parser.Players)
+            {
+                p.LoadEvents(_target, parser.Events);
+                _players.Add(p);
+            }
+            GetFinalDPS();
+            TableBuilder t = new TableBuilder("Final DPS", new string[] { "Group", "Character", "Profession", "Power", "Condi", "Total", "DPS" });
+            foreach (FinalDPS r in FinalDPS)
+            {
+                t.AddRow(r.ToStringArray());
+            }
+            Clipboard.SetText(t.ToString());
         }
         #endregion
 
         #region Public Methods
-        public String ToCSV()
+        private void GetFinalDPS()
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (Player p in _parser.Players)
+            // Fight Duration
+            double fightDuration = _time / 1000.0;
+
+            // Sum Damage
+            _players.ForEach(p => FinalDPS.Add(new FinalDPS()
             {
-                p.LoadEvents(_target, _parser.Events);
-                ConvertMetadata(sb);
-                ConvertTarget(sb);
-                ConvertGroup(sb, p);
-                ConvertDamage(sb, p);
-                ConvertBoons(sb, p);
-                ConvertStatistics(sb, p);
-                sb.Remove(sb.Length - 1, 1);
-                sb.Append(Environment.NewLine);
-            }
-            return sb.ToString();
+                Group = p.Group,
+                Character = p.Character,
+                Profession = p.Profession.ToString(),
+                Power = p.DamageEvents.Where(e => !e.IsBuff).Sum(e => e.Damage),
+                Condi = p.DamageEvents.Where(e => e.IsBuff).Sum(e => e.Damage)
+            }));
+
+            // Calculate DPS
+            FinalDPS.ForEach(f => f.DPS = Math.Round((f.Power + f.Condi) / fightDuration, 2));
+
+            // Sort by Group DPS
+            FinalDPS = FinalDPS.OrderBy(f => f.Group).ThenByDescending(f => f.Total).ToList();
+
         }
         #endregion
 
         #region Private Methods
         private void ConvertMetadata(StringBuilder sb)
         {
-            sb.Append(_parser.Metadata.ARCVersion + ",");
+            sb.Append(_parser.Metadata.ArcVersion);
             sb.Append(_parser.Metadata.LogStart.ToString("yyyy-MM-dd,"));
-            sb.Append(_parser.Metadata.GWBuild + ",");
+            sb.Append(_parser.Metadata.GWBuild);
         }
 
         private void ConvertTarget(StringBuilder sb)
         {
-            sb.Append(_target.SpeciesId + ",");
-            sb.Append(_target.Name + ",");
-            sb.Append(_time / 1000.0 + ",");
+            sb.Append(_target.SpeciesId);
+            sb.Append(_target.Name);
+            sb.Append(_time / 1000.0);
         }
 
         private void ConvertGroup(StringBuilder sb, Player p)
         {
-            sb.Append(p.Account + ",");
-            sb.Append(p.Character + ",");
-            sb.Append(p.Profession + ",");
+            sb.Append(p.Account);
+            sb.Append(p.Character);
+            sb.Append(p.Profession);
             sb.Append(((p.Condition > 5) ? "C," : "P,"));
         }
 
         private void ConvertDamage(StringBuilder sb, Player p)
         {
-            sb.Append(Math.Round(p.DamageEvents.Sum(e => e.Damage) / (_time / 1000.0), 2) + ","); // DPS
-            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff).Sum(e => e.Damage) / (_time / 1000.0), 2) + ","); // DPS
-            sb.Append(Math.Round(p.DamageEvents.Where(e => e.IsBuff).Sum(e => e.Damage) / (_time / 1000.0), 2) + ","); // DPS
+            sb.Append(Math.Round(p.DamageEvents.Sum(e => e.Damage) / (_time / 1000.0), 2)); // DPS
+            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff).Sum(e => e.Damage) / (_time / 1000.0), 2)); // DPS
+            sb.Append(Math.Round(p.DamageEvents.Where(e => e.IsBuff).Sum(e => e.Damage) / (_time / 1000.0), 2)); // DPS
         }
 
         private void ConvertBoons(StringBuilder sb, Player p)
@@ -80,11 +103,11 @@ namespace EVTC_Log_Parser.Model
             {
                 if (b.IsDuration)
                 {
-                    sb.Append(Math.Round(BoonDurationRates(b, be[b.SkillId]), 2) + ","); // Duration Boon Rates
+                    sb.Append(Math.Round(BoonDurationRates(b, be[b.SkillId]), 2)); // Duration Boon Rates
                 }
                 else
                 {
-                    sb.Append(Math.Round(BoonIntensityStacks(b, be[b.SkillId]), 2) + ","); // Duration Boon Stacks
+                    sb.Append(Math.Round(BoonIntensityStacks(b, be[b.SkillId]), 2)); // Duration Boon Stacks
                 }
             }
         }
@@ -92,15 +115,15 @@ namespace EVTC_Log_Parser.Model
         private void ConvertStatistics(StringBuilder sb, Player p)
         {
             double n = p.DamageEvents.Where(e => !e.IsBuff).Count(); // Power Damage Events
-            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.Result == Result.Critical).Count() / n, 2) + ","); // Critical Rate
-            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.IsNinety).Count() / n, 2) + ","); // Scholar Rate
-            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.IsFlanking).Count() / n, 2) + ","); // Flanking Rate
-            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.IsMoving).Count() / n, 2) + ","); // Moving Rate
-            sb.Append(_parser.Events.Where(e => e.SrcInstid == p.Instid && e.SkillId == (int)CustomSkill.Dodge).Count() + ","); // Dodge Count
-            sb.Append(p.StateEvents.Where(s => s.StateChange == StateChange.WeaponSwap).Count() + ","); // Weapon Swap Count
-            sb.Append(_parser.Events.Where(e => e.SrcInstid == p.Instid && e.SkillId == (int)CustomSkill.Resurrect).Count() + ","); // Resurrect Count
-            sb.Append(p.StateEvents.Where(s => s.StateChange == StateChange.ChangeDown).Count() + ","); // Downed Count
-            sb.Append(p.StateEvents.Where(s => s.StateChange == StateChange.ChangeDead).Count() + ","); // Died
+            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.Result == Result.Critical).Count() / n, 2)); // Critical Rate
+            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.IsNinety).Count() / n, 2)); // Scholar Rate
+            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.IsFlanking).Count() / n, 2)); // Flanking Rate
+            sb.Append(Math.Round(p.DamageEvents.Where(e => !e.IsBuff && e.IsMoving).Count() / n, 2)); // Moving Rate
+            sb.Append(_parser.Events.Where(e => e.SrcInstid == p.Instid && e.SkillId == (int)CustomSkill.Dodge).Count()); // Dodge Count
+            sb.Append(p.StateEvents.Where(s => s.StateChange == StateChange.WeaponSwap).Count()); // Weapon Swap Count
+            sb.Append(_parser.Events.Where(e => e.SrcInstid == p.Instid && e.SkillId == (int)CustomSkill.Resurrect).Count()); // Resurrect Count
+            sb.Append(p.StateEvents.Where(s => s.StateChange == StateChange.ChangeDown).Count()); // Downed Count
+            sb.Append(p.StateEvents.Where(s => s.StateChange == StateChange.ChangeDead).Count()); // Died
         }
 
         private double BoonDurationRates(Boon b, List<BoonEvent> boonEvents)

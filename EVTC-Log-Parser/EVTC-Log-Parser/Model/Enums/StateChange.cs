@@ -18,6 +18,7 @@
         PointOfView,
         Language,
         GWBuild,
-        ShardID
+        ShardID,
+        Reward
     }
 }

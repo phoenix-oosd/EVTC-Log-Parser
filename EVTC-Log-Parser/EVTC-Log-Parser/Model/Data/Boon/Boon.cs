@@ -63,26 +63,25 @@ namespace EVTC_Log_Parser.Model
         {
             get
             {
-                if (Properties.Settings.Default.Might) { yield return Might; }
-                if (Properties.Settings.Default.Fury) { yield return Fury; }
-                if (Properties.Settings.Default.Quickness) { yield return Quickness; }
+                yield return Might;
+                yield return Fury;
+                yield return Quickness;
+                yield return Alacrity;
 
-                if (Properties.Settings.Default.Alacrity) { yield return Alacrity; }
+                yield return EmpowerAllies;
+                yield return BannerOfStrength;
+                yield return BannerOfDiscipline;
 
-                if (Properties.Settings.Default.EmpowerAllies) { yield return EmpowerAllies;}
-                if (Properties.Settings.Default.BannerOfStrength) { yield return BannerOfStrength; }
-                if (Properties.Settings.Default.BannerOfDiscipline) { yield return BannerOfDiscipline; }
+                yield return Spotter;
+                yield return SunSpirit;
+                yield return FrostSpirit;
+                yield return GlyphOfEmpowerment;
+                yield return GraceOfTheLand;
 
-                if (Properties.Settings.Default.Spotter) { yield return Spotter; }
-                if (Properties.Settings.Default.SunSpirit) { yield return SunSpirit; }
-                if (Properties.Settings.Default.FrostSpirit) { yield return FrostSpirit; }
-                if (Properties.Settings.Default.GlyphOfEmpowerment) { yield return GlyphOfEmpowerment; }
-                if (Properties.Settings.Default.GraceOfTheLand) { yield return GraceOfTheLand; }
+                yield return PinpointDistribution;
 
-                if (Properties.Settings.Default.PinpointDistribution) { yield return PinpointDistribution; }
-
-                if (Properties.Settings.Default.AssassinsPresence) { yield return AssassinsPresence; }
-                if (Properties.Settings.Default.NaturalisticResonance) { yield return NaturalisticResonance; }
+                yield return AssassinsPresence;
+                yield return NaturalisticResonance;
             }
         }
         #endregion
