@@ -12,7 +12,7 @@
 
         public string[] ToStringArray()
         {
-            return new string[] { Group, Character, Profession, Power.ToString(), Condi.ToString(), Total.ToString(), DPS.ToString() };
+            return new string[] { Group, Character, Profession, Power.ToString(), Condi.ToString(), Total.ToString(), DPS.ToString("0.00") };
         }
 
     }

@@ -24,13 +24,14 @@ namespace EVTC_Log_Parser
                 List<string> err = new List<string>();
                 for (int i = 0; i < _logs.Length; i++)
                 {
-                    Console.Write(String.Format(Properties.Resources.ParsingProgressFormat, i + 1, _logs.Length));
+                    //Console.Write(String.Format(Properties.Resources.ParsingProgressFormat, i + 1, _logs.Length));
                     if (_parser.Parse(_logs[i]))
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(Properties.Resources.Success);
-                        Console.ResetColor();
-                        Converter c = new Converter(_parser);
+                        //Console.ForegroundColor = ConsoleColor.Green;
+                        //Console.WriteLine(Properties.Resources.Success);
+                        //Console.ResetColor();
+                        Converter converter = new Converter(_parser);
+                        Console.WriteLine(converter.GetFinalDPS());
                     }
                     else
                     {
@@ -74,7 +75,8 @@ namespace EVTC_Log_Parser
                 return false;
             }
         }
-        #endregion
 
+
+        #endregion
     }
 }

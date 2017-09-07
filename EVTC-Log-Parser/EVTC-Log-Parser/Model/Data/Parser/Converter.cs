@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EVTC_Log_Parser.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,40 +16,31 @@ namespace EVTC_Log_Parser.Model
         private readonly List<Player> _players;
         #endregion
 
-        #region Properties
-        public List<FinalDPS> FinalDPS { get; set; } = new List<FinalDPS>();
-        #endregion
-
         #region Constructor
         public Converter(Parser parser)
         {
             _parser = parser;
             _target = parser.NPCs.Find(n => n.SpeciesId == parser.Metadata.TargetSpeciesId);
             _time = _target.LastAware - _target.FirstAware;
-            _players = new List<Player>();
-            foreach (Player p in parser.Players)
+            _players = parser.Players;
+            foreach (Player p in _players)
             {
                 p.LoadEvents(_target, parser.Events);
-                _players.Add(p);
             }
-            GetFinalDPS();
-            TableBuilder t = new TableBuilder("Final DPS", new string[] { "Group", "Character", "Profession", "Power", "Condi", "Total", "DPS" });
-            foreach (FinalDPS r in FinalDPS)
-            {
-                t.AddRow(r.ToStringArray());
-            }
-            Clipboard.SetText(t.ToString());
         }
         #endregion
 
         #region Public Methods
-        private void GetFinalDPS()
+        public string GetFinalDPS()
         {
+            
+
             // Fight Duration
             double fightDuration = _time / 1000.0;
 
-            // Sum Damage
-            _players.ForEach(p => FinalDPS.Add(new FinalDPS()
+            // Calculate DPS
+            List<FinalDPS> rows = new List<FinalDPS>();
+            _players.ForEach(p => rows.Add(new FinalDPS()
             {
                 Group = p.Group,
                 Character = p.Character,
@@ -56,13 +48,18 @@ namespace EVTC_Log_Parser.Model
                 Power = p.DamageEvents.Where(e => !e.IsBuff).Sum(e => e.Damage),
                 Condi = p.DamageEvents.Where(e => e.IsBuff).Sum(e => e.Damage)
             }));
+            rows.ForEach(f => f.DPS = f.Total / fightDuration);
+            rows = rows.OrderByDescending(f => f.Total).ToList();
 
-            // Calculate DPS
-            FinalDPS.ForEach(f => f.DPS = Math.Round((f.Power + f.Condi) / fightDuration, 2));
-
-            // Sort by Group DPS
-            FinalDPS = FinalDPS.OrderBy(f => f.Group).ThenByDescending(f => f.Total).ToList();
-
+            // Table Output
+            TableBuilder table = new TableBuilder("Final DPS - " + _target.Name + " - " + fightDuration + " seconds - " + "{SUCCESS/FAILURE}", new string[] { "", "Character", "Profession", "Power", "Condi", "Total", "DPS" });
+            foreach (FinalDPS r in rows)
+            {
+                table.AddRow(r.ToStringArray());
+            }
+            table.AddSeparator();
+            table.AddRow(new string[] { "", "", "", rows.Sum(r=>r.Power).ToString(), rows.Sum(r => r.Condi).ToString() , rows.Sum(r => r.Total).ToString() , (rows.Sum(r => r.Total) / fightDuration).ToString("0.00") });
+            return table.ToString().SurroundWith("\n").SurroundWith("```");
         }
         #endregion
 
